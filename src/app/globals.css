@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfdf9; /* Sand beige light */
-  --foreground: #102a1b; /* Dark Green */
+  --background: #ffffff; 
+  --foreground: #092e1d; /* Very Dark Green */
   
-  --primary: #2a7a40; /* Plant green */
-  --primary-dark: #1f5f30;
-  --secondary: #102a1b; /* Dark Green */
-  --beige: #f3edd8; /* Sand beige */
-  --beige-light: #fdfdf9; 
+  --primary: #10b981; /* Emerald */
+  --primary-dark: #059669;
+  --secondary: #064e3b; /* Dark Green */
+  --secondary-dark: #022c22;
+  --gold: #d4af37; /* Gold accent */
+  --gold-light: #f3e5ab;
   --white: #ffffff;
   
   --danger: #ef4444;
@@ -22,8 +23,9 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-secondary: var(--secondary);
-  --color-beige: var(--beige);
-  --color-beige-light: var(--beige-light);
+  --color-secondary-dark: var(--secondary-dark);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
   --font-sans: var(--font-cairo), sans-serif;
 }
 
@@ -34,7 +36,13 @@ body {
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+  background: rgba(6, 78, 59, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
