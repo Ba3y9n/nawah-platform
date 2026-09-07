@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdfdf9; /* Sand beige light */
+  --foreground: #102a1b; /* Dark Green */
+  
+  --primary: #2a7a40; /* Plant green */
+  --primary-dark: #1f5f30;
+  --secondary: #102a1b; /* Dark Green */
+  --beige: #f3edd8; /* Sand beige */
+  --beige-light: #fdfdf9; 
+  --white: #ffffff;
+  
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-beige: var(--beige);
+  --color-beige-light: var(--beige-light);
+  --font-sans: var(--font-cairo), sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
