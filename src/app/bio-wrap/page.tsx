@@ -1,5 +1,4 @@
-import { Leaf, ArrowDown, Recycle, ShieldCheck, TreePine } from "lucide-react";
-import Image from "next/image";
+import { Leaf, Recycle, ShieldCheck, TreePine } from "lucide-react";
 
 export default function BioWrapPage() {
   return (

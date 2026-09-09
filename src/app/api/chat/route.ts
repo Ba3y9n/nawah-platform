@@ -13,8 +13,8 @@ export async function POST(req: NextRequest) {
 
     // Convert our simple history format to Gemini's expected format
     const formattedHistory = history
-      .filter((msg: any) => msg.content) // ensure no empty
-      .map((msg: any) => ({
+      .filter((msg: { role: string; content: string }) => msg.content) // ensure no empty
+      .map((msg: { role: string; content: string }) => ({
         role: msg.role === "user" ? "user" : "model",
         parts: [{ text: msg.content }],
       }));
@@ -47,10 +47,11 @@ export async function POST(req: NextRequest) {
     const text = response.text();
 
     return NextResponse.json({ reply: text });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Chat API Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to process chat", details: error.message },
+      { error: "Failed to process chat", details: errorMessage },
       { status: 500 }
     );
   }

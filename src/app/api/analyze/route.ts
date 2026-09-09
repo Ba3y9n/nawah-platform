@@ -57,10 +57,11 @@ export async function POST(req: NextRequest) {
     const data = JSON.parse(jsonString);
 
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("AI Analysis Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to analyze image", details: error.message },
+      { error: "Failed to analyze image", details: errorMessage },
       { status: 500 }
     );
   }

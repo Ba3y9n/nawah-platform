@@ -53,8 +53,8 @@ export default function ScannerPage() {
 
       const data = await response.json();
       setResult(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setIsAnalyzing(false);
     }
