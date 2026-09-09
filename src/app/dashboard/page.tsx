@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, AlertTriangle, TrendingDown, Clock, CheckCircle } from "lucide-react";
+import { PieChart, LayoutDashboard, AlertTriangle, TrendingDown, Clock, CheckCircle } from "lucide-react";
 
 export default function DashboardPage() {
   const products = [
