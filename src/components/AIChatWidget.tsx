@@ -62,7 +62,7 @@ export default function AIChatWidget() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center z-50 ${isOpen ? 'hidden' : 'flex'}`}
+        className={`fixed bottom-6 right-6 w-16 h-16 bg-primary text-emerald-950 rounded-full shadow-2xl flex items-center justify-center z-50 ${isOpen ? 'hidden' : 'flex'}`}
       >
         <Bot className="w-8 h-8" />
       </motion.button>
@@ -77,7 +77,7 @@ export default function AIChatWidget() {
             className="fixed bottom-6 right-6 w-[350px] h-[500px] bg-white rounded-3xl shadow-2xl z-50 flex flex-col border border-gray-100 overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-secondary p-4 flex items-center justify-between text-white">
+            <div className="bg-secondary p-4 flex items-center justify-between text-emerald-950">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
                   <Bot className="w-6 h-6 text-gold" />
@@ -87,7 +87,7 @@ export default function AIChatWidget() {
                   <p className="text-xs text-gray-300">متصل الآن (Gemini 1.5 Flash)</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-white transition-colors">
+              <button onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-emerald-950 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -98,7 +98,7 @@ export default function AIChatWidget() {
                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
                     msg.role === 'user' 
-                      ? 'bg-primary text-white rounded-tl-none' 
+                      ? 'bg-primary text-emerald-950 rounded-tl-none' 
                       : 'bg-white text-secondary border border-gray-100 rounded-tr-none'
                   }`}>
                     {msg.content}
@@ -132,7 +132,7 @@ export default function AIChatWidget() {
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 transition-opacity hover:bg-primary-dark"
+                  className="w-12 h-12 bg-primary text-emerald-950 rounded-full flex items-center justify-center shrink-0 disabled:opacity-50 transition-opacity hover:bg-primary-dark"
                 >
                   <Send className="w-5 h-5 rtl:-scale-x-100" />
                 </button>
