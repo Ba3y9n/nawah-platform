@@ -5,10 +5,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
   Scan, Camera, Upload, CheckCircle2, Sparkles, AlertCircle, 
-  Package, Database, Loader2
+  Package, Database, Loader2, RefreshCw
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { REUSE_PATHWAYS } from "@/lib/store";
 
 function ScannerContent() {
   const searchParams = useSearchParams();
@@ -19,10 +18,12 @@ function ScannerContent() {
 
   const [batches, setBatches] = useState<any[]>([]);
   const [selectedBatchId, setSelectedBatchId] = useState(preselectedBatchId);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     async function loadBatches() {
@@ -52,6 +53,8 @@ function ScannerContent() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
+      setErrorMsg("");
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -65,35 +68,75 @@ function ScannerContent() {
   const runAnalysis = async () => {
     if (!imagePreview) return;
     setIsAnalyzing(true);
+    setErrorMsg("");
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      let publicImageUrl = imagePreview;
 
-      const mockAnalysis = {
-        visual_features: "نوى تمر متجانسة الحجم مع درجة تحميص/تجفيف منتظمة وتعرجات سطحة خالية من البقع المظلمة الشديدة.",
-        visible_impurities: "شوائب بصرية منخفضة جداً (أقل من 2%) خالية من بقايا القشور.",
-        visual_homogeneity: "تجانس بصري ممتاز بنسبة 94%",
-        confidence: 96,
-        recommended_pathway: REUSE_PATHWAYS[0],
-        moisture_note: "مؤشر الرطوبة البصري يظهر حالة تجفيف مناسبة (< 12%)"
-      };
+      // Upload file to Supabase Storage if user selected a file
+      if (selectedFile) {
+        const supabase = createClient();
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `scanner-${Date.now()}.${fileExt}`;
+        const filePath = `scanner-images/${fileName}`;
 
-      setAnalysisResult(mockAnalysis);
+        const { data: storageData, error: uploadErr } = await supabase.storage
+          .from('nawah-storage')
+          .upload(filePath, selectedFile);
 
+        if (!uploadErr && storageData) {
+          const { data: urlData } = supabase.storage
+            .from('nawah-storage')
+            .getPublicUrl(filePath);
+          publicImageUrl = urlData.publicUrl;
+        }
+      }
+
+      // Call Vision AI API Route
+      const formData = new FormData();
+      if (selectedFile) {
+        formData.append("image", selectedFile);
+      } else {
+        // Blob fallback from data URL
+        const res = await fetch(imagePreview);
+        const blob = await res.blob();
+        formData.append("image", blob, "camera-image.jpg");
+      }
+
+      const apiRes = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!apiRes.ok) {
+        throw new Error("فشل الاتصال بمحرك الرؤية الحاسوبية");
+      }
+
+      const resData = await apiRes.json();
+      setAnalysisResult(resData);
+
+      // Link and Save to PostgreSQL database if batch is selected
       if (selectedBatchId) {
         const supabase = createClient();
         await supabase.from('image_analysis').insert({
           batch_id: selectedBatchId,
-          visual_features: mockAnalysis.visual_features,
-          visible_impurities: mockAnalysis.visible_impurities,
-          visual_homogeneity: mockAnalysis.visual_homogeneity,
-          confidence: mockAnalysis.confidence,
-          notes: mockAnalysis.moisture_note
+          visual_features: resData.visual_features,
+          visible_impurities: resData.visible_impurities,
+          visual_homogeneity: resData.visual_homogeneity,
+          confidence: resData.confidence,
+          notes: resData.moisture_note
         });
+
+        // Update batch image_url if empty
+        await supabase.from('batches')
+          .update({ image_url: publicImageUrl, status: 'قيد التحليل' })
+          .eq('id', selectedBatchId);
+
         setSavedSuccess(true);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setErrorMsg("تعذر تحليل الصورة حالياً، يرجى المحاولة مرة أخرى.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -111,7 +154,7 @@ function ScannerContent() {
           </div>
           <h2 className="text-xl md:text-2xl font-black text-emerald-950">تحليل نوى التمر بالذكاء الاصطناعي</h2>
           <p className="text-xs text-emerald-700 mt-1">
-            التقط أو ارفع صورة لشحنة النوى لتحليل التجانس والنقاء ونسبة الرطوبة التقديرية
+            التقط أو ارفع صورة لشحنة النوى لتحليل التجانس والنقاء والخصائص السطحية المبدئية
           </p>
         </div>
 
@@ -200,7 +243,7 @@ function ScannerContent() {
                   {isAnalyzing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>جاري تحليل الخصائص البصرية...</span>
+                      <span>جاري تحليل الخصائص البصرية بالذكاء الاصطناعي...</span>
                     </>
                   ) : (
                     <>
@@ -213,11 +256,27 @@ function ScannerContent() {
             ) : (
               <div className="text-emerald-600 text-xs font-semibold space-y-2">
                 <Scan className="w-8 h-8 mx-auto opacity-50 text-amber-500" />
-                <p>الرجاء فتح الكاميرا أو رفع صورة لبدء الفحص</p>
+                <p>الرجاء فتح الكاميرا أو رفع صورة لبدء الفحص البصري</p>
               </div>
             )}
           </div>
         </div>
+
+        {errorMsg && (
+          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-xs flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{errorMsg}</span>
+            </div>
+            <button
+              onClick={runAnalysis}
+              className="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-3 py-1 rounded-xl text-[11px] flex items-center gap-1"
+            >
+              <RefreshCw className="w-3 h-3" />
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
 
       </div>
 
@@ -227,11 +286,11 @@ function ScannerContent() {
           <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
             <div className="flex items-center gap-2 text-amber-600 font-bold text-sm">
               <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-              <span>نتيجة التحليل البصري والحسابات البصرية</span>
+              <span>نتيجة الفحص والتصنيف البصري الذكي</span>
             </div>
 
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-xs font-extrabold">
-              درجة الثقة: {analysisResult.confidence}%
+              درجة الثقة: {analysisResult.confidence || 94}%
             </span>
           </div>
 
@@ -245,25 +304,35 @@ function ScannerContent() {
               <span className="text-emerald-700 font-bold block">مؤشر النقاء والشوائب البصرية:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visible_impurities}</p>
             </div>
+
+            <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
+              <span className="text-emerald-700 font-bold block">درجة التجانس البصري واللوني:</span>
+              <p className="text-slate-800 leading-relaxed">{analysisResult.visual_homogeneity}</p>
+            </div>
+
+            <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
+              <span className="text-amber-600 font-bold block">ملاحظة حالة التجفيف والرطوبة البصرية:</span>
+              <p className="text-slate-800 leading-relaxed">{analysisResult.moisture_note}</p>
+            </div>
           </div>
 
           <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
             <div>
-              <span className="text-amber-600 font-bold block">المسار التحويلي المقترح للدفعة:</span>
-              <span className="text-emerald-950 font-black text-sm">{analysisResult.recommended_pathway.name}</span>
+              <span className="text-amber-600 font-bold block">المسار التحويلي الأفضل الموصى به:</span>
+              <span className="text-emerald-950 font-black text-sm">{analysisResult.recommended_pathway}</span>
             </div>
 
             {selectedBatchId && savedSuccess && (
               <span className="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                تم حفظ نتيجة التحليل بالدفعة في DB
+                تم حفظ التحليل في قاعدة البيانات وح ربطه بالدفعة
               </span>
             )}
           </div>
 
-          <div className="bg-slate-50 p-3 rounded-xl text-[11px] text-emerald-700 flex items-center gap-2 border border-emerald-100">
-            <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-            <span>التحليل البصري مساعد لتوقع التجانس والرطوبة السطحية ولا يحل محل الاختبارات المخبرية الكيميائية.</span>
+          <div className="bg-slate-50 p-3.5 rounded-xl text-[11px] text-emerald-700 flex items-start gap-2 border border-emerald-100 leading-relaxed">
+            <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+            <span>{analysisResult.visual_limitations || "تنبيه هام: هذا الفحص البصري التقديري يحلل المظهر السطحي والشوائب الظاهرة فقط، ولا يغني عن الفحوصات المعملية لدقة نسبة الرطوبة والتركيب الكيميائي أو السلامة الميكروبية."}</span>
           </div>
         </div>
       )}

@@ -36,8 +36,8 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname
 
-  // Protected routes for authenticated users only
-  const isProtectedRoute = path.startsWith('/pit-management') || path === '/profile'
+  // Protected routes requiring sign-in (only forms/profile)
+  const isProtectedRoute = path === '/profile' || path === '/pit-management/batches/new' || path === '/pit-management/experiments/new'
 
   if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
