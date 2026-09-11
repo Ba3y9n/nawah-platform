@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS public.cities (
 -- 4. User Profiles Table (Linked to Supabase Auth)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
+    full_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    user_type TEXT NOT NULL CHECK (user_type IN ('date_factory', 'farmer', 'waste_collector', 'researcher', 'recycler', 'individual')),
+    user_type TEXT NOT NULL CHECK (user_type IN ('date_factory', 'factory', 'farmer', 'waste_collector', 'researcher', 'recycler', 'individual', 'other')),
     region_id UUID REFERENCES public.regions(id),
     city_id UUID REFERENCES public.cities(id),
     organization TEXT,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS public.batches (
     user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     batch_number TEXT UNIQUE NOT NULL,
     source_id UUID REFERENCES public.sources(id),
-    source_name TEXT,
+    source_name TEXT NOT NULL,
     region_id UUID REFERENCES public.regions(id),
     city_id UUID REFERENCES public.cities(id),
     quantity NUMERIC(10, 2) NOT NULL CHECK (quantity >= 0),
@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS public.batches (
     storage_method TEXT DEFAULT 'أكياس خيش تهوية محكومة',
     status TEXT NOT NULL DEFAULT 'مسجلة' CHECK (status IN ('مسجلة', 'قيد التحليل', 'متاحة للاستخدام', 'تم إعادة استخدامها بالكامل')),
     notes TEXT,
+    image_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -152,6 +153,47 @@ CREATE TABLE IF NOT EXISTS public.impact_logs (
 );
 
 -- ====================================================================
+-- AUTOMATIC PROFILE CREATION TRIGGER FOR SUPABASE AUTH
+-- ====================================================================
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (
+    id,
+    full_name,
+    email,
+    user_type,
+    organization,
+    region_id,
+    city_id
+  )
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', 'مستخدم جديد'),
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'user_type', 'individual'),
+    NEW.raw_user_meta_data->>'organization',
+    CASE WHEN (NEW.raw_user_meta_data->>'region_id') IS NOT NULL AND (NEW.raw_user_meta_data->>'region_id') != '' THEN (NEW.raw_user_meta_data->>'region_id')::uuid ELSE NULL END,
+    CASE WHEN (NEW.raw_user_meta_data->>'city_id') IS NOT NULL AND (NEW.raw_user_meta_data->>'city_id') != '' THEN (NEW.raw_user_meta_data->>'city_id')::uuid ELSE NULL END
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    user_type = EXCLUDED.user_type,
+    organization = EXCLUDED.organization,
+    region_id = EXCLUDED.region_id,
+    city_id = EXCLUDED.city_id,
+    updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ====================================================================
 -- AUTO BATCH & EXPERIMENT NUMBER GENERATION TRIGGERS
 -- ====================================================================
 
@@ -174,6 +216,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_set_batch_number ON public.batches;
 CREATE TRIGGER trigger_set_batch_number
 BEFORE INSERT ON public.batches
 FOR EACH ROW
@@ -199,6 +242,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_set_experiment_number ON public.experiments;
 CREATE TRIGGER trigger_set_experiment_number
 BEFORE INSERT ON public.experiments
 FOR EACH ROW
@@ -220,6 +264,28 @@ ALTER TABLE public.regions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.cities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reuse_pathways ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.evidence_sources ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if any to avoid errors on re-execution
+DROP POLICY IF EXISTS "Public read regions" ON public.regions;
+DROP POLICY IF EXISTS "Public read cities" ON public.cities;
+DROP POLICY IF EXISTS "Public read sources" ON public.sources;
+DROP POLICY IF EXISTS "Public read pathways" ON public.reuse_pathways;
+DROP POLICY IF EXISTS "Public read evidence" ON public.evidence_sources;
+DROP POLICY IF EXISTS "Users view own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users update own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users insert own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users view own batches" ON public.batches;
+DROP POLICY IF EXISTS "Users insert own batches" ON public.batches;
+DROP POLICY IF EXISTS "Users update own batches" ON public.batches;
+DROP POLICY IF EXISTS "Users delete own batches" ON public.batches;
+DROP POLICY IF EXISTS "Users view images of own batches" ON public.batch_images;
+DROP POLICY IF EXISTS "Users insert images to own batches" ON public.batch_images;
+DROP POLICY IF EXISTS "Users view analysis of own batches" ON public.image_analysis;
+DROP POLICY IF EXISTS "Users insert analysis for own batches" ON public.image_analysis;
+DROP POLICY IF EXISTS "Users view own experiments" ON public.experiments;
+DROP POLICY IF EXISTS "Users insert own experiments" ON public.experiments;
+DROP POLICY IF EXISTS "Users update own experiments" ON public.experiments;
+DROP POLICY IF EXISTS "Users delete own experiments" ON public.experiments;
 
 CREATE POLICY "Public read regions" ON public.regions FOR SELECT USING (true);
 CREATE POLICY "Public read cities" ON public.cities FOR SELECT USING (true);
@@ -266,6 +332,9 @@ CREATE POLICY "Users insert impact logs for own batches" ON public.impact_logs F
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('nawah-storage', 'nawah-storage', true)
 ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public Read Access for Storage" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated Users Upload Storage" ON storage.objects;
 
 CREATE POLICY "Public Read Access for Storage" ON storage.objects FOR SELECT USING (bucket_id = 'nawah-storage');
 CREATE POLICY "Authenticated Users Upload Storage" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'nawah-storage' AND auth.role() = 'authenticated');

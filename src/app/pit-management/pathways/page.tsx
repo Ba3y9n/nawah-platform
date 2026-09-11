@@ -3,21 +3,31 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { 
-  Sparkles, Layers, ShieldCheck, CheckCircle2, 
-  ArrowLeft, TestTube2, AlertCircle, FileText
+  Sparkles, Layers, CheckCircle2, 
+  TestTube2, AlertCircle, FileText
 } from "lucide-react";
-import { REUSE_PATHWAYS, getBatches } from "@/lib/store";
-import { Batch, ReusePathway } from "@/lib/types";
+import { REUSE_PATHWAYS } from "@/lib/store";
+import { createClient } from "@/lib/supabase/client";
 
 export default function PathwaysPage() {
-  const [batches, setBatches] = useState<Batch[]>([]);
-  const [selectedPathway, setSelectedPathway] = useState<ReusePathway>(REUSE_PATHWAYS[0]);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [selectedPathway, setSelectedPathway] = useState<any>(REUSE_PATHWAYS[0]);
   const [selectedBatchId, setSelectedBatchId] = useState("");
 
   useEffect(() => {
     async function loadData() {
-      const bList = await getBatches();
-      setBatches(bList);
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: bList } = await supabase
+          .from('batches')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        setBatches(bList || []);
+      }
     }
     loadData();
   }, []);
@@ -28,14 +38,14 @@ export default function PathwaysPage() {
     <div className="space-y-6">
       
       {/* TITLE BANNER */}
-      <div className="bg-slate-50/90 border border-emerald-200/70 p-6 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-1">
             <Sparkles className="w-4 h-4" />
             <span>مسارات الاقتصاد الدائري والقيمة المضافة</span>
           </div>
           <h2 className="text-xl md:text-2xl font-black text-emerald-950">مسارات الاستفادة الحيوية والصناعية من نوى التمر</h2>
-          <p className="text-xs text-emerald-700/80 mt-1">
+          <p className="text-xs text-emerald-700 mt-1">
             5 مسارات مثبتة علمياً لتحويل نوى التمر من مخلفات إلى منتجات صناعية عالية القيمة
           </p>
         </div>
@@ -59,8 +69,8 @@ export default function PathwaysPage() {
               onClick={() => setSelectedPathway(path)}
               className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between space-y-2 ${
                 isSelected
-                  ? "bg-emerald-100/90 border-amber-400 text-emerald-950 shadow-lg shadow-emerald-950/60"
-                  : "bg-slate-50/80 border-emerald-200/60 text-slate-600 hover:bg-emerald-100/40 hover:text-emerald-950"
+                  ? "bg-emerald-100 border-amber-400 text-emerald-950 shadow-lg"
+                  : "bg-white border-emerald-200 text-slate-700 hover:bg-emerald-50 hover:text-emerald-950"
               }`}
             >
               <div className="space-y-1">
@@ -71,7 +81,7 @@ export default function PathwaysPage() {
                 </span>
                 <h3 className="text-xs font-bold leading-snug line-clamp-2 mt-1">{path.name}</h3>
               </div>
-              <span className="text-[10px] text-emerald-600/80 font-semibold flex items-center gap-1 mt-2">
+              <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 mt-2">
                 عرض المتطلبات والاختبارات ←
               </span>
             </button>
@@ -80,67 +90,67 @@ export default function PathwaysPage() {
       </div>
 
       {/* SELECTED PATHWAY DETAILS */}
-      <div className="bg-slate-50/90 border border-emerald-200/70 rounded-3xl p-6 shadow-xl space-y-6">
+      <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl space-y-6">
         
-        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-emerald-200/60 pb-4 gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-emerald-100 pb-4 gap-3">
           <div>
-            <span className="text-xs font-bold text-amber-400">{selectedPathway.evidence_level}</span>
+            <span className="text-xs font-bold text-amber-600">{selectedPathway.evidence_level}</span>
             <h3 className="text-lg md:text-xl font-black text-emerald-950">{selectedPathway.name}</h3>
           </div>
 
           <Link
             href={`/pit-management/experiments/new`}
-            className="inline-flex items-center gap-1.5 bg-emerald-200 hover:bg-emerald-300 text-emerald-950 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+            className="inline-flex items-center gap-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
           >
-            <TestTube2 className="w-4 h-4 text-amber-400" />
+            <TestTube2 className="w-4 h-4 text-amber-600" />
             <span>تنفيذ تجربة بهذا المسار</span>
           </Link>
         </div>
 
-        <p className="text-xs text-slate-700 leading-relaxed bg-white p-4 rounded-2xl border border-emerald-900">
+        <p className="text-xs text-slate-800 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-emerald-100">
           {selectedPathway.description}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           
-          <div className="bg-white p-4 rounded-2xl border border-emerald-900 space-y-2">
-            <h4 className="font-bold text-emerald-600 flex items-center gap-2">
+          <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-2">
+            <h4 className="font-bold text-emerald-700 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               متطلبات وتجهيز المعالجة
             </h4>
-            <p className="text-slate-600 leading-relaxed">{selectedPathway.processing_requirements}</p>
+            <p className="text-slate-700 leading-relaxed">{selectedPathway.processing_requirements}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-emerald-900 space-y-2">
-            <h4 className="font-bold text-amber-400 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-amber-400" />
+          <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-2">
+            <h4 className="font-bold text-amber-600 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-amber-500" />
               الاختبارات المخبرية المطلوبة
             </h4>
-            <p className="text-slate-600 leading-relaxed">{selectedPathway.required_tests}</p>
+            <p className="text-slate-700 leading-relaxed">{selectedPathway.required_tests}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-emerald-900 space-y-2">
-            <h4 className="font-bold text-emerald-700 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-700" />
+          <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-2">
+            <h4 className="font-bold text-emerald-800 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
               المميزات والقيمة المضافة
             </h4>
-            <p className="text-slate-600 leading-relaxed">{selectedPathway.advantages}</p>
+            <p className="text-slate-700 leading-relaxed">{selectedPathway.advantages}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-emerald-900 space-y-2">
-            <h4 className="font-bold text-rose-300 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400" />
+          <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-2">
+            <h4 className="font-bold text-rose-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-500" />
               التحديات التقنية والتصنيعية
             </h4>
-            <p className="text-slate-600 leading-relaxed">{selectedPathway.challenges}</p>
+            <p className="text-slate-700 leading-relaxed">{selectedPathway.challenges}</p>
           </div>
 
         </div>
 
         {/* CHECK BATCH SUITABILITY TOOL */}
-        <div className="bg-emerald-50/70 border border-emerald-200/80 p-5 rounded-2xl space-y-3">
-          <h4 className="text-xs font-bold text-amber-300 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-amber-400" />
+        <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl space-y-3">
+          <h4 className="text-xs font-bold text-emerald-950 flex items-center gap-2">
+            <Layers className="w-4 h-4 text-amber-500" />
             فحص ملائمة إحدى دفعاتك في قاعدة البيانات لهذا المسار:
           </h4>
 
@@ -161,8 +171,8 @@ export default function PathwaysPage() {
             </div>
 
             {selectedBatch && (
-              <div className="md:col-span-4 bg-slate-50 p-3 rounded-xl text-xs border border-emerald-300">
-                <span className="text-emerald-600 font-bold block">ملاءمة ممتازة (95%)</span>
+              <div className="md:col-span-4 bg-white p-3 rounded-xl text-xs border border-emerald-200">
+                <span className="text-emerald-700 font-bold block">ملاءمة ممتازة (95%)</span>
                 <span className="text-[11px] text-slate-700">
                   الدفعة مغسولة وخالية من العوالق ومناسبة جداً للمعالجة.
                 </span>

@@ -7,8 +7,7 @@ import {
   Bot, User, Info, LogIn, UserPlus, ChevronDown, LogOut
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getCurrentUser, logoutUser, subscribeToStore } from "@/lib/store";
-import { UserProfile } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -17,7 +16,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [userDropdown, setUserDropdown] = useState(false);
   const [pitDropdown, setPitDropdown] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  
+  const [currentUser, setCurrentUser] = useState<{ id: string; email?: string; name: string } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -26,16 +26,45 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setCurrentUser(getCurrentUser());
-    const unsubscribe = subscribeToStore(() => {
-      setCurrentUser(getCurrentUser());
+    const supabase = createClient();
+
+    async function loadUserSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Fetch full_name from profiles
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .single();
+          
+        const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'المستخدم';
+        setCurrentUser({
+          id: user.id,
+          email: user.email,
+          name: displayName
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    }
+
+    loadUserSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        loadUserSession();
+      } else {
+        setCurrentUser(null);
+      }
     });
+
     return () => {
-      unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
-  const isPitManagementActive = pathname.startsWith('/pit-management') || pathname === '/dashboard' || pathname === '/batches' || pathname === '/scanner' || pathname === '/experiments' || pathname === '/pathways' || pathname === '/impact';
+  const isPitManagementActive = pathname.startsWith('/pit-management');
 
   const pitSubMenu = [
     { href: "/pit-management/dashboard", label: "نظرة عامة", desc: "لوحة التحكم الرئيسية والمؤشرات الحية" },
@@ -55,9 +84,12 @@ export default function Navbar() {
   ];
 
   const handleLogout = async () => {
-    await logoutUser();
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setUserDropdown(false);
-    router.push('/');
+    setCurrentUser(null);
+    router.push('/login');
+    router.refresh();
   };
 
   return (
@@ -117,8 +149,8 @@ export default function Navbar() {
 
                 {pitDropdown && (
                   <div className="absolute top-full right-0 w-64 pt-2 z-50">
-                    <div className="bg-emerald-50 border border-emerald-300/60 rounded-2xl shadow-2xl p-2 backdrop-blur-xl">
-                      <div className="px-3 py-1.5 text-[11px] font-bold text-amber-400 border-b border-emerald-200/60 mb-1">
+                    <div className="bg-white border border-emerald-300/60 rounded-2xl shadow-2xl p-2 backdrop-blur-xl">
+                      <div className="px-3 py-1.5 text-[11px] font-bold text-emerald-800 border-b border-emerald-200/60 mb-1">
                         منظومة إدارة وتتبع نوى التمر
                       </div>
                       {pitSubMenu.map((item) => (
@@ -128,8 +160,8 @@ export default function Navbar() {
                           onClick={() => setPitDropdown(false)}
                           className={`block px-3 py-2 rounded-xl text-xs transition-colors ${
                             pathname === item.href
-                              ? "bg-emerald-200 text-amber-300 font-bold"
-                              : "text-emerald-100 hover:bg-emerald-100/80 hover:text-emerald-950"
+                              ? "bg-emerald-100 text-emerald-950 font-bold"
+                              : "text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
                           }`}
                         >
                           <div className="font-bold">{item.label}</div>
@@ -177,22 +209,22 @@ export default function Navbar() {
                   </button>
 
                   {userDropdown && (
-                    <div className="absolute top-full left-0 w-52 mt-2 bg-emerald-50 border border-emerald-300/80 rounded-2xl shadow-2xl p-2 z-50">
-                      <div className="px-3 py-2 border-b border-emerald-200/60 mb-1">
+                    <div className="absolute top-full left-0 w-56 mt-2 bg-white border border-emerald-300/80 rounded-2xl shadow-2xl p-2 z-50">
+                      <div className="px-3 py-2 border-b border-emerald-100 mb-1">
                         <p className="text-xs font-bold text-emerald-950 truncate">{currentUser.name}</p>
                         <p className="text-[10px] text-emerald-700/70 truncate">{currentUser.email}</p>
                       </div>
                       <Link
                         href="/profile"
                         onClick={() => setUserDropdown(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-emerald-100 hover:bg-emerald-100/80 hover:text-amber-300 rounded-xl transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-emerald-900 hover:bg-emerald-50 rounded-xl transition-colors"
                       >
                         <User className="w-4 h-4" />
-                        <span>الحساب الشخصي</span>
+                        <span>الملف الشخصي</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 w-full text-right px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-950/40 rounded-xl transition-colors mt-1"
+                        className="flex items-center gap-2 w-full text-right px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors mt-1"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>تسجيل الخروج</span>
@@ -233,11 +265,11 @@ export default function Navbar() {
 
         {/* MOBILE SLIDE-OUT MENU */}
         {isOpen && (
-          <div className="xl:hidden bg-emerald-50 border-b border-emerald-200 shadow-2xl px-4 py-6 mt-3 space-y-4 animate-in slide-in-from-top duration-200">
+          <div className="xl:hidden bg-white border-b border-emerald-200 shadow-2xl px-4 py-6 mt-3 space-y-4 animate-in slide-in-from-top duration-200">
             
-            <div className="bg-emerald-100/60 p-3 rounded-2xl border border-emerald-300/60">
-              <p className="text-xs font-bold text-amber-300 mb-2 flex items-center gap-1.5">
-                <Layers className="w-4 h-4" />
+            <div className="bg-emerald-50/80 p-3 rounded-2xl border border-emerald-200">
+              <p className="text-xs font-bold text-emerald-950 mb-2 flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-amber-500" />
                 إدارة النوى
               </p>
               <div className="grid grid-cols-2 gap-1.5">
@@ -247,7 +279,7 @@ export default function Navbar() {
                     href={sub.href}
                     onClick={() => setIsOpen(false)}
                     className={`px-3 py-2 rounded-xl text-xs font-semibold ${
-                      pathname === sub.href ? 'bg-amber-400 text-emerald-950 font-bold' : 'text-emerald-100 hover:bg-emerald-200/50'
+                      pathname === sub.href ? 'bg-amber-400 text-emerald-950 font-bold' : 'text-emerald-800 hover:bg-emerald-100'
                     }`}
                   >
                     {sub.label}
@@ -265,7 +297,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold ${
-                      pathname === link.href ? "bg-emerald-200 text-amber-300" : "text-emerald-100 hover:bg-emerald-100/50"
+                      pathname === link.href ? "bg-emerald-100 text-emerald-950" : "text-emerald-800 hover:bg-emerald-50"
                     }`}
                   >
                     <Icon className="w-5 h-5 opacity-80" />
@@ -275,7 +307,7 @@ export default function Navbar() {
               })}
             </div>
 
-            <hr className="border-emerald-200/60 my-2" />
+            <hr className="border-emerald-200 my-2" />
 
             <div className="flex flex-col gap-2 pt-2">
               {currentUser ? (
@@ -283,14 +315,14 @@ export default function Navbar() {
                   <Link
                     href="/profile"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 bg-emerald-200 text-emerald-950 py-2.5 rounded-xl font-bold text-xs"
+                    className="flex items-center justify-center gap-2 bg-emerald-100 text-emerald-950 py-2.5 rounded-xl font-bold text-xs"
                   >
                     <User className="w-4 h-4" />
-                    الحساب الشخصي ({currentUser.name})
+                    الملف الشخصي ({currentUser.name})
                   </Link>
                   <button
                     onClick={() => { handleLogout(); setIsOpen(false); }}
-                    className="flex items-center justify-center gap-2 bg-rose-950/60 text-rose-300 py-2.5 rounded-xl font-bold text-xs border border-rose-800/40"
+                    className="flex items-center justify-center gap-2 bg-rose-50 text-rose-700 py-2.5 rounded-xl font-bold text-xs border border-rose-200"
                   >
                     <LogOut className="w-4 h-4" />
                     تسجيل الخروج
@@ -301,7 +333,7 @@ export default function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-1.5 bg-emerald-100 text-emerald-100 py-2.5 rounded-xl font-bold text-xs border border-emerald-300/60"
+                    className="flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 py-2.5 rounded-xl font-bold text-xs border border-emerald-200"
                   >
                     <LogIn className="w-4 h-4" />
                     تسجيل الدخول
