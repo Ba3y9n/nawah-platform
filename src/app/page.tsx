@@ -8,7 +8,7 @@ import {
   Map, LayoutDashboard, QrCode, TestTube2, 
   LineChart, AlertTriangle, ChevronLeft, Search, BookOpen,
   ArrowDown, Recycle
-} from "lucide-react";
+, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 // --- Interactive Circular System Component ---
@@ -109,61 +109,131 @@ function CircularSystem() {
 function InteractiveTimeline() {
   const [activeStep, setActiveStep] = useState(0);
   const steps = [
-    { num: "01", title: "تسجيل الدفعات", desc: "سجّل دفعات نوى التمر مع بيانات المصدر والكمية والتاريخ والحالة وطرق التخزين والمعالجة. كل دفعة تحصل على معرف رقمي خاص يساعد على تتبعها داخل المنصة.", icon: Database },
-    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "ارفع صورة لنوى التمر للحصول على تحليل بصري مبدئي. يساعد في التعرف على الخصائص البصرية الظاهرة كالشكل واللون والتجانس. لا يحل التحليل البصري محل الاختبارات المخبرية، ولا يحدد التركيب الكيميائي أو الرطوبة الفعلية.", icon: BrainCircuit },
-    { num: "03", title: "اكتشاف الاستخدامات المحتملة", desc: "استكشف مسارات الاستفادة المحتملة من نوى التمر بناءً على البيانات المتاحة ومستوى الأدلة العلمية. تساعد المنصة على التمييز بين: استخدامات مدعومة بالدراسات، قيد التحقق، تجريبية، وحالات لا تتوفر عنها بيانات كافية.", icon: Search },
-    { num: "04", title: "التجارب", desc: "أنشئ تجربة مرتبطة بالدفعة التي تعمل عليها. وثّق: هدف التجربة، الكمية المستخدمة، طريقة المعالجة، مدة التجربة، الملاحظات، النتائج، وحالة التجربة. وبذلك تكون التجربة جزءًا من سجل قابل للتتبع.", icon: TestTube2 },
-    { num: "05", title: "الأدلة والمصادر", desc: "تربط نواة مسارات الاستخدام بالمصادر والدراسات المتاحة، مع توضيح مستوى الأدلة. لا تعتمد المنصة على إنشاء معلومات علمية من تلقاء نفسها، بل تنظم المعلومات الموثوقة وتميز ما هو مثبت عما يحتاج للتحقق.", icon: BookOpen },
-    { num: "06", title: "الخريطة الذكية", desc: "تعرض الخريطة المصادر والدفعات المرتبطة بها جغرافيًا، مع تنظيم البيانات حسب: المنطقة ← المدينة ← المصدر ← الدفعات. مما يساعد على تكوين صورة أوضح عن التوزيع.", icon: Map },
-    { num: "07", title: "قياس الأثر", desc: "تحول البيانات المسجلة في المنصة إلى مؤشرات قابلة للمتابعة، مثل: كمية النوى المسجلة، عدد الدفعات، عدد التجارب، عدد المصادر، والكمية التي تم توثيق إعادة استخدامها. وتُحتسب مؤشرات المنصة من البيانات الفعلية المسجلة.", icon: LineChart },
+    { num: "01", title: "تسجيل الدفعات", desc: "تسجيل وتتبع دفعات نوى التمر وربطها بالمصدر والكمية والحالة وطرق التخزين والمعالجة لتكوين سجل رقمي قابل للتتبع داخل المنصة.", icon: Database },
+    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "ارفع صورة لنوى التمر للحصول على تحليل بصري مبدئي. يساعد في التعرف على الخصائص البصرية الظاهرة كالشكل واللون والتجانس.", icon: BrainCircuit },
+    { num: "03", title: "اكتشاف الاستخدامات المحتملة", desc: "استكشف مسارات الاستفادة المحتملة من نوى التمر بناءً على البيانات المتاحة ومستوى الأدلة العلمية (استخدامات مدعومة بالدراسات، قيد التحقق، وتجريبية).", icon: Search },
+    { num: "04", title: "التجارب", desc: "أنشئ تجربة مرتبطة بالدفعة التي تعمل عليها. وثّق هدف التجربة، الكمية المستخدمة، طريقة المعالجة، والنتائج، لتكوين سجل قابل للتتبع.", icon: TestTube2 },
+    { num: "05", title: "الأدلة والمصادر", desc: "تربط نواة مسارات الاستخدام بالمصادر والدراسات المتاحة، مع توضيح مستوى الأدلة وتمييز ما هو مثبت عما يحتاج للتحقق.", icon: BookOpen },
+    { num: "06", title: "الخريطة الذكية", desc: "تعرض الخريطة المصادر والدفعات المرتبطة بها جغرافيًا، مع تنظيم البيانات (المنطقة ← المدينة ← المصدر ← الدفعات).", icon: Map },
+    { num: "07", title: "قياس الأثر", desc: "تحول البيانات المسجلة في المنصة إلى مؤشرات أداء ككمية النوى المسجلة وعدد الدفعات والمصادر والتجارب لدعم اتخاذ القرار.", icon: LineChart },
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-      <div className="lg:w-1/3 space-y-2">
-        {steps.map((step, idx) => (
-          <button
-            key={idx}
-            onClick={() => setActiveStep(idx)}
-            className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-right ${
-              activeStep === idx 
-                ? "bg-white border-2 border-emerald-500 shadow-lg text-emerald-950" 
-                : "bg-slate-50 border-2 border-transparent text-slate-500 hover:bg-white hover:shadow-md"
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
-              activeStep === idx ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"
-            }`}>
-              {step.num}
-            </div>
-            <span className="font-bold">{step.title}</span>
-          </button>
-        ))}
+    <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-24 w-full py-10 overflow-visible">
+      {/* 1. Circular Data Flow System */}
+      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[400px] sm:h-[500px]">
+         {/* The dashed circular track */}
+         <div className="absolute w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-emerald-100 border-dashed" />
+         
+         {/* Animated flowing data */}
+         <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+            className="absolute w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] rounded-full pointer-events-none"
+         >
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_20px_#34d399]" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_15px_#fbbf24]" />
+            <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-300 rounded-full opacity-60" />
+            <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-300 rounded-full opacity-60" />
+         </motion.div>
+
+         {/* Center NAWAH Circle */}
+         <div className="absolute z-20 w-24 h-24 sm:w-32 sm:h-32 bg-emerald-950 rounded-full flex flex-col items-center justify-center shadow-[0_0_30px_rgba(2,44,34,0.3)] border-4 border-white">
+            <span className="text-white font-black text-xl sm:text-2xl tracking-tighter">نواة</span>
+            <span className="text-emerald-400/80 font-bold text-[10px] sm:text-xs tracking-widest mt-1">NAWAH</span>
+         </div>
+
+         {/* 7 Nodes */}
+         {steps.map((step, idx) => {
+            const angle = (idx * (360 / 7)) - 90;
+            const rad = angle * (Math.PI / 180);
+            return (
+              <button
+                key={idx}
+                onClick={() => setActiveStep(idx)}
+                className={`absolute z-30 flex flex-col items-center justify-center transition-all duration-500 group ${
+                  activeStep === idx ? 'scale-110' : 'hover:scale-105 opacity-80 hover:opacity-100'
+                }`}
+                style={{ 
+                  left: `${50 + Math.cos(rad)*50}%`, 
+                  top: `${50 + Math.sin(rad)*50}%`, 
+                  transform: 'translate(-50%, -50%)' 
+                }}
+              >
+                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                  activeStep === idx 
+                    ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.5)] ring-4 ring-emerald-100' 
+                    : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-emerald-300 hover:text-emerald-600'
+                }`}>
+                  <step.icon className="w-5 h-5 sm:w-7 sm:h-7" />
+                </div>
+                {/* Node Label */}
+                <div className="absolute top-full mt-2 sm:mt-3 w-28 text-center pointer-events-none">
+                   <div className={`inline-block text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${
+                     activeStep === idx ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
+                   }`}>{step.num}</div>
+                   <div className={`text-[10px] sm:text-xs font-bold leading-tight ${
+                     activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
+                   }`}>{step.title}</div>
+                </div>
+              </button>
+            )
+         })}
       </div>
-      <div className="lg:w-2/3 flex items-center">
+
+      {/* 2. Details Panel */}
+      <div className="xl:w-1/3 w-full max-w-lg mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeStep}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="bg-emerald-950 text-white p-8 md:p-12 rounded-3xl w-full h-full min-h-[250px] lg:min-h-[320px] flex flex-col justify-center relative overflow-hidden shadow-2xl"
+            className="bg-white border border-slate-100 rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] relative overflow-hidden"
           >
-            {/* Abstract Background Element */}
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-800/30 rounded-full blur-3xl pointer-events-none" />
+            {/* Subtle top border glow for active step */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             
-            <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md">
-                {(() => {
-                  const Icon = steps[activeStep].icon;
-                  return <Icon className="w-8 h-8 text-amber-400" />;
-                })()}
-              </div>
-              <h3 className="text-3xl font-black mb-6">{steps[activeStep].title}</h3>
-              <p className="text-emerald-100 text-lg leading-relaxed text-justify">
-                {steps[activeStep].desc}
-              </p>
+            <div className="flex items-center gap-4 mb-6 relative z-10">
+               <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                  {(() => {
+                    const Icon = steps[activeStep].icon;
+                    return <Icon className="w-7 h-7" />;
+                  })()}
+               </div>
+               <div>
+                 <div className="text-emerald-500 font-bold text-xs mb-1 uppercase tracking-widest">{steps[activeStep].num}</div>
+                 <h3 className="text-lg sm:text-xl font-black text-emerald-950">{steps[activeStep].title}</h3>
+               </div>
+            </div>
+            
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-medium mb-8 relative z-10">
+              {steps[activeStep].desc}
+            </p>
+            
+            {/* Prev / Next Controls */}
+            <div className="flex items-center justify-between pt-6 border-t border-slate-100 relative z-10">
+               <button 
+                 onClick={() => setActiveStep(prev => prev === 0 ? steps.length - 1 : prev - 1)}
+                 className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                 aria-label="السابق"
+               >
+                 <ChevronRight className="w-5 h-5" />
+               </button>
+               
+               <div className="text-sm font-bold text-slate-400 font-mono tracking-widest bg-slate-50 px-4 py-1.5 rounded-full">
+                 {steps[activeStep].num} <span className="text-slate-300 mx-1">/</span> 07
+               </div>
+
+               <button 
+                 onClick={() => setActiveStep(prev => prev === steps.length - 1 ? 0 : prev + 1)}
+                 className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                 aria-label="التالي"
+               >
+                 <ChevronLeft className="w-5 h-5" />
+               </button>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -171,7 +241,6 @@ function InteractiveTimeline() {
     </div>
   );
 }
-
 // --- Main Page ---
 export default function LandingPage() {
   return (
