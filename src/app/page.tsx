@@ -284,13 +284,12 @@ export default function LandingPage() {
 
       {/* 3. POTENTIAL RESOURCE (Visual Flow) */}
       <section className="py-24 bg-white relative overflow-hidden">
-        {/* Subtle decorative circle */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-50/50 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
           <div className="text-center space-y-4 mb-20">
-            <h2 className="text-3xl font-black text-emerald-950 tracking-tight">��� ������ �������</h2>
-            <p className="text-emerald-600/80 text-lg font-bold">�� �� ����... ���� ����� �������</p>
+            <h2 className="text-3xl font-black text-emerald-950 tracking-tight">حجم المورد المحتمل</h2>
+            <p className="text-emerald-600/80 text-lg font-bold">من كل ثمرة... مورد يستحق الدراسة</p>
           </div>
 
           <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] overflow-hidden max-w-4xl mx-auto relative">
@@ -300,14 +299,12 @@ export default function LandingPage() {
                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
                      <span className="font-black text-2xl">1</span>
                    </div>
-                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">����� ������ ��������</span>
+                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">إنتاج التمور بالمملكة</span>
                    <span className="text-3xl font-black text-emerald-950 dir-ltr">1.92M</span>
                    
-                   {/* Mobile connector */}
                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center md:hidden z-20">
                      <ArrowDown className="w-4 h-4 text-emerald-400" />
                    </div>
-                   {/* Desktop connector */}
                    <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full hidden md:flex items-center justify-center z-20">
                      <ChevronLeft className="w-4 h-4 text-emerald-400" />
                    </div>
@@ -317,14 +314,12 @@ export default function LandingPage() {
                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
                      <span className="font-black text-2xl">2</span>
                    </div>
-                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">���� ����� �� ������</span>
-                   <span className="text-3xl font-black text-emerald-950 dir-ltr">? 10%</span>
+                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">نسبة النوى من الثمرة</span>
+                   <span className="text-3xl font-black text-emerald-950 dir-ltr">≈ 10%</span>
                    
-                   {/* Mobile connector */}
                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center md:hidden z-20">
                      <ArrowDown className="w-4 h-4 text-emerald-400" />
                    </div>
-                   {/* Desktop connector */}
                    <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full hidden md:flex items-center justify-center z-20">
                      <ChevronLeft className="w-4 h-4 text-emerald-400" />
                    </div>
@@ -334,20 +329,20 @@ export default function LandingPage() {
                    <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-400/20 transition-colors duration-700" />
                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
                    
-                   <span className="text-emerald-100/80 text-sm font-bold mb-6 relative z-10 uppercase tracking-widest">��� ����� �������</span>
+                   <span className="text-emerald-100/80 text-sm font-bold mb-6 relative z-10 uppercase tracking-widest">حجم النوى المحتمل</span>
                    <span className="text-6xl font-black text-amber-400 dir-ltr relative z-10 drop-shadow-md tracking-tighter">192K</span>
-                   <span className="text-emerald-50 font-bold mt-4 text-xs relative z-10 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/5">�� (����� ����)</span>
+                   <span className="text-emerald-50 font-bold mt-4 text-xs relative z-10 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/5">طن (تقدير نظري)</span>
                 </div>
 
              </div>
              
              <div className="p-5 bg-slate-50 text-center border-t border-slate-100">
-                 <span className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">������: ��� ����� ����� ���� ��� ���� ������ �� �������ʡ ���� ������� ����� ����� ��� ����� �������� ������ �� �������. ��� ���� ��� ������ �������� ������ ������ ��� �����.</span>
+                 <span className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">ملاحظة: هذا تقدير حسابي مبني على نسبة منشورة في الدراسات، وليس إحصائية رسمية لكمية نوى التمر المتخلفة فعليًا في المملكة. وهو يوضح حجم الفرصة المحتملة لدراسة وتثمين نوى التمر.</span>
              </div>
           </div>
         </div>
       </section>
-  
+
       {/* 4. HOW IT WORKS (Interactive Timeline) */}
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
