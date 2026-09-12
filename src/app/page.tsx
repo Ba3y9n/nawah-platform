@@ -283,44 +283,71 @@ export default function LandingPage() {
       </section>
 
       {/* 3. POTENTIAL RESOURCE (Visual Flow) */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl text-center space-y-16">
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black text-emerald-950">حجم المورد المحتمل</h2>
-            <p className="text-emerald-100 text-lg">من كل ثمرة… مورد يستحق الدراسة</p>
+      <section className="py-24 bg-white relative overflow-hidden">
+        {/* Subtle decorative circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-50/50 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 max-w-5xl relative z-10">
+          <div className="text-center space-y-4 mb-20">
+            <h2 className="text-3xl font-black text-emerald-950 tracking-tight">��� ������ �������</h2>
+            <p className="text-emerald-600/80 text-lg font-bold">�� �� ����... ���� ����� �������</p>
           </div>
 
-          <div className="flex flex-col items-center gap-6">
-            <div className="bg-slate-50 border border-slate-100 px-8 py-4 rounded-2xl">
-              <p className="font-bold text-slate-700">إنتاج التمور</p>
-            </div>
-            
-            <ArrowDown className="w-6 h-6 text-slate-300" />
-            
-            <div className="bg-slate-50 border border-slate-100 px-8 py-4 rounded-2xl max-w-sm">
-              <p className="font-bold text-slate-700">نسبة النوى (≈ 10%)</p>
-              <p className="text-xs text-slate-500 mt-1">متوسط مبني على الدراسات العلمية لوزن النواة من الثمرة.</p>
-            </div>
+          <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] overflow-hidden max-w-4xl mx-auto relative">
+             <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-100">
+                
+                <div className="p-10 text-center flex flex-col justify-center items-center gap-4 bg-white relative group">
+                   <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                     <span className="font-black text-2xl">1</span>
+                   </div>
+                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">����� ������ ��������</span>
+                   <span className="text-3xl font-black text-emerald-950 dir-ltr">1.92M</span>
+                   
+                   {/* Mobile connector */}
+                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center md:hidden z-20">
+                     <ArrowDown className="w-4 h-4 text-emerald-400" />
+                   </div>
+                   {/* Desktop connector */}
+                   <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full hidden md:flex items-center justify-center z-20">
+                     <ChevronLeft className="w-4 h-4 text-emerald-400" />
+                   </div>
+                </div>
+                
+                <div className="p-10 text-center flex flex-col justify-center items-center gap-4 bg-slate-50/50 relative group">
+                   <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
+                     <span className="font-black text-2xl">2</span>
+                   </div>
+                   <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">���� ����� �� ������</span>
+                   <span className="text-3xl font-black text-emerald-950 dir-ltr">? 10%</span>
+                   
+                   {/* Mobile connector */}
+                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center md:hidden z-20">
+                     <ArrowDown className="w-4 h-4 text-emerald-400" />
+                   </div>
+                   {/* Desktop connector */}
+                   <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full hidden md:flex items-center justify-center z-20">
+                     <ChevronLeft className="w-4 h-4 text-emerald-400" />
+                   </div>
+                </div>
+                
+                <div className="p-10 text-center flex flex-col justify-center items-center bg-emerald-900 text-white shadow-inner relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-400/20 transition-colors duration-700" />
+                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+                   
+                   <span className="text-emerald-100/80 text-sm font-bold mb-6 relative z-10 uppercase tracking-widest">��� ����� �������</span>
+                   <span className="text-6xl font-black text-amber-400 dir-ltr relative z-10 drop-shadow-md tracking-tighter">192K</span>
+                   <span className="text-emerald-50 font-bold mt-4 text-xs relative z-10 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/5">�� (����� ����)</span>
+                </div>
 
-            <ArrowDown className="w-6 h-6 text-slate-300" />
-            
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
-              className="relative bg-emerald-950 text-white rounded-3xl p-10 md:p-16 shadow-2xl w-full max-w-2xl overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-[url('/hero-bg.png')] opacity-10 mix-blend-overlay bg-cover bg-center" />
-              <div className="relative z-10 space-y-4">
-                <div className="text-5xl md:text-7xl font-black text-amber-400 dir-ltr">≈ 192K</div>
-                <div className="text-xl font-bold">طن من النوى (تقدير نظري)</div>
-                <p className="text-sm text-emerald-100/70 pt-6 border-t border-white/10 mt-6">
-                  ملاحظة: هذا تقدير حسابي مبني على نسبة منشورة في الدراسات، وليس إحصائية رسمية لكمية نوى التمر المتخلفة فعليًا في المملكة. وهو يوضح حجم الفرصة المحتملة لدراسة وتثمين نوى التمر.
-                </p>
-              </div>
-            </motion.div>
+             </div>
+             
+             <div className="p-5 bg-slate-50 text-center border-t border-slate-100">
+                 <span className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">������: ��� ����� ����� ���� ��� ���� ������ �� �������ʡ ���� ������� ����� ����� ��� ����� �������� ������ �� �������. ��� ���� ��� ������ �������� ������ ������ ��� �����.</span>
+             </div>
           </div>
         </div>
       </section>
-
+  
       {/* 4. HOW IT WORKS (Interactive Timeline) */}
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
