@@ -44,7 +44,7 @@ function CircularSystem() {
       <div className="absolute inset-8 rounded-full border border-emerald-50" />
       
       {/* Active Stage Data Display (Mobile Fallback / Center Display) */}
-      <div className="absolute top-full mt-4 sm:mt-8 lg:mt-12 text-center w-full max-w-xs sm:max-w-sm px-4">
+      <div className="absolute top-full mt-4 sm:mt-8 lg:mt-12 text-center w-full max-w-xs sm:max-w-sm px-2 sm:px-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIndex}
@@ -71,7 +71,7 @@ function CircularSystem() {
       {stages.map((stage, index) => {
         const angle = (index / stages.length) * 2 * Math.PI - Math.PI / 2;
         const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-        const radius = 110; // Distance from center - works well for max-w-[280px]
+        const radius = 85; // Distance from center - fits within max-w-[280px]
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
         const isActive = activeIndex === index;
@@ -268,7 +268,7 @@ function InteractiveFeatures() {
   ];
 
   return (
-    <div className="w-full flex flex-col gap-10 py-6 overflow-hidden">
+    <div className="w-full flex flex-col gap-6 sm:gap-10 py-4 sm:py-6">
       
       {/* Active Feature Large Panel */}
       <div className="w-full bg-white border border-slate-100 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-14 overflow-hidden relative shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
@@ -306,7 +306,7 @@ function InteractiveFeatures() {
                  {features[active].desc}
                </p>
                
-               <div className="pt-6 border-t border-slate-100 flex items-center gap-6">
+               <div className="pt-4 sm:pt-6 border-t border-slate-100 flex items-center justify-between sm:justify-start gap-3 sm:gap-6">
                  <div className="flex gap-3">
                    <button 
                      onClick={() => setActive(prev => prev === 0 ? features.length - 1 : prev - 1)}
@@ -338,7 +338,7 @@ function InteractiveFeatures() {
            <button
              key={idx}
              onClick={() => setActive(idx)}
-             className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border-2 text-right ${
+             className={`flex items-center gap-3 sm:gap-4 p-4 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 border-2 text-right ${
                active === idx 
                  ? "bg-emerald-950 border-emerald-950 text-white shadow-xl scale-105 z-10 relative" 
                  : "bg-white border-slate-100 text-slate-500 hover:border-emerald-200 hover:bg-slate-50 hover:-translate-y-1 hover:shadow-md"
@@ -380,7 +380,7 @@ function InteractiveTimeline() {
   return (
     <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-24 w-full py-10 overflow-visible">
       {/* 1. Circular Data Flow System */}
-      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[320px] sm:h-[500px]">
+      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[340px] sm:h-[500px] overflow-visible">
          {/* The dashed circular track */}
          <div className="absolute w-[220px] h-[220px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-emerald-100 border-dashed" />
          
@@ -419,7 +419,7 @@ function InteractiveTimeline() {
                   transform: 'translate(-50%, -50%)' 
                 }}
               >
-                <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                <div className={`w-9 h-9 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
                   activeStep === idx 
                     ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.5)] ring-4 ring-emerald-100' 
                     : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-emerald-300 hover:text-emerald-600'
@@ -427,12 +427,11 @@ function InteractiveTimeline() {
                   <step.icon className="w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
                 {/* Node Label */}
-                <div className="absolute top-full mt-1 sm:mt-3 w-20 sm:w-28 text-center pointer-events-none">
+                <div className="absolute top-full mt-0.5 sm:mt-3 w-16 sm:w-28 text-center pointer-events-none">
                    <div className={`inline-block text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${
                      activeStep === idx ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
                    }`}>{step.num}</div>
-                   <div className={`text-[10px] sm:text-xs font-bold leading-tight ${
-                     activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
+                   <div className={`text-[8px] sm:text-xs font-bold leading-tight ${activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
                    }`}>{step.title}</div>
                 </div>
               </button>
@@ -449,7 +448,7 @@ function InteractiveTimeline() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="bg-white border border-slate-100 rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] relative overflow-hidden"
+            className="bg-white border border-slate-100 rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] relative overflow-hidden"
           >
             {/* Subtle top border glow for active step */}
             <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
@@ -558,7 +557,7 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            <div className="lg:w-1/2 w-full h-[340px] sm:h-[400px] lg:h-[600px] relative">
+            <div className="lg:w-1/2 w-full h-[380px] sm:h-[450px] lg:h-[600px] relative">
               <CircularSystem />
             </div>
 
@@ -778,7 +777,7 @@ export default function LandingPage() {
       </section>
 
       {/* 8. WHY NAWAH (Brief Visual Flow) */}
-      <section className="py-16 sm:py-32 bg-white text-center">
+      <section className="py-16 sm:py-32 pb-20 sm:pb-32 bg-white text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-16">
           <div className="space-y-4">
             <h2 className="text-3xl font-black text-emerald-950">لماذا نواة؟</h2>

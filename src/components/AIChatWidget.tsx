@@ -62,9 +62,9 @@ export default function AIChatWidget() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 w-16 h-16 bg-primary text-emerald-950 rounded-full shadow-2xl flex items-center justify-center z-50 ${isOpen ? 'hidden' : 'flex'}`}
+        className={`fixed bottom-20 sm:bottom-6 right-4 sm:right-6 w-12 h-12 sm:w-16 sm:h-16 bg-primary text-emerald-950 rounded-full shadow-2xl flex items-center justify-center z-50 ${isOpen ? 'hidden' : 'flex'}`}
       >
-        <Bot className="w-8 h-8" />
+        <Bot className="w-6 h-6 sm:w-8 sm:h-8" />
       </motion.button>
 
       {/* Chat Window */}
@@ -74,7 +74,7 @@ export default function AIChatWidget() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className="fixed bottom-6 right-6 w-[350px] h-[500px] bg-white rounded-3xl shadow-2xl z-50 flex flex-col border border-gray-100 overflow-hidden"
+            className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[350px] h-[85vh] sm:h-[500px] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl z-50 flex flex-col border border-gray-100 overflow-hidden"
           >
             {/* Header */}
             <div className="bg-secondary p-4 flex items-center justify-between text-emerald-950">
