@@ -80,11 +80,11 @@ export default function RootLayout({
         </footer>
 
 {/* 9. DEVELOPMENT TEAM */}
-      <section className="py-12 bg-white">
+      <section className="pb-12 pt-4 bg-emerald-950">
         <div className="container mx-auto px-4 max-w-6xl text-center space-y-12">
           <h2 className="text-2xl font-black text-emerald-950">فريق التطوير</h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             {[
               { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
               { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },

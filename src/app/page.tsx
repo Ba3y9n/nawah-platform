@@ -233,11 +233,11 @@ export default function LandingPage() {
       </section>
 
       {/* 2. THE PROBLEM (Visual Storytelling) */}
-      <section className="py-24 bg-slate-50 border-t border-slate-100">
+      <section className="py-8 bg-emerald-900 border-t border-emerald-950 text-white">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-white">المشكلة</h2>
-            <p className="text-slate-500 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
+            <p className="text-emerald-100 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
@@ -280,7 +280,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-4xl text-center space-y-16">
           <div className="space-y-4">
             <h2 className="text-3xl font-black text-emerald-950">حجم المورد المحتمل</h2>
-            <p className="text-slate-500 text-lg">من كل ثمرة… مورد يستحق الدراسة</p>
+            <p className="text-emerald-100 text-lg">من كل ثمرة… مورد يستحق الدراسة</p>
           </div>
 
           <div className="flex flex-col items-center gap-6">
@@ -319,7 +319,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">كيف تعمل نواة؟</h2>
-            <p className="text-slate-500 text-lg">مسار رقمي واحد قابل للتتبع</p>
+            <p className="text-emerald-100 text-lg">مسار رقمي واحد قابل للتتبع</p>
           </div>
           
           <InteractiveTimeline />
@@ -331,7 +331,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
-            <p className="text-slate-500 text-lg">منظومة واحدة بدل بيانات متفرقة</p>
+            <p className="text-emerald-100 text-lg">منظومة واحدة بدل بيانات متفرقة</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
