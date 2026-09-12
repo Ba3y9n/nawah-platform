@@ -119,8 +119,8 @@ function InteractiveTimeline() {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-12">
-      <div className="lg:w-1/3 space-y-4">
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+      <div className="lg:w-1/3 space-y-2">
         {steps.map((step, idx) => (
           <button
             key={idx}
@@ -148,7 +148,7 @@ function InteractiveTimeline() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
-            className="bg-emerald-950 text-white p-10 md:p-16 rounded-3xl w-full h-full min-h-[400px] flex flex-col justify-center relative overflow-hidden shadow-2xl"
+            className="bg-emerald-950 text-white p-8 md:p-12 rounded-3xl w-full h-full min-h-[250px] lg:min-h-[320px] flex flex-col justify-center relative overflow-hidden shadow-2xl"
           >
             {/* Abstract Background Element */}
             <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-800/30 rounded-full blur-3xl pointer-events-none" />
@@ -236,7 +236,7 @@ export default function LandingPage() {
       <section className="py-24 bg-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-black text-emerald-950">المشكلة</h2>
+            <h2 className="text-3xl font-black text-white">المشكلة</h2>
             <p className="text-slate-500 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
           </div>
 
@@ -396,19 +396,26 @@ export default function LandingPage() {
                 
                 {idx !== arr.length - 1 && (
                   <div className="flex-1 w-full flex justify-center md:block">
-                    <div className="h-10 w-px md:h-px md:w-full bg-emerald-800 relative">
-                       <motion.div 
-                         initial={{ width: 0, height: 0 }} 
-                         whileInView={{ width: "100%", height: "100%" }} 
-                         transition={{ delay: idx * 0.1 + 0.2, duration: 0.5 }}
-                         className="absolute top-0 left-0 bg-amber-400 hidden md:block w-full h-px"
-                       />
-                       <motion.div 
-                         initial={{ height: 0 }} 
-                         whileInView={{ height: "100%" }} 
-                         transition={{ delay: idx * 0.1 + 0.2, duration: 0.5 }}
-                         className="absolute top-0 left-0 bg-amber-400 md:hidden w-px h-full"
-                       />
+                    <div className="h-10 w-px md:h-px md:w-full bg-emerald-800 relative overflow-hidden flex items-center justify-center">
+                       {/* Animated Arrow Desktop (Right to Left) */}
+                       <motion.div
+                         initial={{ right: "-20%" }}
+                         animate={{ right: "120%" }}
+                         transition={{ repeat: Infinity, duration: 1.5, delay: idx * 0.2, ease: "linear" }}
+                         className="absolute hidden md:block"
+                       >
+                         <ChevronLeft className="w-5 h-5 text-amber-400" />
+                       </motion.div>
+
+                       {/* Animated Arrow Mobile (Top to Bottom) */}
+                       <motion.div
+                         initial={{ top: "-20%" }}
+                         animate={{ top: "120%" }}
+                         transition={{ repeat: Infinity, duration: 1.5, delay: idx * 0.2, ease: "linear" }}
+                         className="absolute md:hidden"
+                       >
+                         <ArrowDown className="w-5 h-5 text-amber-400" />
+                       </motion.div>
                     </div>
                   </div>
                 )}
@@ -469,35 +476,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 9. DEVELOPMENT TEAM */}
-      <section className="py-16 bg-white border-t border-slate-100">
-        <div className="container mx-auto px-4 max-w-6xl text-center space-y-12">
-          <h2 className="text-2xl font-black text-emerald-950">فريق التطوير</h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
-              { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },
-              { name: "هبه عبداللطيف", link: "https://www.linkedin.com/in/hibah-alharbi-ab0b2938a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
-              { name: "حنين القصير", link: "https://www.linkedin.com/in/haneen-al-qassir-b68aa4387?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
-              { name: "وفاء المصري", link: "https://www.linkedin.com/in/wafaa-undefined-975a7829a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
-              { name: "د. نجوى الخطيب", link: null }
-            ].map((m, i) => (
-              m.link ? (
-                <a key={i} href={m.link} target="_blank" rel="noopener noreferrer" className="bg-slate-50 border border-slate-100 hover:border-emerald-500 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 transition-colors group shadow-sm hover:shadow-md">
-                  <span className="font-bold text-sm text-slate-700 group-hover:text-emerald-700 transition-colors">{m.name}</span>
-                  <span className="text-xs text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">LinkedIn</span>
-                </a>
-              ) : (
-                <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm cursor-default">
-                  <span className="font-bold text-sm text-slate-700">{m.name}</span>
-                </div>
-              )
-            ))}
           </div>
-        </div>
-      </section>
-
-    </div>
   );
 }

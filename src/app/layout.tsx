@@ -32,14 +32,14 @@ export default function RootLayout({
         {/* Floating AI Assistant Widget */}
         <AIChatWidget />
 
-        <footer className="bg-emerald-50 border-t border-emerald-200/60 text-slate-600 py-12">
+        <footer className="bg-emerald-950 text-emerald-50 py-12">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-4 gap-8 mb-8">
               <div className="md:col-span-2 space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-extrabold text-emerald-950">نواة | NAWAH</span>
+                  <span className="text-2xl font-extrabold text-white">نواة | NAWAH</span>
                 </div>
-                <p className="text-xs text-emerald-700/80 max-w-sm leading-relaxed">
+                <p className="text-xs text-emerald-200/80 max-w-sm leading-relaxed">
                   نصنع حلاً وطنياً مستداماً لتدوير واستغلال نوى التمر في المملكة العربية السعودية بدمج تقنيات الذكاء الاصطناعي مع سلاسل الإمداد وقواعد البيانات الحقيقية.
                 </p>
               </div>
@@ -68,7 +68,7 @@ export default function RootLayout({
               </div>
             </div>
             
-            <div className="border-t border-emerald-200/60 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-emerald-600/80">
+            <div className="border-t border-emerald-800 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-emerald-400/80">
               <p>
                 © 2026 منصة نواة NAWAH. جميع الحقوق محفوظة.
               </p>
@@ -78,6 +78,35 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+
+{/* 9. DEVELOPMENT TEAM */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl text-center space-y-12">
+          <h2 className="text-2xl font-black text-emerald-950">فريق التطوير</h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },
+              { name: "هبه عبداللطيف", link: "https://www.linkedin.com/in/hibah-alharbi-ab0b2938a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "حنين القصير", link: "https://www.linkedin.com/in/haneen-al-qassir-b68aa4387?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
+              { name: "وفاء المصري", link: "https://www.linkedin.com/in/wafaa-undefined-975a7829a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "د. نجوى الخطيب", link: null }
+            ].map((m, i) => (
+              m.link ? (
+                <a key={i} href={m.link} target="_blank" rel="noopener noreferrer" className="bg-slate-50 border border-slate-100 hover:border-emerald-500 rounded-xl p-4 aspect-square flex flex-col items-center justify-center gap-2 transition-colors group shadow-sm hover:shadow-md">
+                  <span className="font-bold text-xs text-slate-700 group-hover:text-emerald-700 transition-colors">{m.name}</span>
+                  <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">LinkedIn</span>
+                </a>
+              ) : (
+                <div key={i} className="bg-slate-50 border border-slate-100 rounded-xl p-4 aspect-square flex flex-col items-center justify-center gap-2 shadow-sm cursor-default">
+                  <span className="font-bold text-xs text-slate-700">{m.name}</span>
+                </div>
+              )
+            ))}
+          </div>
+        </div>
+      </section>
       </body>
     </html>
   );
