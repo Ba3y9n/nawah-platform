@@ -34,7 +34,7 @@ export default function RootLayout({
 
         <footer className="bg-emerald-950 text-emerald-50 py-12">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8">
               <div className="md:col-span-2 space-y-3">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-extrabold text-white">نواة | NAWAH</span>
@@ -68,7 +68,7 @@ export default function RootLayout({
               </div>
             </div>
             
-            <div className="border-t border-emerald-800 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-emerald-400/80">
+            <div className="border-t border-emerald-800 pt-4 sm:pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-emerald-400/80">
               <p>
                 © 2026 منصة نواة NAWAH. جميع الحقوق محفوظة.
               </p>
@@ -86,7 +86,7 @@ export default function RootLayout({
           
           <h2 className="text-xs font-bold text-emerald-400/80 tracking-widest uppercase relative z-10">فريق التطوير</h2>
           
-          <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 relative z-10">
             {[
               { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
               { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },
@@ -96,12 +96,12 @@ export default function RootLayout({
               { name: "د. نجوى الخطيب", link: null }
             ].map((m, i) => (
               m.link ? (
-                <a key={i} href={m.link} target="_blank" rel="noopener noreferrer" className="bg-emerald-900/40 border border-emerald-800/60 hover:bg-emerald-800 hover:border-emerald-600 rounded-xl w-24 h-24 flex flex-col items-center justify-center gap-1.5 transition-all group shadow-sm">
+                <a key={i} href={m.link} target="_blank" rel="noopener noreferrer" className="bg-emerald-900/40 border border-emerald-800/60 hover:bg-emerald-800 hover:border-emerald-600 rounded-xl w-20 h-20 sm:w-24 sm:h-24 flex flex-col items-center justify-center gap-1 sm:gap-1.5 transition-all group shadow-sm">
                   <span className="font-bold text-[11px] text-emerald-50 group-hover:text-white transition-colors text-center leading-tight px-1">{m.name}</span>
                   <span className="text-[9px] text-emerald-400 font-bold bg-emerald-950/50 px-2 py-0.5 rounded-full group-hover:bg-emerald-700/50 transition-colors">LinkedIn</span>
                 </a>
               ) : (
-                <div key={i} className="bg-emerald-900/20 border border-emerald-900/40 rounded-xl w-24 h-24 flex flex-col items-center justify-center gap-1.5 shadow-sm cursor-default">
+                <div key={i} className="bg-emerald-900/20 border border-emerald-900/40 rounded-xl w-20 h-20 sm:w-24 sm:h-24 flex flex-col items-center justify-center gap-1 sm:gap-1.5 shadow-sm cursor-default">
                   <span className="font-bold text-[11px] text-emerald-200/70 text-center leading-tight px-1">{m.name}</span>
                 </div>
               )

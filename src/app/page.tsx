@@ -33,10 +33,10 @@ function CircularSystem() {
   }, [stages.length]);
 
   return (
-    <div className="relative w-full max-w-lg mx-auto aspect-square flex items-center justify-center mt-12 lg:mt-0">
+    <div className="relative w-full max-w-[280px] sm:max-w-lg mx-auto aspect-square flex items-center justify-center mt-12 lg:mt-0">
       {/* Central Node */}
-      <div className="relative z-20 w-32 h-32 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-2">
-        <span className="font-black text-emerald-950 text-xl">نواة</span>
+      <div className="relative z-20 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-2">
+        <span className="font-black text-emerald-950 text-base sm:text-xl">نواة</span>
       </div>
 
       {/* Rings & Connecting Lines */}
@@ -44,7 +44,7 @@ function CircularSystem() {
       <div className="absolute inset-8 rounded-full border border-emerald-50" />
       
       {/* Active Stage Data Display (Mobile Fallback / Center Display) */}
-      <div className="absolute top-full mt-8 lg:mt-12 text-center w-full max-w-sm px-4">
+      <div className="absolute top-full mt-4 sm:mt-8 lg:mt-12 text-center w-full max-w-xs sm:max-w-sm px-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIndex}
@@ -70,7 +70,8 @@ function CircularSystem() {
       {/* Nodes */}
       {stages.map((stage, index) => {
         const angle = (index / stages.length) * 2 * Math.PI - Math.PI / 2;
-        const radius = 160; // Distance from center
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+        const radius = 110; // Distance from center - works well for max-w-[280px]
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
         const isActive = activeIndex === index;
@@ -83,12 +84,12 @@ function CircularSystem() {
             onClick={() => setActiveIndex(index)}
             animate={{ scale: isActive ? 1.1 : 1 }}
           >
-            <div className={`relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-500 ${
+            <div className={`relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full transition-all duration-500 ${
               isActive 
                 ? "bg-emerald-600 text-white shadow-xl shadow-emerald-600/30 ring-4 ring-emerald-100" 
                 : "bg-white text-slate-400 hover:text-emerald-500 border border-slate-100 shadow-sm hover:shadow-md"
             }`}>
-              <stage.icon className="w-6 h-6" />
+              <stage.icon className="w-4 h-4 sm:w-6 sm:h-6" />
               
               {isActive && (
                 <motion.div 
@@ -133,7 +134,7 @@ function InteractiveFeatures() {
       num: "02", title: "الذكاء الاصطناعي", icon: BrainCircuit,
       desc: "تحليل وتوقع الفرص والمسارات باستخدام نماذج الذكاء الاصطناعي لاكتشاف أفضل الاستخدامات.", 
       visual: (
-        <div className="relative w-48 h-48 flex items-center justify-center">
+        <div className="relative w-36 h-36 sm:w-48 sm:h-48 flex items-center justify-center">
            <div className="absolute inset-0 border border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed" />
            <div className="absolute inset-6 border border-emerald-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse] border-dotted" />
            <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-[0_0_40px_rgba(16,185,129,0.5)] flex items-center justify-center relative z-10 border-4 border-white">
@@ -193,7 +194,7 @@ function InteractiveFeatures() {
       num: "05", title: "الخريطة الذكية", icon: Map,
       desc: "توزيع المصادر والمصانع جغرافياً لتسهيل فهم وتتبع مسارات الإمداد وتوضيح العلاقة بين المنتج والمصدر.", 
       visual: (
-        <div className="relative w-56 h-56 bg-slate-50 border border-slate-100 rounded-[2rem] overflow-hidden flex items-center justify-center shadow-inner">
+        <div className="relative w-40 h-40 sm:w-56 sm:h-56 bg-slate-50 border border-slate-100 rounded-xl sm:rounded-[2rem] overflow-hidden flex items-center justify-center shadow-inner">
            <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#10b981_1px,transparent_1px),linear-gradient(to_bottom,#10b981_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]" />
            
            <div className="relative z-10">
@@ -211,7 +212,7 @@ function InteractiveFeatures() {
       num: "06", title: "لوحة البيانات", icon: LayoutDashboard,
       desc: "مؤشرات أداء وتحليلات فورية توفر رؤية شاملة للمنظومة وتدعم اتخاذ قرارات مبنية على بيانات دقيقة.", 
       visual: (
-        <div className="w-64 grid grid-cols-2 gap-4">
+        <div className="w-full max-w-[220px] sm:max-w-[256px] grid grid-cols-2 gap-3 sm:gap-4">
            <div className="col-span-2 bg-emerald-500 rounded-3xl h-28 p-5 relative overflow-hidden shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
               <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.15)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite]" />
               <div className="w-10 h-10 rounded-full bg-white/20 mb-4" />
@@ -232,7 +233,7 @@ function InteractiveFeatures() {
       num: "07", title: "قياس الأثر", icon: LineChart,
       desc: "تتبع العوائد البيئية والاقتصادية لمسارات معالجة وإعادة استخدام نوى التمر وتحويلها من مخلف إلى مورد.", 
       visual: (
-        <div className="w-64 h-48 bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md flex flex-col justify-end relative">
+        <div className="w-full max-w-[220px] sm:max-w-[256px] h-40 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] p-4 sm:p-6 shadow-md flex flex-col justify-end relative">
            <div className="absolute top-6 right-6 h-2 w-16 bg-slate-100 rounded-full" />
            <div className="flex items-end justify-between h-24 w-full gap-2">
              <div className="w-full bg-emerald-50 rounded-t-lg h-[20%] transition-all duration-1000 hover:h-[30%]" />
@@ -250,7 +251,7 @@ function InteractiveFeatures() {
       num: "08", title: "التتبع", icon: QrCode,
       desc: "مسح سريع لمعلومات الشحنات والدفعات لضمان موثوقية وسرعة تدفق البيانات في أي مرحلة من السلسلة.", 
       visual: (
-        <div className="relative w-48 h-48 bg-white border border-slate-100 rounded-[2rem] flex items-center justify-center shadow-lg">
+        <div className="relative w-36 h-36 sm:w-48 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] flex items-center justify-center shadow-lg">
            <div className="absolute inset-5 border-2 border-emerald-500/20 rounded-2xl" />
            {/* Scanning line */}
            <motion.div animate={{ top: ["15%", "85%", "15%"] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} className="absolute left-4 right-4 h-1 bg-emerald-500 shadow-[0_0_20px_#10b981] z-20 rounded-full" />
@@ -270,7 +271,7 @@ function InteractiveFeatures() {
     <div className="w-full flex flex-col gap-10 py-6 overflow-hidden">
       
       {/* Active Feature Large Panel */}
-      <div className="w-full bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-14 overflow-hidden relative shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
+      <div className="w-full bg-white border border-slate-100 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-14 overflow-hidden relative shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -281,7 +282,7 @@ function InteractiveFeatures() {
             className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-24"
           >
              {/* Visual Side */}
-             <div className="w-full lg:w-1/2 flex justify-center items-center h-64 lg:h-80 relative bg-slate-50 rounded-[2rem] border border-slate-100">
+             <div className="w-full lg:w-1/2 flex justify-center items-center h-48 sm:h-64 lg:h-80 relative bg-slate-50 rounded-xl sm:rounded-[2rem] border border-slate-100">
                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-[2rem]" />
                {features[active].visual}
              </div>
@@ -297,11 +298,11 @@ function InteractiveFeatures() {
                   </div>
                   <div>
                     <div className="text-emerald-500 font-bold text-sm tracking-widest mb-1">{features[active].num}</div>
-                    <h3 className="text-3xl lg:text-4xl font-black text-emerald-950">{features[active].title}</h3>
+                    <h3 className="text-xl sm:text-3xl lg:text-4xl font-black text-emerald-950">{features[active].title}</h3>
                   </div>
                </div>
                
-               <p className="text-slate-600 text-lg leading-relaxed font-medium pb-4">
+               <p className="text-slate-600 text-sm sm:text-lg leading-relaxed font-medium pb-4">
                  {features[active].desc}
                </p>
                
@@ -379,15 +380,15 @@ function InteractiveTimeline() {
   return (
     <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-24 w-full py-10 overflow-visible">
       {/* 1. Circular Data Flow System */}
-      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[400px] sm:h-[500px]">
+      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[320px] sm:h-[500px]">
          {/* The dashed circular track */}
-         <div className="absolute w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-emerald-100 border-dashed" />
+         <div className="absolute w-[220px] h-[220px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-emerald-100 border-dashed" />
          
          {/* Animated flowing data */}
          <motion.div 
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-            className="absolute w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] rounded-full pointer-events-none"
+            className="absolute w-[220px] h-[220px] sm:w-[400px] sm:h-[400px] rounded-full pointer-events-none"
          >
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_20px_#34d399]" />
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_15px_#fbbf24]" />
@@ -418,7 +419,7 @@ function InteractiveTimeline() {
                   transform: 'translate(-50%, -50%)' 
                 }}
               >
-                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
                   activeStep === idx 
                     ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.5)] ring-4 ring-emerald-100' 
                     : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-emerald-300 hover:text-emerald-600'
@@ -426,7 +427,7 @@ function InteractiveTimeline() {
                   <step.icon className="w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
                 {/* Node Label */}
-                <div className="absolute top-full mt-2 sm:mt-3 w-28 text-center pointer-events-none">
+                <div className="absolute top-full mt-1 sm:mt-3 w-20 sm:w-28 text-center pointer-events-none">
                    <div className={`inline-block text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${
                      activeStep === idx ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
                    }`}>{step.num}</div>
@@ -505,7 +506,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 text-emerald-950 font-sans selection:bg-amber-200 selection:text-emerald-900 overflow-hidden" dir="rtl">
       
       {/* 1. PRODUCT HERO */}
-      <section className="relative pt-20 pb-32 lg:pt-32 lg:pb-40 bg-slate-50 overflow-hidden">
+      <section className="relative pt-16 pb-20 sm:pt-20 sm:pb-32 lg:pt-32 lg:pb-40 bg-slate-50 overflow-hidden">
         
         {/* --- Premium Tech Background --- */}
         {/* 1. Ambient Glows */}
@@ -530,7 +531,7 @@ export default function LandingPage() {
 
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.2]"
+                className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.2]"
               >
                 من نواة التمر... <br />
                 <span className="text-emerald-600">نصنع قيمة</span>
@@ -557,7 +558,7 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            <div className="lg:w-1/2 w-full h-[400px] lg:h-[600px] relative">
+            <div className="lg:w-1/2 w-full h-[340px] sm:h-[400px] lg:h-[600px] relative">
               <CircularSystem />
             </div>
 
@@ -574,30 +575,30 @@ export default function LandingPage() {
             <p className="text-emerald-100 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12">
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
-              <div className="text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.92M</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.92M</div>
               <div className="text-sm font-bold text-slate-500">طن إنتاج التمور<br/>في المملكة (2024)</div>
             </motion.div>
             
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
-              <div className="text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">37.6M+</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">37.6M+</div>
               <div className="text-sm font-bold text-slate-500">نخلة في<br/>المملكة</div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
-              <div className="text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">584K</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">584K</div>
               <div className="text-sm font-bold text-slate-500">طن إنتاج منطقة<br/>القصيم (2024)</div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
-              <div className="text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.695B</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.695B</div>
               <div className="text-sm font-bold text-slate-500">ريال قيمة<br/>صادرات التمور</div>
             </motion.div>
           </div>
 
           <div className="max-w-2xl mx-auto text-center space-y-6">
-             <div className="inline-flex items-center justify-center gap-4 text-sm font-bold text-emerald-700 bg-emerald-50 px-6 py-3 rounded-full border border-emerald-100">
+             <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 px-4 sm:px-6 py-3 rounded-full border border-emerald-100">
                <span>133 دولة حول العالم</span>
                <div className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
                <span>192.5% نمو الصادرات منذ 2016</span>
@@ -610,24 +611,24 @@ export default function LandingPage() {
       </section>
 
       {/* 3. POTENTIAL RESOURCE (Visual Flow) */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-14 sm:py-24 bg-white relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-50/50 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
-          <div className="text-center space-y-4 mb-20">
-            <h2 className="text-3xl font-black text-emerald-950 tracking-tight">حجم المورد المحتمل</h2>
+          <div className="text-center space-y-4 mb-10 sm:mb-20">
+            <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">حجم المورد المحتمل</h2>
             <p className="text-emerald-600/80 text-lg font-bold">من كل ثمرة... مورد يستحق الدراسة</p>
           </div>
 
-          <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] overflow-hidden max-w-4xl mx-auto relative">
+          <div className="bg-white border border-slate-100 rounded-2xl sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] overflow-hidden max-w-4xl mx-auto relative">
              <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-100">
                 
-                <div className="p-10 text-center flex flex-col justify-center items-center gap-4 bg-white relative group">
+                <div className="p-6 sm:p-10 text-center flex flex-col justify-center items-center gap-4 bg-white relative group">
                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
                      <span className="font-black text-2xl">1</span>
                    </div>
                    <span className="text-slate-500 text-sm font-bold uppercase tracking-wider">إنتاج التمور بالمملكة</span>
-                   <span className="text-3xl font-black text-emerald-950 dir-ltr">1.92M</span>
+                   <span className="text-2xl sm:text-3xl font-black text-emerald-950 dir-ltr">1.92M</span>
                    
                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-slate-100 rounded-full flex items-center justify-center md:hidden z-20">
                      <ArrowDown className="w-4 h-4 text-emerald-400" />
@@ -637,7 +638,7 @@ export default function LandingPage() {
                    </div>
                 </div>
                 
-                <div className="p-10 text-center flex flex-col justify-center items-center gap-4 bg-slate-50/50 relative group">
+                <div className="p-6 sm:p-10 text-center flex flex-col justify-center items-center gap-4 bg-slate-50/50 relative group">
                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
                      <span className="font-black text-2xl">2</span>
                    </div>
@@ -652,12 +653,12 @@ export default function LandingPage() {
                    </div>
                 </div>
                 
-                <div className="p-10 text-center flex flex-col justify-center items-center bg-emerald-900 text-white shadow-inner relative overflow-hidden group">
+                <div className="p-6 sm:p-10 text-center flex flex-col justify-center items-center bg-emerald-900 text-white shadow-inner relative overflow-hidden group">
                    <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-400/20 transition-colors duration-700" />
                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
                    
                    <span className="text-emerald-100/80 text-sm font-bold mb-6 relative z-10 uppercase tracking-widest">حجم النوى المحتمل</span>
-                   <span className="text-6xl font-black text-amber-400 dir-ltr relative z-10 drop-shadow-md tracking-tighter">192K</span>
+                   <span className="text-4xl sm:text-6xl font-black text-amber-400 dir-ltr relative z-10 drop-shadow-md tracking-tighter">192K</span>
                    <span className="text-emerald-50 font-bold mt-4 text-xs relative z-10 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/5">طن (تقدير نظري)</span>
                 </div>
 
@@ -671,7 +672,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. HOW IT WORKS (Interactive Timeline) */}
-      <section className="py-24 bg-slate-50 relative overflow-hidden">
+      <section className="py-14 sm:py-24 bg-slate-50 relative overflow-hidden">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-400/10 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
@@ -691,7 +692,7 @@ export default function LandingPage() {
       </section>
 
       {/* 5. FEATURES SHOWCASE */}
-      <section className="py-24 bg-white border-t border-slate-100 relative overflow-hidden">
+      <section className="py-14 sm:py-24 bg-white border-t border-slate-100 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
@@ -703,12 +704,12 @@ export default function LandingPage() {
       </section>
 
       {/* 6. IMPACT VISUALIZATION */}
-      <section className="py-32 bg-emerald-950 text-white overflow-hidden relative">
+      <section className="py-16 sm:py-32 bg-emerald-950 text-white overflow-hidden relative">
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:32px_32px] opacity-20" />
         
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
-          <div className="text-center space-y-4 mb-20">
-            <h2 className="text-3xl font-black text-amber-400">الأثر</h2>
+          <div className="text-center space-y-4 mb-10 sm:mb-20">
+            <h2 className="text-2xl sm:text-3xl font-black text-amber-400">الأثر</h2>
             <p className="text-emerald-100 text-lg">من مخلف إلى مورد قابل للتتبع</p>
           </div>
 
@@ -767,7 +768,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-3xl text-center space-y-8">
            <h2 className="text-2xl font-black text-emerald-950">السياق الوطني الموازي</h2>
            <div className="bg-white p-8 md:p-12 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-             <div className="text-5xl md:text-6xl font-black text-rose-500 dir-ltr">4.066M</div>
+             <div className="text-3xl sm:text-5xl md:text-6xl font-black text-rose-500 dir-ltr">4.066M</div>
              <div className="text-lg font-bold text-slate-700">طن / الهدر الغذائي السنوي العام</div>
              <p className="text-xs text-slate-400 bg-slate-50 p-4 rounded-xl">
                هذه الأرقام تخص الهدر الغذائي عمومًا في المملكة وفق تقديرات رسمية، وليست نوى التمر تحديدًا. لكنها توضح أهمية تطوير حلول رقمية تدعم تعظيم الاستفادة من الموارد الثانوية كالنوى ضمن منظومة الاقتصاد الدائري.
@@ -777,13 +778,13 @@ export default function LandingPage() {
       </section>
 
       {/* 8. WHY NAWAH (Brief Visual Flow) */}
-      <section className="py-32 bg-white text-center">
+      <section className="py-16 sm:py-32 bg-white text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-16">
           <div className="space-y-4">
             <h2 className="text-3xl font-black text-emerald-950">لماذا نواة؟</h2>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 text-xl font-bold text-slate-400">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-base sm:text-xl font-bold text-slate-400">
             <span>هناك إنتاج.</span>
             <span>وهناك مصادر.</span>
             <span>وهناك نوى.</span>
@@ -791,23 +792,23 @@ export default function LandingPage() {
             <span>وهناك تجارب.</span>
           </div>
 
-          <div className="bg-emerald-50 rounded-3xl p-10 border border-emerald-100 space-y-8">
+          <div className="bg-emerald-50 rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-emerald-100 space-y-6 sm:space-y-8">
             <p className="text-xl font-black text-emerald-900">
               لكن القيمة الأكبر تظهر عندما تصبح هذه العناصر مرتبطة ببعضها رقميًا.
             </p>
             
-            <div className="flex flex-wrap items-center justify-center gap-2 text-sm font-bold text-emerald-700">
-              <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100">تسجيل</span>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-emerald-700">
+              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تسجيل</span>
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100">تحليل</span>
+              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تحليل</span>
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100">دليل</span>
+              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">دليل</span>
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100">تجربة</span>
+              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تجربة</span>
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100">تتبع</span>
+              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تتبع</span>
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-md">أثر</span>
+              <span className="bg-emerald-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-md">أثر</span>
             </div>
           </div>
         </div>
