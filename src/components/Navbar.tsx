@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
-  Menu, X, Leaf, Layers, MapPin, BookOpen, 
+  Menu, X, Layers, MapPin, BookOpen, 
   Bot, User, Info, LogIn, UserPlus, ChevronDown, LogOut
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -31,7 +32,6 @@ export default function Navbar() {
     async function loadUserSession() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Fetch full_name from profiles
         const { data: profile } = await supabase
           .from('profiles')
           .select('full_name')
@@ -67,20 +67,20 @@ export default function Navbar() {
   const isPitManagementActive = pathname.startsWith('/pit-management');
 
   const pitSubMenu = [
-    { href: "/pit-management/dashboard", label: "نظرة عامة", desc: "لوحة التحكم الرئيسية والمؤشرات الحية" },
-    { href: "/pit-management/batches", label: "دفعات النوى", desc: "سجل الدفعات ورخص التتبع والـ QR" },
-    { href: "/pit-management/scanner", label: "تحليل النواة", desc: "تحليل الرطوبة والخصائص البصرية" },
-    { href: "/pit-management/pathways", label: "الاستخدامات", desc: "مسارات الاستفادة الصناعية والتحويلية" },
-    { href: "/pit-management/experiments", label: "التجارب", desc: "سجل التجارب المختبرية والتطبيقات" },
-    { href: "/pit-management/impact", label: "الأثر", desc: "حساب النفايات المحولة وبصمة الكربون" },
+    { href: "/pit-management/dashboard", label: "نظرة عامة", desc: "المؤشرات الحية" },
+    { href: "/pit-management/batches", label: "دفعات النوى", desc: "سجل الدفعات" },
+    { href: "/pit-management/scanner", label: "التحليل", desc: "الرؤية الحاسوبية" },
+    { href: "/pit-management/pathways", label: "الاستخدامات", desc: "مسارات الاستفادة" },
+    { href: "/pit-management/experiments", label: "التجارب", desc: "سجل التجارب" },
+    { href: "/pit-management/impact", label: "الأثر", desc: "بصمة الكربون" },
   ];
 
   const mainLinks = [
-    { href: "/", label: "الرئيسية", icon: Leaf },
-    { href: "/map", label: "الخريطة الذكية", icon: MapPin },
-    { href: "/evidence", label: "المصادر والأدلة", icon: BookOpen },
-    { href: "/assistant", label: "مساعد نواة", icon: Bot },
-    { href: "/about", label: "عن نواة", icon: Info },
+    { href: "/", label: "الرئيسية" },
+    { href: "/map", label: "الخريطة الذكية" },
+    { href: "/evidence", label: "الأدلة والمصادر" },
+    { href: "/assistant", label: "مساعد نواة" },
+    { href: "/about", label: "عن نواة" },
   ];
 
   const handleLogout = async () => {
@@ -93,41 +93,29 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 transition-all duration-300">
+    <header className="sticky top-0 z-50 transition-all duration-300" dir="rtl">
       <nav className={`w-full transition-all duration-300 ${
-        scrolled || pathname !== '/' 
-          ? "bg-emerald-50/95 backdrop-blur-md shadow-lg border-b border-emerald-200/40 py-3" 
-          : "bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 py-4 border-b border-emerald-200/30"
+        scrolled 
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200 py-3" 
+          : "bg-white py-4 border-b border-slate-100"
       }`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             
             {/* BRAND LOGO */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-amber-500 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-                <Leaf className="w-6 h-6 text-emerald-950" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-emerald-950 tracking-tight flex items-center gap-1.5">
-                  نواة <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">NAWAH</span>
-                </span>
-                <span className="text-[10px] text-emerald-700/80 font-medium">المنصة الوطنية للتدوير الحيوي لنوى التمر</span>
-              </div>
+              <Image 
+                src="/nawah-logo.png" 
+                alt="نواة | NAWAH" 
+                width={120} 
+                height={48} 
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+                priority
+              />
             </Link>
             
             {/* DESKTOP NAVIGATION LINKS */}
-            <div className="hidden xl:flex items-center gap-1">
-              <Link 
-                href="/" 
-                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  pathname === '/' 
-                    ? "bg-emerald-200/60 text-emerald-950 shadow-sm" 
-                    : "text-emerald-100/90 hover:text-emerald-950 hover:bg-emerald-100/40"
-                }`}
-              >
-                الرئيسية
-              </Link>
-
+            <div className="hidden xl:flex items-center gap-2">
               {/* DROPDOWN MENU: إدارة النوى */}
               <div 
                 className="relative"
@@ -136,36 +124,31 @@ export default function Navbar() {
               >
                 <Link
                   href="/pit-management/dashboard"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                     isPitManagementActive
-                      ? "bg-amber-500 text-emerald-950 font-bold shadow-md shadow-amber-500/20"
-                      : "text-amber-300 hover:bg-emerald-100/60"
+                      ? "bg-emerald-50 text-emerald-800"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
                   }`}
                 >
-                  <Layers className="w-4 h-4" />
                   <span>إدارة النوى</span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform ${pitDropdown ? 'rotate-180' : ''}`} />
                 </Link>
 
                 {pitDropdown && (
-                  <div className="absolute top-full right-0 w-64 pt-2 z-50">
-                    <div className="bg-white border border-emerald-300/60 rounded-2xl shadow-2xl p-2 backdrop-blur-xl">
-                      <div className="px-3 py-1.5 text-[11px] font-bold text-emerald-800 border-b border-emerald-200/60 mb-1">
-                        منظومة إدارة وتتبع نوى التمر
-                      </div>
+                  <div className="absolute top-full right-0 w-56 pt-2 z-50">
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-xl p-2 backdrop-blur-xl">
                       {pitSubMenu.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => setPitDropdown(false)}
-                          className={`block px-3 py-2 rounded-xl text-xs transition-colors ${
+                          className={`block px-3 py-2 rounded-xl text-sm transition-colors ${
                             pathname === item.href
-                              ? "bg-emerald-100 text-emerald-950 font-bold"
-                              : "text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
+                              ? "bg-emerald-50 text-emerald-800 font-bold"
+                              : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
                           }`}
                         >
-                          <div className="font-bold">{item.label}</div>
-                          <div className="text-[10px] text-emerald-600/80 font-normal">{item.desc}</div>
+                          {item.label}
                         </Link>
                       ))}
                     </div>
@@ -173,20 +156,18 @@ export default function Navbar() {
                 )}
               </div>
 
-              {mainLinks.filter(l => l.href !== '/').map((link) => {
-                const Icon = link.icon;
+              {mainLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
                   <Link 
                     key={link.href} 
                     href={link.href}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                       isActive 
-                        ? "bg-emerald-200/60 text-emerald-950 shadow-sm" 
-                        : "text-emerald-100/90 hover:text-emerald-950 hover:bg-emerald-100/40"
+                        ? "bg-emerald-50 text-emerald-800" 
+                        : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
                     }`}
                   >
-                    <Icon className="w-4 h-4 opacity-70" />
                     <span>{link.label}</span>
                   </Link>
                 );
@@ -194,39 +175,39 @@ export default function Navbar() {
             </div>
 
             {/* USER ACTIONS & AUTH */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden xl:flex items-center gap-3">
               {currentUser ? (
                 <div className="relative">
                   <button
                     onClick={() => setUserDropdown(!userDropdown)}
-                    className="flex items-center gap-2 bg-emerald-100/80 border border-emerald-300/60 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-950 hover:border-amber-400 transition-all"
+                    className="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-full text-sm font-bold text-slate-700 hover:border-emerald-500 transition-all shadow-sm"
                   >
-                    <div className="w-6 h-6 rounded-full bg-amber-400 text-emerald-950 flex items-center justify-center font-bold text-xs">
+                    <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
                       {currentUser.name ? currentUser.name.charAt(0) : 'ن'}
                     </div>
                     <span className="max-w-[120px] truncate">{currentUser.name}</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-emerald-700" />
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
                   </button>
 
                   {userDropdown && (
-                    <div className="absolute top-full left-0 w-56 mt-2 bg-white border border-emerald-300/80 rounded-2xl shadow-2xl p-2 z-50">
-                      <div className="px-3 py-2 border-b border-emerald-100 mb-1">
-                        <p className="text-xs font-bold text-emerald-950 truncate">{currentUser.name}</p>
-                        <p className="text-[10px] text-emerald-700/70 truncate">{currentUser.email}</p>
+                    <div className="absolute top-full left-0 w-56 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50">
+                      <div className="px-3 py-3 border-b border-slate-100 mb-1">
+                        <p className="text-sm font-bold text-slate-800 truncate">{currentUser.name}</p>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">{currentUser.email}</p>
                       </div>
                       <Link
                         href="/profile"
                         onClick={() => setUserDropdown(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-emerald-900 hover:bg-emerald-50 rounded-xl transition-colors"
+                        className="flex items-center gap-2 px-3 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors"
                       >
-                        <User className="w-4 h-4" />
+                        <User className="w-4 h-4 text-slate-400" />
                         <span>الملف الشخصي</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 w-full text-right px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors mt-1"
+                        className="flex items-center gap-2 w-full text-right px-3 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors mt-1"
                       >
-                        <LogOut className="w-4 h-4" />
+                        <LogOut className="w-4 h-4 text-rose-400" />
                         <span>تسجيل الخروج</span>
                       </button>
                     </div>
@@ -236,17 +217,15 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className="flex items-center gap-1.5 text-xs font-bold text-emerald-100 hover:text-amber-300 px-3 py-2 rounded-lg transition-colors"
+                    className="text-sm font-bold text-slate-600 hover:text-emerald-700 px-4 py-2 rounded-xl transition-colors"
                   >
-                    <LogIn className="w-4 h-4" />
-                    <span>تسجيل الدخول</span>
+                    تسجيل الدخول
                   </Link>
                   <Link
                     href="/register"
-                    className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-500 text-emerald-950 font-bold px-4 py-2 rounded-xl text-xs hover:brightness-110 transition-all shadow-md shadow-amber-500/20"
+                    className="bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:bg-emerald-800 transition-all shadow-sm shadow-emerald-700/20"
                   >
-                    <UserPlus className="w-4 h-4" />
-                    <span>إنشاء حساب</span>
+                    إنشاء حساب
                   </Link>
                 </>
               )}
@@ -254,7 +233,7 @@ export default function Navbar() {
 
             {/* MOBILE MENU TOGGLE BUTTON */}
             <button 
-              className="xl:hidden text-emerald-100 p-2 rounded-lg hover:bg-emerald-100/60"
+              className="xl:hidden text-slate-600 p-2 rounded-lg hover:bg-slate-100"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -265,21 +244,21 @@ export default function Navbar() {
 
         {/* MOBILE SLIDE-OUT MENU */}
         {isOpen && (
-          <div className="xl:hidden bg-white border-b border-emerald-200 shadow-2xl px-4 py-6 mt-3 space-y-4 animate-in slide-in-from-top duration-200">
+          <div className="xl:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-6 mt-3 space-y-4">
             
-            <div className="bg-emerald-50/80 p-3 rounded-2xl border border-emerald-200">
-              <p className="text-xs font-bold text-emerald-950 mb-2 flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-amber-500" />
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <p className="text-sm font-bold text-emerald-900 mb-3 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-emerald-600" />
                 إدارة النوى
               </p>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {pitSubMenu.map(sub => (
                   <Link
                     key={sub.href}
                     href={sub.href}
                     onClick={() => setIsOpen(false)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold ${
-                      pathname === sub.href ? 'bg-amber-400 text-emerald-950 font-bold' : 'text-emerald-800 hover:bg-emerald-100'
+                    className={`px-3 py-2.5 rounded-xl text-sm font-bold ${
+                      pathname === sub.href ? 'bg-emerald-100 text-emerald-900' : 'text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     {sub.label}
@@ -290,61 +269,59 @@ export default function Navbar() {
 
             <div className="space-y-1">
               {mainLinks.map((link) => {
-                const Icon = link.icon;
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold ${
-                      pathname === link.href ? "bg-emerald-100 text-emerald-950" : "text-emerald-800 hover:bg-emerald-50"
+                    className={`block px-4 py-3 rounded-xl text-sm font-bold ${
+                      pathname === link.href ? "bg-emerald-50 text-emerald-900" : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
-                    <Icon className="w-5 h-5 opacity-80" />
-                    <span>{link.label}</span>
+                    {link.label}
                   </Link>
                 );
               })}
             </div>
 
-            <hr className="border-emerald-200 my-2" />
+            <hr className="border-slate-100 my-4" />
 
-            <div className="flex flex-col gap-2 pt-2">
+            <div className="flex flex-col gap-3">
               {currentUser ? (
                 <>
                   <Link
                     href="/profile"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 bg-emerald-100 text-emerald-950 py-2.5 rounded-xl font-bold text-xs"
+                    className="flex items-center justify-center gap-2 bg-slate-100 text-slate-800 py-3 rounded-xl font-bold text-sm"
                   >
                     <User className="w-4 h-4" />
                     الملف الشخصي ({currentUser.name})
                   </Link>
                   <button
                     onClick={() => { handleLogout(); setIsOpen(false); }}
-                    className="flex items-center justify-center gap-2 bg-rose-50 text-rose-700 py-2.5 rounded-xl font-bold text-xs border border-rose-200"
+                    className="flex items-center justify-center gap-2 bg-rose-50 text-rose-700 py-3 rounded-xl font-bold text-sm border border-rose-100"
                   >
                     <LogOut className="w-4 h-4" />
                     تسجيل الخروج
                   </button>
                 </>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <Link
                     href="/login"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 py-2.5 rounded-xl font-bold text-xs border border-emerald-200"
+                    className="flex items-center justify-center gap-2 bg-slate-50 text-slate-700 py-3 rounded-xl font-bold text-sm border border-slate-200"
                   >
                     <LogIn className="w-4 h-4" />
-                    تسجيل الدخول
+                    دخول
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-1.5 bg-amber-400 text-emerald-950 py-2.5 rounded-xl font-bold text-xs"
+                    className="flex items-center justify-center gap-2 bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow-sm"
                   >
                     <UserPlus className="w-4 h-4" />
-                    إنشاء حساب
+                    حساب جديد
                   </Link>
                 </div>
               )}
