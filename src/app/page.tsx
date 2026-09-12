@@ -34,9 +34,9 @@ function CircularSystem() {
 
   return (
     <div className="relative w-full max-w-lg mx-auto aspect-square flex items-center justify-center mt-12 lg:mt-0">
-      {/* Central Logo */}
+      {/* Central Node */}
       <div className="relative z-20 w-32 h-32 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-2">
-        <Image src="/nawah-logo.png" alt="NAWAH" width={80} height={40} className="w-16 object-contain" />
+        <span className="font-black text-emerald-950 text-xl">نواة</span>
       </div>
 
       {/* Rings & Connecting Lines */}
@@ -228,6 +228,20 @@ export default function LandingPage() {
             </div>
 
           </div>
+
+          {/* Hero Visual Image Block */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-16 lg:mt-24 w-full h-[300px] md:h-[450px] lg:h-[550px] relative rounded-[2rem] overflow-hidden shadow-xl border-4 border-white"
+          >
+            <Image 
+              src="/hero-visual.png" 
+              alt="العرض البصري لمنصة نواة" 
+              fill 
+              className="object-cover"
+              priority
+            />
+          </motion.div>
         </div>
       </section>
 
@@ -468,23 +482,34 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 9. FOOTER */}
-      <footer className="bg-emerald-950 py-16 text-center text-emerald-50 border-t border-emerald-900">
-        <div className="container mx-auto px-4 space-y-6">
-          <Image src="/nawah-logo.png" alt="NAWAH" width={100} height={40} className="mx-auto opacity-50 brightness-0 invert" />
-          <p className="text-lg font-bold">من نواة التمر… نصنع قيمة.</p>
-          <div className="pt-4">
-            <Link
-              href="/pit-management/dashboard"
-              className="inline-flex items-center gap-2 bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl text-sm transition-colors border border-emerald-700"
-            >
-              <span>دخول للمنصة</span>
-              <ChevronLeft className="w-4 h-4" />
-            </Link>
+      {/* 9. DEVELOPMENT TEAM */}
+      <section className="py-16 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl text-center space-y-12">
+          <h2 className="text-2xl font-black text-emerald-950">فريق التطوير</h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },
+              { name: "هبه عبداللطيف", link: "https://www.linkedin.com/in/hibah-alharbi-ab0b2938a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "حنين القصير", link: "https://www.linkedin.com/in/haneen-al-qassir-b68aa4387?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
+              { name: "وفاء المصري", link: "https://www.linkedin.com/in/wafaa-undefined-975a7829a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+              { name: "د. نجوى الخطيب", link: null }
+            ].map((m, i) => (
+              m.link ? (
+                <a key={i} href={m.link} target="_blank" rel="noopener noreferrer" className="bg-slate-50 border border-slate-100 hover:border-emerald-500 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 transition-colors group shadow-sm hover:shadow-md">
+                  <span className="font-bold text-sm text-slate-700 group-hover:text-emerald-700 transition-colors">{m.name}</span>
+                  <span className="text-xs text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">LinkedIn</span>
+                </a>
+              ) : (
+                <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm cursor-default">
+                  <span className="font-bold text-sm text-slate-700">{m.name}</span>
+                </div>
+              )
+            ))}
           </div>
-          <p className="text-xs text-emerald-800 pt-8">&copy; {new Date().getFullYear()} نواة | NAWAH. منصة رقمية متكاملة.</p>
         </div>
-      </footer>
+      </section>
 
     </div>
   );
