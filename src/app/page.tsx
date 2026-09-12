@@ -229,20 +229,7 @@ export default function LandingPage() {
 
           </div>
 
-          {/* Hero Visual Image Block */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-16 lg:mt-24 w-full h-[300px] md:h-[450px] lg:h-[550px] relative rounded-[2rem] overflow-hidden shadow-xl border-4 border-white"
-          >
-            <Image 
-              src="/hero-visual.png" 
-              alt="العرض البصري لمنصة نواة" 
-              fill 
-              className="object-cover"
-              priority
-            />
-          </motion.div>
-        </div>
+          </div>
       </section>
 
       {/* 2. THE PROBLEM (Visual Storytelling) */}
