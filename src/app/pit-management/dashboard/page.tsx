@@ -12,38 +12,60 @@ export default async function PitDashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect('/login');
+  // Guest mode allowed
+
+  
+  // Data for logged-in users, empty for guests
+  let profile = null;
+  let batches = [];
+  let experiments = [];
+
+  if (user) {
+    const { data: p } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    profile = p;
+
+    const { data: b } = await supabase
+      .from('batches')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    batches = b || [];
+
+    const { data: e } = await supabase
+      .from('experiments')
+      .select('*')
+      .eq('user_id', user.id);
+    experiments = e || [];
   }
 
-  // Fetch Profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  // Fetch User Batches only (RLS also enforces this)
-  const { data: batches } = await supabase
-    .from('batches')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
-
-  // Fetch User Experiments only (RLS also enforces this)
-  const { data: experiments } = await supabase
-    .from('experiments')
-    .select('*')
-    .eq('user_id', user.id);
 
   const totalBatches = batches?.length || 0;
   const totalExperiments = experiments?.length || 0;
   const totalQuantity = batches?.reduce((acc, b) => acc + (Number(b.quantity) || 0), 0) || 0;
   const recentBatches = batches?.slice(0, 5) || [];
-  const userName = profile?.full_name || user.user_metadata?.full_name || 'المستخدم';
+  const userName = user ? (profile?.full_name || user?.user_metadata?.full_name || 'المستخدم') : 'زائرنا الكريم';
 
   return (
     <div className="space-y-6">
+      {!user && (
+        <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 className="text-amber-900 font-bold flex items-center gap-2">
+              تتصفح المنصة كزائر
+            </h3>
+            <p className="text-sm text-amber-800/80 mt-1">
+              يمكنك استكشاف جميع أقسام المنصة، ولكن لتسجيل الدفعات وحفظ التجارب وإنشاء بياناتك الخاصة، نرجو تسجيل الدخول.
+            </p>
+          </div>
+          <Link href="/login" className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors text-center shrink-0">
+            تسجيل الدخول / إنشاء حساب
+          </Link>
+        </div>
+      )}
       
       {/* WELCOME BANNER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl">
