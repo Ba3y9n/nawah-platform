@@ -36,16 +36,8 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname
 
-  // Protected routes requiring sign-in (only forms/profile)
-  const isProtectedRoute = path === '/profile' || path === '/pit-management/batches/new' || path === '/pit-management/experiments/new'
-
-  if (!user && isProtectedRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-
-  // Auth pages for guests only
+  // Remove hard redirects for protected routes to allow guest exploration
+  // We will handle auth checks on the client side with a graceful Auth Modal
   const isAuthRoute = path === '/login' || path === '/register'
 
   if (user && isAuthRoute) {

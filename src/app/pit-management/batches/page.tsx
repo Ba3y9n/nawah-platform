@@ -14,6 +14,7 @@ export default function BatchesListPage() {
   const [cleaningFilter, setCleaningFilter] = useState("all");
   const [selectedBatchForQR, setSelectedBatchForQR] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
   const loadBatches = async () => {
     setLoading(true);
@@ -21,6 +22,7 @@ export default function BatchesListPage() {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
+      setIsGuest(false);
       const { data } = await supabase
         .from('batches')
         .select('*')
@@ -29,6 +31,7 @@ export default function BatchesListPage() {
 
       setBatches(data || []);
     } else {
+      setIsGuest(true);
       setBatches([]);
     }
     setLoading(false);

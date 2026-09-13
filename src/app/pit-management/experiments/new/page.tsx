@@ -7,6 +7,7 @@ import {
   TestTube2, Save, ArrowRight, Package, AlertCircle, Loader2
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import AuthModal from "@/components/AuthModal";
 
 function NewExperimentForm() {
   const router = useRouter();
@@ -25,6 +26,7 @@ function NewExperimentForm() {
   
   const [loadingBatches, setLoadingBatches] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -82,9 +84,15 @@ function NewExperimentForm() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        setErrorMsg("جلسة العمل منتهية. يرجى تسجيل الدخول مجدداً.");
         setIsSubmitting(false);
-        router.push('/login');
+        setShowAuthModal(true);
+        // Save form state to local storage to persist after login
+        if (typeof window !== 'undefined') {
+          try {
+            // Save basic form fields if needed
+            localStorage.setItem('nawah_pending_action', 'new_experiment');
+          } catch(e) {}
+        }
         return;
       }
 

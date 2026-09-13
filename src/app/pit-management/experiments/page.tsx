@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function ExperimentsListPage() {
   const [experiments, setExperiments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
   const loadExperiments = async () => {
     setLoading(true);

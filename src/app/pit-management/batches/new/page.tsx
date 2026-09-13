@@ -8,6 +8,7 @@ import {
   MapPin, AlertCircle, Info, Loader2
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import AuthModal from "@/components/AuthModal";
 import { SAUDI_REGIONS, SAUDI_CITIES, VERIFIED_SOURCES } from "@/lib/store";
 
 export default function NewBatchPage() {
@@ -34,6 +35,7 @@ export default function NewBatchPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const availableCities = SAUDI_CITIES.filter(c => c.region_id === selectedRegionId);
@@ -86,9 +88,15 @@ export default function NewBatchPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        setErrorMsg("جلسة العمل منتهية. يرجى تسجيل الدخول مجدداً.");
         setIsSubmitting(false);
-        router.push('/login');
+        setShowAuthModal(true);
+        // Save form state to local storage to persist after login
+        if (typeof window !== 'undefined') {
+          try {
+            // Save basic form fields if needed
+            localStorage.setItem('nawah_pending_action', 'new_batch');
+          } catch(e) {}
+        }
         return;
       }
 
@@ -492,6 +500,11 @@ export default function NewBatchPage() {
         </div>
 
       </form>
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        returnUrl={typeof window !== 'undefined' ? window.location.pathname : ""}
+      />
     </div>
   );
 }
