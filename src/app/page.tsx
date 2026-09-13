@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 // --- Interactive Circular System Component ---
 function CircularSystem() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [radius, setRadius] = useState(85);
   
   const stages = [
     { id: 0, title: "المصدر", desc: "توثيق مصانع التمور ومراكز التجميع.", icon: Map },
@@ -26,43 +27,60 @@ function CircularSystem() {
   ];
 
   useEffect(() => {
+    const updateRadius = () => {
+      if (typeof window !== "undefined") {
+        if (window.innerWidth >= 1536) setRadius(340); // 2XL
+        else if (window.innerWidth >= 1280) setRadius(300); // XL
+        else if (window.innerWidth >= 1024) setRadius(260); // LG
+        else if (window.innerWidth >= 768) setRadius(180); // MD
+        else if (window.innerWidth >= 640) setRadius(140); // SM
+        else setRadius(85); // Mobile
+      }
+    };
+    updateRadius();
+    window.addEventListener("resize", updateRadius);
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % stages.length);
     }, 4000);
-    return () => clearInterval(interval);
+    return () => {
+      window.removeEventListener("resize", updateRadius);
+      clearInterval(interval);
+    };
   }, [stages.length]);
 
   return (
-    <div className="relative w-full max-w-[280px] sm:max-w-lg mx-auto aspect-square flex items-center justify-center mt-12 lg:mt-0">
+    <div className="relative w-full max-w-[260px] sm:max-w-md lg:max-w-2xl xl:max-w-3xl mx-auto aspect-square flex items-center justify-center mt-8 lg:mt-0 transition-all duration-500">
       {/* Central Node */}
-      <div className="relative z-20 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-2">
-        <span className="font-black text-emerald-950 text-base sm:text-xl">نواة</span>
+      <div className="relative z-20 w-20 h-20 sm:w-28 sm:h-28 lg:w-44 lg:h-44 xl:w-56 xl:h-56 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-1 sm:gap-2 ring-4 sm:ring-8 ring-emerald-50/50 xl:ring-[12px]">
+        <span className="font-black text-emerald-950 text-sm sm:text-lg lg:text-3xl xl:text-4xl tracking-tighter">نواة</span>
+        <span className="text-emerald-600/60 font-bold text-[7px] sm:text-[9px] lg:text-xs xl:text-sm tracking-widest uppercase">NAWAH</span>
       </div>
 
       {/* Rings & Connecting Lines */}
-      <div className="absolute inset-0 rounded-full border border-slate-100 border-dashed animate-[spin_60s_linear_infinite]" />
-      <div className="absolute inset-8 rounded-full border border-emerald-50" />
+      <div className="absolute inset-0 rounded-full border-2 border-slate-100 border-dashed animate-[spin_120s_linear_infinite] opacity-30" />
+      <div className="absolute inset-8 sm:inset-12 lg:inset-16 xl:inset-20 rounded-full border-2 border-emerald-50/50" />
+      <div className="absolute inset-16 sm:inset-24 lg:inset-32 xl:inset-40 rounded-full border border-slate-50" />
       
-      {/* Active Stage Data Display (Mobile Fallback / Center Display) */}
-      <div className="absolute top-full mt-4 sm:mt-8 lg:mt-12 text-center w-full max-w-xs sm:max-w-sm px-2 sm:px-4">
+      {/* Active Stage Data Display */}
+      <div className="absolute top-[105%] sm:top-full mt-6 sm:mt-12 lg:mt-20 xl:mt-24 text-center w-full max-w-xs sm:max-w-md lg:max-w-xl px-2 sm:px-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="bg-white rounded-2xl p-5 shadow-lg border border-slate-100"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            className="bg-white/80 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-10 shadow-2xl shadow-emerald-950/10 border border-white"
           >
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="p-3 sm:p-4 bg-emerald-600 rounded-2xl text-white shadow-lg shadow-emerald-600/20">
                 {(() => {
                   const Icon = stages[activeIndex].icon;
-                  return <Icon className="w-5 h-5" />;
+                  return <Icon className="w-5 h-5 sm:w-7 sm:h-7 lg:w-9 lg:h-9" />;
                 })()}
               </div>
-              <h3 className="text-lg font-bold text-emerald-950">{stages[activeIndex].title}</h3>
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">{stages[activeIndex].title}</h3>
             </div>
-            <p className="text-sm text-slate-500">{stages[activeIndex].desc}</p>
+            <p className="text-sm lg:text-xl text-slate-600 leading-relaxed font-medium">{stages[activeIndex].desc}</p>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -70,8 +88,6 @@ function CircularSystem() {
       {/* Nodes */}
       {stages.map((stage, index) => {
         const angle = (index / stages.length) * 2 * Math.PI - Math.PI / 2;
-        const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-        const radius = 85; // Distance from center - fits within max-w-[280px]
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
         const isActive = activeIndex === index;
@@ -82,22 +98,37 @@ function CircularSystem() {
             className="absolute z-30"
             style={{ x, y }}
             onClick={() => setActiveIndex(index)}
-            animate={{ scale: isActive ? 1.1 : 1 }}
+            animate={{ 
+              scale: isActive ? 1.25 : 1,
+              z: isActive ? 50 : 0
+            }}
+            whileHover={{ scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <div className={`relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-full transition-all duration-500 ${
+            <div className={`relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full transition-all duration-500 ${
               isActive 
-                ? "bg-emerald-600 text-white shadow-xl shadow-emerald-600/30 ring-4 ring-emerald-100" 
-                : "bg-white text-slate-400 hover:text-emerald-500 border border-slate-100 shadow-sm hover:shadow-md"
+                ? "bg-emerald-600 text-white shadow-2xl shadow-emerald-600/40 ring-4 sm:ring-8 ring-emerald-100" 
+                : "bg-white text-slate-400 hover:text-emerald-500 border border-slate-100 shadow-xl hover:shadow-2xl"
             }`}>
-              <stage.icon className="w-4 h-4 sm:w-6 sm:h-6" />
+              <stage.icon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-8 lg:h-8 xl:w-10 xl:h-10" />
               
               {isActive && (
                 <motion.div 
                   layoutId="activeGlow"
-                  className="absolute inset-0 rounded-full bg-emerald-400 opacity-20 blur-md"
+                  className="absolute -inset-4 rounded-full bg-emerald-400 opacity-20 blur-2xl"
                   transition={{ duration: 0.5 }}
                 />
               )}
+            </div>
+            {/* Stage Title Label */}
+            <div className={`absolute top-full mt-2 sm:mt-4 left-1/2 -translate-x-1/2 text-center w-[80px] sm:w-[120px] lg:w-[180px] transition-all duration-300 ${
+              isActive 
+                ? 'text-emerald-950 opacity-100 font-black scale-110' 
+                : 'text-slate-500 opacity-60 lg:opacity-100 font-bold'
+            }`}>
+              <span className="text-[8px] sm:text-xs lg:text-base xl:text-lg leading-tight block drop-shadow-sm">
+                {stage.title}
+              </span>
             </div>
           </motion.button>
         );
@@ -378,60 +409,68 @@ function InteractiveTimeline() {
   ];
 
   return (
-    <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-24 w-full py-10 overflow-visible">
+    <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-32 w-full py-10 lg:py-20 overflow-visible">
       {/* 1. Circular Data Flow System */}
-      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[340px] sm:h-[500px] overflow-visible">
-         {/* The dashed circular track */}
-         <div className="absolute w-[220px] h-[220px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-emerald-100 border-dashed" />
+      <div className="xl:w-1/2 flex justify-center items-center w-full relative h-[360px] sm:h-[520px] lg:h-[650px] xl:h-[750px] overflow-visible">
+         {/* The dashed circular tracks */}
+         <div className="absolute w-[200px] h-[200px] sm:w-[380px] sm:h-[380px] lg:w-[520px] lg:h-[520px] xl:w-[620px] xl:h-[620px] rounded-full border-2 border-emerald-100 border-dashed" />
+         <div className="absolute w-[160px] h-[160px] sm:w-[300px] sm:h-[300px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] rounded-full border border-emerald-50/50" />
          
          {/* Animated flowing data */}
          <motion.div 
             animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-            className="absolute w-[220px] h-[220px] sm:w-[400px] sm:h-[400px] rounded-full pointer-events-none"
+            transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+            className="absolute w-[200px] h-[200px] sm:w-[380px] sm:h-[380px] lg:w-[520px] lg:h-[520px] xl:w-[620px] xl:h-[620px] rounded-full pointer-events-none"
          >
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_20px_#34d399]" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_15px_#fbbf24]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 lg:w-6 lg:h-6 bg-emerald-400 rounded-full shadow-[0_0_25px_#34d399]" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 lg:w-5 lg:h-5 bg-amber-400 rounded-full shadow-[0_0_20px_#fbbf24]" />
             <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-300 rounded-full opacity-60" />
-            <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-300 rounded-full opacity-60" />
          </motion.div>
 
          {/* Center NAWAH Circle */}
-         <div className="absolute z-20 w-24 h-24 sm:w-32 sm:h-32 bg-emerald-950 rounded-full flex flex-col items-center justify-center shadow-[0_0_30px_rgba(2,44,34,0.3)] border-4 border-white">
-            <span className="text-white font-black text-xl sm:text-2xl tracking-tighter">نواة</span>
-            <span className="text-emerald-400/80 font-bold text-[10px] sm:text-xs tracking-widest mt-1">NAWAH</span>
+         <div className="absolute z-20 w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 xl:w-48 xl:h-48 bg-emerald-950 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(2,44,34,0.4)] border-4 lg:border-8 border-white group">
+            <motion.div 
+              animate={{ scale: [1, 1.05, 1] }} 
+              transition={{ duration: 4, repeat: Infinity }}
+              className="flex flex-col items-center"
+            >
+              <span className="text-white font-black text-xl sm:text-2xl lg:text-4xl xl:text-5xl tracking-tighter">نواة</span>
+              <span className="text-emerald-400/80 font-bold text-[10px] sm:text-xs lg:text-base xl:text-lg tracking-widest mt-1 lg:mt-2">NAWAH</span>
+            </motion.div>
          </div>
 
          {/* 7 Nodes */}
          {steps.map((step, idx) => {
             const angle = (idx * (360 / 7)) - 90;
             const rad = angle * (Math.PI / 180);
+            const radiusPercent = 42; // Keep nodes + labels inside container
+
             return (
               <button
                 key={idx}
                 onClick={() => setActiveStep(idx)}
-                className={`absolute z-30 flex flex-col items-center justify-center transition-all duration-500 group ${
-                  activeStep === idx ? 'scale-110' : 'hover:scale-105 opacity-80 hover:opacity-100'
+                className={`absolute z-30 flex flex-col items-center justify-center transition-all duration-700 group ${
+                  activeStep === idx ? 'scale-110 z-40' : 'hover:scale-105 opacity-80 hover:opacity-100'
                 }`}
                 style={{ 
-                  left: `${50 + Math.cos(rad)*50}%`, 
-                  top: `${50 + Math.sin(rad)*50}%`, 
+                  left: `${50 + Math.cos(rad) * radiusPercent}%`, 
+                  top: `${50 + Math.sin(rad) * radiusPercent}%`, 
                   transform: 'translate(-50%, -50%)' 
                 }}
               >
-                <div className={`w-9 h-9 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                <div className={`w-8 h-8 sm:w-14 sm:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 ${
                   activeStep === idx 
-                    ? 'bg-emerald-600 text-white shadow-[0_0_25px_rgba(5,150,105,0.5)] ring-4 ring-emerald-100' 
+                    ? 'bg-emerald-600 text-white shadow-[0_0_35px_rgba(5,150,105,0.6)] ring-4 lg:ring-8 ring-emerald-100' 
                     : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-emerald-300 hover:text-emerald-600'
                 }`}>
-                  <step.icon className="w-5 h-5 sm:w-7 sm:h-7" />
+                  <step.icon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-9 lg:h-9 xl:w-10 xl:h-10" />
                 </div>
-                {/* Node Label */}
-                <div className="absolute top-full mt-0.5 sm:mt-3 w-16 sm:w-28 text-center pointer-events-none">
-                   <div className={`inline-block text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${
+                {/* Node Label - Enhanced for desktop */}
+                <div className={`absolute top-full mt-1 sm:mt-2 lg:mt-4 w-[70px] sm:w-28 lg:w-40 text-center pointer-events-none transition-all duration-500 ${activeStep === idx ? 'scale-105' : ''}`}>
+                   <div className={`inline-block text-[8px] sm:text-[10px] lg:text-xs font-black px-1.5 sm:px-2 lg:px-3 py-0.5 lg:py-1 rounded-full mb-0.5 sm:mb-1 lg:mb-2 shadow-sm ${
                      activeStep === idx ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
                    }`}>{step.num}</div>
-                   <div className={`text-[8px] sm:text-xs font-bold leading-tight ${activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
+                   <div className={`text-[7px] sm:text-[11px] lg:text-sm xl:text-base font-bold sm:font-black leading-tight lg:leading-snug drop-shadow-sm ${activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
                    }`}>{step.title}</div>
                 </div>
               </button>
@@ -505,7 +544,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 text-emerald-950 font-sans selection:bg-amber-200 selection:text-emerald-900 overflow-hidden" dir="rtl">
       
       {/* 1. PRODUCT HERO */}
-      <section className="relative pt-16 pb-20 sm:pt-20 sm:pb-32 lg:pt-32 lg:pb-40 bg-slate-50 overflow-hidden">
+      <section className="relative pt-16 pb-28 sm:pt-20 sm:pb-40 lg:pt-32 lg:pb-56 xl:pb-64 bg-slate-50 overflow-hidden">
         
         {/* --- Premium Tech Background --- */}
         {/* 1. Ambient Glows */}
@@ -516,7 +555,7 @@ export default function LandingPage() {
         {/* 2. Modern Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#94a3b8_1px,transparent_1px),linear-gradient(to_bottom,#94a3b8_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8">
             
             <div className="lg:w-1/2 space-y-8 text-center lg:text-right pt-10">
@@ -557,11 +596,12 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            <div className="lg:w-1/2 w-full h-[380px] sm:h-[450px] lg:h-[600px] relative">
+            <div className="lg:w-1/2 w-full h-[380px] sm:h-[480px] lg:h-[700px] xl:h-[800px] relative flex items-center justify-center">
               <CircularSystem />
             </div>
 
           </div>
+
 
           </div>
       </section>
@@ -671,7 +711,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. HOW IT WORKS (Interactive Timeline) */}
-      <section className="py-14 sm:py-24 bg-slate-50 relative overflow-hidden">
+      <section id="how-it-works" className="py-14 sm:py-24 lg:py-32 bg-slate-50 relative overflow-hidden">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-400/10 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
@@ -691,7 +731,7 @@ export default function LandingPage() {
       </section>
 
       {/* 5. FEATURES SHOWCASE */}
-      <section className="py-14 sm:py-24 bg-white border-t border-slate-100 relative overflow-hidden">
+      <section id="features" className="py-14 sm:py-24 bg-white border-t border-slate-100 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
