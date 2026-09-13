@@ -607,42 +607,43 @@ export default function LandingPage() {
       </section>
 
       {/* 2. THE PROBLEM (Visual Storytelling) */}
-      <section className="py-8 bg-emerald-900 border-t border-emerald-950 text-white">
+      <section className="py-12 sm:py-16 bg-emerald-950 border-t border-emerald-900/50 text-white relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center space-y-4 mb-16">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="text-center space-y-4 mb-16 relative z-10">
             <h2 className="text-3xl font-black text-white">المشكلة</h2>
             <p className="text-emerald-100 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] flex flex-col justify-center items-center text-center group hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.4)] transition-all duration-300 relative z-10">
               <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.92M</div>
               <div className="text-sm font-bold text-slate-500">طن إنتاج التمور<br/>في المملكة (2024)</div>
             </motion.div>
             
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] flex flex-col justify-center items-center text-center group hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.4)] transition-all duration-300 relative z-10">
               <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">37.6M+</div>
               <div className="text-sm font-bold text-slate-500">نخلة في<br/>المملكة</div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] flex flex-col justify-center items-center text-center group hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.4)] transition-all duration-300 relative z-10">
               <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">584K</div>
               <div className="text-sm font-bold text-slate-500">طن إنتاج منطقة<br/>القصيم (2024)</div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center items-center text-center group hover:border-emerald-200 transition-colors">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] flex flex-col justify-center items-center text-center group hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.4)] transition-all duration-300 relative z-10">
               <div className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mb-2 dir-ltr">1.695B</div>
               <div className="text-sm font-bold text-slate-500">ريال قيمة<br/>صادرات التمور</div>
             </motion.div>
           </div>
 
           <div className="max-w-2xl mx-auto text-center space-y-6">
-             <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 px-4 sm:px-6 py-3 rounded-full border border-emerald-100">
+             <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold text-emerald-950 bg-amber-400 px-5 sm:px-8 py-3.5 rounded-full border border-amber-300 shadow-lg shadow-amber-400/20 relative z-10">
                <span>133 دولة حول العالم</span>
-               <div className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
+               <div className="w-1.5 h-1.5 rounded-full bg-emerald-950/40" />
                <span>192.5% نمو الصادرات منذ 2016</span>
              </div>
-             <p className="text-lg text-slate-600 leading-relaxed">
+             <p className="text-lg text-emerald-50/90 leading-relaxed font-medium relative z-10">
                ومع هذا الحجم من الإنتاج والتجهيز والتصنيع، تظهر منتجات ثانوية من بينها نوى التمر.
              </p>
           </div>
