@@ -146,7 +146,7 @@ function ScannerContent() {
     <div className="max-w-4xl mx-auto space-y-6">
       
       {/* TITLE BAR */}
-      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white border border-emerald-100/60 p-6 sm:p-8 rounded-3xl shadow-xl shadow-emerald-900/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
             <Scan className="w-4 h-4" />
@@ -168,7 +168,7 @@ function ScannerContent() {
       </div>
 
       {/* INPUT CONTROLS */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-6">
+      <div className="bg-white border border-emerald-100/60 rounded-3xl p-6 shadow-xl space-y-6">
         
         {/* SELECT BATCH TO LINK */}
         <div className="space-y-2">
@@ -211,7 +211,7 @@ function ScannerContent() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-emerald-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-emerald-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-xl shadow-emerald-900/5"
             >
               <Camera className="w-4 h-4 text-slate-500" />
               📷 فتح الكاميرا والتقاط صورة النوى
@@ -219,7 +219,7 @@ function ScannerContent() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-xl shadow-emerald-900/5"
             >
               <Upload className="w-4 h-4 text-emerald-600" />
               🖼️ رفع صورة عالية الدقة من الجهاز

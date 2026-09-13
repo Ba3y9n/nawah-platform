@@ -53,7 +53,7 @@ export default function PitManagementLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen bg-[#f8faf9] text-slate-900 font-sans">
       <div className="container mx-auto px-4 py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
@@ -64,7 +64,7 @@ export default function PitManagementLayout({
             <div className="flex flex-col gap-3">
               <Link
                 href="/pit-management/batches/new"
-                className="flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-3.5 rounded-2xl text-sm transition-all shadow-lg shadow-emerald-700/20 group"
+                className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3.5 rounded-2xl text-sm transition-all shadow-lg shadow-emerald-700/20 group"
               >
                 <PlusCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span>تسجيل دفعة جديدة</span>
@@ -72,7 +72,7 @@ export default function PitManagementLayout({
             </div>
 
             {/* Main Menu */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-3 shadow-sm lg:sticky lg:top-28">
+            <div className="bg-white border border-emerald-100/60 rounded-3xl p-3 shadow-xl shadow-emerald-900/5 lg:sticky lg:top-28">
               <div className="px-4 py-3 mb-2">
                 <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">
                   إدارة النظام
@@ -89,12 +89,12 @@ export default function PitManagementLayout({
                       href={item.href}
                       className={`flex items-center gap-3 p-3 rounded-2xl transition-all shrink-0 lg:shrink group ${
                         isActive
-                          ? "bg-emerald-50 text-emerald-900"
-                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                          ? "bg-emerald-50/80 text-emerald-900 font-black border border-emerald-200/50"
+                          : "text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-800 border border-transparent"
                       }`}
                     >
                       <div className={`p-2.5 rounded-xl transition-colors ${
-                        isActive ? "bg-emerald-200/50 text-emerald-700" : "bg-slate-100 text-slate-400 group-hover:bg-white group-hover:text-slate-600 group-hover:shadow-sm"
+                        isActive ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20" : "bg-emerald-50 text-emerald-600/60 group-hover:bg-white group-hover:text-slate-600 group-hover:shadow-sm"
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>

@@ -67,7 +67,7 @@ export default function ExperimentsListPage() {
           <p className="text-xs text-emerald-700">جاري تحميل بيانات التجارب من قاعدة البيانات...</p>
         </div>
       ) : experiments.length === 0 ? (
-        <div className="text-center py-16 bg-white border border-dashed border-emerald-200 rounded-3xl p-8 space-y-4 shadow-sm">
+        <div className="text-center py-16 bg-white border border-dashed border-emerald-200 rounded-3xl p-8 space-y-4 shadow-xl shadow-emerald-900/5">
           <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto border border-amber-200">
             <TestTube2 className="w-8 h-8" />
           </div>

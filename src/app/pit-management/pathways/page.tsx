@@ -38,7 +38,7 @@ export default function PathwaysPage() {
     <div className="space-y-6">
       
       {/* TITLE BANNER */}
-      <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-emerald-100/60 p-6 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
             <Sparkles className="w-4 h-4" />
@@ -90,7 +90,7 @@ export default function PathwaysPage() {
       </div>
 
       {/* SELECTED PATHWAY DETAILS */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-6">
+      <div className="bg-white border border-emerald-100/60 rounded-3xl p-6 shadow-xl space-y-6">
         
         <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-emerald-100 pb-4 gap-3">
           <div>
@@ -159,7 +159,7 @@ export default function PathwaysPage() {
               <select
                 value={selectedBatchId}
                 onChange={(e) => setSelectedBatchId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white border border-emerald-100/60 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-emerald-500"
               >
                 <option value="">-- اختر دفعة لفحص ملاءمتها --</option>
                 {batches.map(b => (

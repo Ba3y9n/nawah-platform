@@ -89,7 +89,7 @@ export default function ImpactPage() {
       {/* METRICS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-emerald-700">
             <span>إجمالي الكمية المسجلة</span>
             <Package className="w-4 h-4" />
@@ -100,7 +100,7 @@ export default function ImpactPage() {
           <p className="text-[11px] text-emerald-600">مجموع كميات الدفعات المسجلة بحسابك</p>
         </div>
 
-        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-amber-600">
             <span>الكمية المعاد استخدامها</span>
             <TestTube2 className="w-4 h-4" />
@@ -111,7 +111,7 @@ export default function ImpactPage() {
           <p className="text-[11px] text-emerald-600">المستهلكة في التجارب والتطبيقات</p>
         </div>
 
-        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-emerald-700">
             <span>الكمية المتبقية المتاحة</span>
             <Database className="w-4 h-4" />
@@ -125,7 +125,7 @@ export default function ImpactPage() {
       </div>
 
       {/* DETAILED ENVIRONMENTAL CONVERSION MATH */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4">
+      <div className="bg-white border border-emerald-100/60 rounded-3xl p-6 shadow-xl space-y-4">
         <h3 className="text-sm font-bold text-slate-900 border-b border-emerald-100 pb-3 flex items-center gap-2">
           <Leaf className="w-5 h-5 text-emerald-600" />
           المؤشرات البيئية المحسوبة من الكميات الفعلية

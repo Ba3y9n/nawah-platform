@@ -51,29 +51,29 @@ export default async function PitDashboardPage() {
     <div className="space-y-6">
       
       {!user && (
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="bg-emerald-950 border border-emerald-900 p-5 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
               <Leaf className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">تتصفح المنصة كزائر</h3>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-sm text-emerald-200/80 mt-1">
                 استكشف الأقسام بحرية. لحفظ أعمالك وتجاربك، نرجو تسجيل الدخول.
               </p>
             </div>
           </div>
-          <Link href="/login" className="bg-white hover:bg-slate-100 text-slate-900 font-bold px-6 py-3 rounded-xl text-sm transition-colors text-center shrink-0 shadow-sm whitespace-nowrap">
+          <Link href="/login" className="bg-amber-400 hover:bg-amber-500 text-emerald-950 font-bold px-6 py-3 rounded-xl text-sm transition-colors text-center shrink-0 shadow-sm whitespace-nowrap">
             تسجيل الدخول / إنشاء حساب
           </Link>
         </div>
       )}
 
       {/* WELCOME BANNER */}
-      <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white border border-emerald-100/60 p-8 rounded-3xl shadow-xl shadow-emerald-900/5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 flex items-center gap-3">
-            مرحباً بك، {userName} <span className="text-3xl">👋</span>
+            مرحباً بك، {userName} 
           </h1>
           <p className="text-sm text-slate-500 mt-2 max-w-lg">
             لوحة التحكم الشخصية في نظام إدارة وتتبع نوى التمر. تابع مستجدات دفعاتك، وتطورات التجارب، والأثر البيئي.
@@ -82,7 +82,7 @@ export default async function PitDashboardPage() {
         {user && (
           <Link
             href="/pit-management/batches/new"
-            className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shrink-0"
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-emerald-600/20 shrink-0 relative z-10"
           >
             <PlusCircle className="w-5 h-5" />
             <span>تسجيل دفعة جديدة</span>
@@ -97,7 +97,7 @@ export default async function PitDashboardPage() {
           { title: "عدد الدفعات", val: totalBatches, icon: Building2, col: "blue" },
           { title: "عدد التجارب", val: totalExperiments, icon: TestTube2, col: "amber" }
         ].map((s, i) => (
-          <div key={i} className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex flex-col items-center justify-center text-center group hover:border-slate-300 transition-colors">
+          <div key={i} className="bg-white border border-emerald-100/60 p-6 rounded-3xl shadow-xl shadow-emerald-900/5 flex flex-col items-center justify-center text-center group hover:border-slate-300 transition-colors">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:-translate-y-1 ${
               s.col === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
               s.col === 'blue' ? 'bg-blue-50 text-blue-600' :
@@ -112,7 +112,7 @@ export default async function PitDashboardPage() {
       </div>
 
       {/* RECENT BATCHES */}
-      <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-emerald-100/60 rounded-3xl shadow-xl shadow-emerald-900/5 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
             <Package className="w-5 h-5 text-emerald-600" />
@@ -172,7 +172,7 @@ export default async function PitDashboardPage() {
                   </div>
                   <div className="text-left">
                     <div className="font-black text-emerald-700">{batch.quantity} كجم</div>
-                    <div className="text-[10px] text-slate-400 mt-1">
+                    <div className="text-[10px] text-emerald-200/80 mt-1">
                       {new Date(batch.created_at).toLocaleDateString('ar-SA')}
                     </div>
                   </div>
