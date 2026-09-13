@@ -29,9 +29,9 @@ function CircularSystem() {
   useEffect(() => {
     const updateRadius = () => {
       if (typeof window !== "undefined") {
-        if (window.innerWidth >= 1536) setRadius(340); // 2XL
-        else if (window.innerWidth >= 1280) setRadius(300); // XL
-        else if (window.innerWidth >= 1024) setRadius(260); // LG
+        if (window.innerWidth >= 1536) setRadius(280); // 2XL
+        else if (window.innerWidth >= 1280) setRadius(250); // XL
+        else if (window.innerWidth >= 1024) setRadius(200); // LG
         else if (window.innerWidth >= 768) setRadius(180); // MD
         else if (window.innerWidth >= 640) setRadius(140); // SM
         else setRadius(85); // Mobile
@@ -428,7 +428,7 @@ function InteractiveTimeline() {
          </motion.div>
 
          {/* Center NAWAH Circle */}
-         <div className="absolute z-20 w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 xl:w-48 xl:h-48 bg-emerald-950 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(2,44,34,0.4)] border-4 lg:border-8 border-white group">
+         <div className="absolute z-20 w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 xl:w-48 xl:h-48 bg-emerald-900 rounded-full flex flex-col items-center justify-center shadow-[0_0_50px_rgba(2,44,34,0.4)] border-4 lg:border-8 border-white group">
             <motion.div 
               animate={{ scale: [1, 1.05, 1] }} 
               transition={{ duration: 4, repeat: Infinity }}
@@ -468,9 +468,9 @@ function InteractiveTimeline() {
                 {/* Node Label - Enhanced for desktop */}
                 <div className={`absolute top-full mt-1 sm:mt-2 lg:mt-4 w-[70px] sm:w-28 lg:w-40 text-center pointer-events-none transition-all duration-500 ${activeStep === idx ? 'scale-105' : ''}`}>
                    <div className={`inline-block text-[8px] sm:text-[10px] lg:text-xs font-black px-1.5 sm:px-2 lg:px-3 py-0.5 lg:py-1 rounded-full mb-0.5 sm:mb-1 lg:mb-2 shadow-sm ${
-                     activeStep === idx ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
+                     activeStep === idx ? 'bg-emerald-400 text-emerald-950' : 'bg-emerald-800/50 text-emerald-300'
                    }`}>{step.num}</div>
-                   <div className={`text-[7px] sm:text-[11px] lg:text-sm xl:text-base font-bold sm:font-black leading-tight lg:leading-snug drop-shadow-sm ${activeStep === idx ? 'text-emerald-950' : 'text-slate-500'
+                   <div className={`text-[7px] sm:text-[11px] lg:text-sm xl:text-base font-bold sm:font-black leading-tight lg:leading-snug drop-shadow-sm ${activeStep === idx ? 'text-white' : 'text-emerald-300/70'
                    }`}>{step.title}</div>
                 </div>
               </button>
@@ -650,7 +650,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3. POTENTIAL RESOURCE (Visual Flow) */}
-      <section className="py-14 sm:py-24 bg-white relative overflow-hidden">
+      <section className="py-14 sm:py-24 bg-emerald-50/60 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-50/50 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
@@ -711,7 +711,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. HOW IT WORKS (Interactive Timeline) */}
-      <section id="how-it-works" className="py-14 sm:py-24 lg:py-32 bg-slate-50 relative overflow-hidden">
+      <section id="how-it-works" className="py-14 sm:py-24 lg:py-32 bg-emerald-950 relative overflow-hidden">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-400/10 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
@@ -722,7 +722,7 @@ export default function LandingPage() {
 
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-black text-emerald-950">كيف تعمل نواة؟</h2>
+            <h2 className="text-3xl font-black text-white">كيف تعمل نواة؟</h2>
             <p className="text-emerald-100 text-lg">مسار رقمي واحد قابل للتتبع</p>
           </div>
           
@@ -731,7 +731,7 @@ export default function LandingPage() {
       </section>
 
       {/* 5. FEATURES SHOWCASE */}
-      <section id="features" className="py-14 sm:py-24 bg-white border-t border-slate-100 relative overflow-hidden">
+      <section id="features" className="py-14 sm:py-24 bg-emerald-50/50 border-t border-emerald-100/50 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
