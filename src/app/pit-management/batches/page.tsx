@@ -57,11 +57,11 @@ export default function BatchesListPage() {
       {/* HEADER BAR */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
             <Package className="w-4 h-4" />
             <span>سجل الدفعات الإلكتروني</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-emerald-950">دفعات نوى التمر المسجلة</h2>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900">دفعات نوى التمر المسجلة</h2>
           <p className="text-xs text-emerald-700 mt-1">
             إجمالي الدفعات المسجلة بحسابك من قاعدة البيانات ({batches.length} دفعة)
           </p>
@@ -69,7 +69,7 @@ export default function BatchesListPage() {
 
         <Link
           href="/pit-management/batches/new"
-          className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-emerald-950 font-extrabold px-5 py-3 rounded-2xl text-xs transition-all shadow-lg shadow-amber-400/20"
+          className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold px-5 py-3 rounded-2xl text-xs transition-all shadow-lg shadow-amber-400/20"
         >
           <PlusCircle className="w-4 h-4" />
           <span>تسجيل دفعة جديدة</span>
@@ -85,7 +85,7 @@ export default function BatchesListPage() {
             placeholder="البحث برقم الدفعة (NW-2026-...)، اسم المصدر، أو نوع التمر..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-emerald-200 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-emerald-950 placeholder-emerald-400 focus:outline-none focus:border-amber-400"
+            className="w-full bg-white border border-emerald-200 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-slate-900 placeholder-emerald-400 focus:outline-none focus:border-amber-400"
           />
         </div>
 
@@ -94,7 +94,7 @@ export default function BatchesListPage() {
           <select
             value={cleaningFilter}
             onChange={(e) => setCleaningFilter(e.target.value)}
-            className="w-full bg-white border border-emerald-200 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 appearance-none"
+            className="w-full bg-white border border-emerald-200 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-amber-400 appearance-none"
           >
             <option value="all">كافة حالات التنظيف</option>
             <option value="مغسولة">مغسولة</option>
@@ -116,14 +116,14 @@ export default function BatchesListPage() {
             <Package className="w-8 h-8" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-emerald-950">لا توجد دفعات مسجلة حتى الآن</h3>
+            <h3 className="text-base font-bold text-slate-900">لا توجد دفعات مسجلة حتى الآن</h3>
             <p className="text-xs text-emerald-700 max-w-md mx-auto">
               ابدأ بتسجيل أول دفعة من نوى التمر لحسابك لربطها بالتحليل البصري والتجارب المخبرية وتتبع مسارات الاستفادة.
             </p>
           </div>
           <Link
             href="/pit-management/batches/new"
-            className="inline-flex items-center gap-2 bg-amber-400 text-emerald-950 font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-amber-300 transition-all shadow"
+            className="inline-flex items-center gap-2 bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-amber-300 transition-all shadow"
           >
             <PlusCircle className="w-4 h-4" />
             تسجيل أول دفعة الآن
@@ -142,14 +142,14 @@ export default function BatchesListPage() {
                 <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
                   <div>
                     <span className="text-[10px] text-amber-600 font-bold block">رقم الدفعة</span>
-                    <span className="text-base font-black text-emerald-950 dir-ltr text-right block">{b.batch_number}</span>
+                    <span className="text-base font-black text-slate-900 dir-ltr text-right block">{b.batch_number}</span>
                   </div>
                   
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setSelectedBatchForQR(b)}
                       title="عرض رمز QR للتتبع"
-                      className="p-2 rounded-xl bg-slate-50 text-amber-500 border border-emerald-200 hover:border-amber-400 transition-colors"
+                      className="p-2 rounded-xl bg-slate-50 text-slate-500 border border-emerald-200 hover:border-amber-400 transition-colors"
                     >
                       <QrCode className="w-4 h-4" />
                     </button>
@@ -163,7 +163,7 @@ export default function BatchesListPage() {
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between items-center text-slate-600">
                     <span className="text-emerald-700">المصدر:</span>
-                    <span className="font-bold text-emerald-950 truncate max-w-[160px]">{b.source_name}</span>
+                    <span className="font-bold text-slate-900 truncate max-w-[160px]">{b.source_name}</span>
                   </div>
 
                   <div className="flex justify-between items-center text-slate-600">
@@ -189,7 +189,7 @@ export default function BatchesListPage() {
                 <span className="text-[10px] text-emerald-700">تاريخ الجمع: {b.date_collected}</span>
                 <Link
                   href={`/pit-management/batches/${b.id}`}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-amber-600 hover:text-amber-500 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-amber-600 hover:text-slate-500 transition-colors"
                 >
                   <span>عرض التفاصيل</span>
                   <ChevronLeft className="w-4 h-4" />
@@ -209,7 +209,7 @@ export default function BatchesListPage() {
               <span className="text-xs font-bold text-amber-600">بطاقة تتبع رخصة الدفعة</span>
               <button 
                 onClick={() => setSelectedBatchForQR(null)}
-                className="text-slate-400 hover:text-emerald-950 font-bold text-sm px-2"
+                className="text-slate-400 hover:text-slate-900 font-bold text-sm px-2"
               >
                 ✕
               </button>
@@ -240,7 +240,7 @@ export default function BatchesListPage() {
               <Link
                 href={`/pit-management/batches/${selectedBatchForQR.id}`}
                 onClick={() => setSelectedBatchForQR(null)}
-                className="block bg-emerald-100 hover:bg-emerald-200 text-emerald-950 font-bold py-2 rounded-xl text-xs transition-colors"
+                className="block bg-emerald-100 hover:bg-emerald-200 text-slate-900 font-bold py-2 rounded-xl text-xs transition-colors"
               >
                 الانتقال لصفحة التفاصيل
               </Link>

@@ -116,6 +116,24 @@ export default function Navbar() {
             
             {/* DESKTOP NAVIGATION LINKS */}
             <div className="hidden xl:flex items-center gap-2">
+              
+              {mainLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link 
+                    key={link.href} 
+                    href={link.href}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                      isActive 
+                        ? "bg-emerald-50 text-emerald-800" 
+                        : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+
               {/* DROPDOWN MENU: إدارة النوى */}
               <div 
                 className="relative"
@@ -155,27 +173,20 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-
-              {mainLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link 
-                    key={link.href} 
-                    href={link.href}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                      isActive 
-                        ? "bg-emerald-50 text-emerald-800" 
-                        : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
             </div>
 
-            {/* USER ACTIONS & AUTH */}
+            {/* LANGUAGE & AUTH */}
             <div className="hidden xl:flex items-center gap-3">
+              
+              {/* LANGUAGE SWITCHER */}
+              <button className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-emerald-700 transition-colors px-2 py-1 bg-slate-50 rounded-lg border border-slate-200 hover:border-emerald-200">
+                <span>EN</span>
+                <span className="text-slate-300">|</span>
+                <span className="text-emerald-800">عربي</span>
+              </button>
+              
+              <div className="h-5 w-px bg-slate-200 mx-1"></div>
+
               {currentUser ? (
                 <div className="relative">
                   <button

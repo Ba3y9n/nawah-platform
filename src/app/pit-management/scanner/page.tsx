@@ -146,40 +146,40 @@ function ScannerContent() {
     <div className="max-w-4xl mx-auto space-y-6">
       
       {/* TITLE BAR */}
-      <div className="bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
             <Scan className="w-4 h-4" />
             <span>نظام الفحص والتصنيف البصري</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-emerald-950">تحليل نوى التمر بالذكاء الاصطناعي</h2>
-          <p className="text-xs text-emerald-700 mt-1">
+          <h2 className="text-xl md:text-2xl font-black text-slate-900">تحليل نوى التمر بالذكاء الاصطناعي</h2>
+          <p className="text-xs text-slate-500 mt-1">
             التقط أو ارفع صورة لشحنة النوى لتحليل التجانس والنقاء والخصائص السطحية المبدئية
           </p>
         </div>
 
         <Link
           href="/pit-management/batches/new"
-          className="inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-emerald-200 text-emerald-900 font-bold px-4 py-2.5 rounded-2xl text-xs transition-colors"
+          className="inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-emerald-900 font-bold px-4 py-2.5 rounded-2xl text-xs transition-colors"
         >
-          <Package className="w-4 h-4 text-amber-500" />
+          <Package className="w-4 h-4 text-slate-500" />
           <span>تسجيل دفعة جديدة أولاً</span>
         </Link>
       </div>
 
       {/* INPUT CONTROLS */}
-      <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl space-y-6">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-6">
         
         {/* SELECT BATCH TO LINK */}
         <div className="space-y-2">
           <label className="text-xs font-bold text-emerald-900 flex items-center gap-2">
-            <Database className="w-4 h-4 text-amber-500" />
+            <Database className="w-4 h-4 text-slate-500" />
             ربط نتيجة التحليل بدفعة مسجلة في قاعدة البيانات:
           </label>
           <select
             value={selectedBatchId}
             onChange={(e) => setSelectedBatchId(e.target.value)}
-            className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-xs text-emerald-950 focus:outline-none focus:border-amber-400"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-amber-400"
           >
             <option value="">-- اختياري: اختيار الدفعة المرتبطة --</option>
             {batches.map(b => (
@@ -211,15 +211,15 @@ function ScannerContent() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-emerald-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
             >
-              <Camera className="w-4 h-4 text-amber-500" />
+              <Camera className="w-4 h-4 text-slate-500" />
               📷 فتح الكاميرا والتقاط صورة النوى
             </button>
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-emerald-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
+              className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-emerald-900 py-3.5 rounded-2xl font-bold text-xs transition-colors shadow-sm"
             >
               <Upload className="w-4 h-4 text-emerald-600" />
               🖼️ رفع صورة عالية الدقة من الجهاز
@@ -227,18 +227,18 @@ function ScannerContent() {
           </div>
 
           {/* PREVIEW CONTAINER */}
-          <div className="bg-slate-50 border border-emerald-200 rounded-2xl p-3 min-h-[160px] flex items-center justify-center text-center">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 min-h-[160px] flex items-center justify-center text-center">
             {imagePreview ? (
               <div className="w-full space-y-2">
                 <img
                   src={imagePreview}
                   alt="معاينة الصورة"
-                  className="max-h-48 mx-auto rounded-xl object-cover border border-emerald-300 shadow-md"
+                  className="max-h-48 mx-auto rounded-xl object-cover border border-slate-300 shadow-md"
                 />
                 <button
                   onClick={runAnalysis}
                   disabled={isAnalyzing}
-                  className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-emerald-950 font-black py-2.5 rounded-xl text-xs transition-all shadow-md shadow-amber-400/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-900 font-black py-2.5 rounded-xl text-xs transition-all shadow-md shadow-amber-400/20 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isAnalyzing ? (
                     <>
@@ -255,7 +255,7 @@ function ScannerContent() {
               </div>
             ) : (
               <div className="text-emerald-600 text-xs font-semibold space-y-2">
-                <Scan className="w-8 h-8 mx-auto opacity-50 text-amber-500" />
+                <Scan className="w-8 h-8 mx-auto opacity-50 text-slate-500" />
                 <p>الرجاء فتح الكاميرا أو رفع صورة لبدء الفحص البصري</p>
               </div>
             )}
@@ -289,24 +289,24 @@ function ScannerContent() {
               <span>نتيجة الفحص والتصنيف البصري الذكي</span>
             </div>
 
-            <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-xs font-extrabold">
+            <span className="bg-emerald-100 text-slate-800 border border-slate-200 px-3 py-1 rounded-full text-xs font-extrabold">
               درجة الثقة: {analysisResult.confidence || 94}%
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-emerald-700 font-bold block">الخصائص البصرية السطحية:</span>
+              <span className="text-slate-500 font-bold block">الخصائص البصرية السطحية:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visual_features}</p>
             </div>
 
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-emerald-700 font-bold block">مؤشر النقاء والشوائب البصرية:</span>
+              <span className="text-slate-500 font-bold block">مؤشر النقاء والشوائب البصرية:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visible_impurities}</p>
             </div>
 
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-emerald-700 font-bold block">درجة التجانس البصري واللوني:</span>
+              <span className="text-slate-500 font-bold block">درجة التجانس البصري واللوني:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visual_homogeneity}</p>
             </div>
 
@@ -316,22 +316,22 @@ function ScannerContent() {
             </div>
           </div>
 
-          <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
             <div>
               <span className="text-amber-600 font-bold block">المسار التحويلي الأفضل الموصى به:</span>
-              <span className="text-emerald-950 font-black text-sm">{analysisResult.recommended_pathway}</span>
+              <span className="text-slate-900 font-black text-sm">{analysisResult.recommended_pathway}</span>
             </div>
 
             {selectedBatchId && savedSuccess && (
-              <span className="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start">
+              <span className="bg-emerald-100 text-slate-800 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 تم حفظ التحليل في قاعدة البيانات وح ربطه بالدفعة
               </span>
             )}
           </div>
 
-          <div className="bg-slate-50 p-3.5 rounded-xl text-[11px] text-emerald-700 flex items-start gap-2 border border-emerald-100 leading-relaxed">
-            <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="bg-slate-50 p-3.5 rounded-xl text-[11px] text-slate-500 flex items-start gap-2 border border-emerald-100 leading-relaxed">
+            <AlertCircle className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
             <span>{analysisResult.visual_limitations || "تنبيه هام: هذا الفحص البصري التقديري يحلل المظهر السطحي والشوائب الظاهرة فقط، ولا يغني عن الفحوصات المعملية لدقة نسبة الرطوبة والتركيب الكيميائي أو السلامة الميكروبية."}</span>
           </div>
         </div>
@@ -344,7 +344,7 @@ function ScannerContent() {
 export default function ScannerPage() {
   return (
     <Suspense fallback={
-      <div className="text-center py-16 text-emerald-700 text-xs animate-pulse">
+      <div className="text-center py-16 text-slate-500 text-xs animate-pulse">
         جاري تحميل ماسح فحص النوى...
       </div>
     }>

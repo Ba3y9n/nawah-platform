@@ -41,11 +41,11 @@ export default function ExperimentsListPage() {
       {/* TITLE BANNER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
             <TestTube2 className="w-4 h-4" />
             <span>سجل التجارب المختبرية والتطبيقية</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-emerald-950">تجارب تحويل وتدوير النوى</h2>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900">تجارب تحويل وتدوير النوى</h2>
           <p className="text-xs text-emerald-700 mt-1">
             كافة التجارب مسجلة ومربوطة مباشرة بدفعات النوى المسجلة بحسابك ({experiments.length} تجربة)
           </p>
@@ -53,7 +53,7 @@ export default function ExperimentsListPage() {
 
         <Link
           href="/pit-management/experiments/new"
-          className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-emerald-950 font-extrabold px-5 py-3 rounded-2xl text-xs transition-all shadow-lg shadow-amber-400/20"
+          className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold px-5 py-3 rounded-2xl text-xs transition-all shadow-lg shadow-amber-400/20"
         >
           <PlusCircle className="w-4 h-4" />
           <span>تسجيل تجربة جديدة</span>
@@ -72,14 +72,14 @@ export default function ExperimentsListPage() {
             <TestTube2 className="w-8 h-8" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-emerald-950">لم يتم تسجيل أي تجارب حتى الآن</h3>
+            <h3 className="text-base font-bold text-slate-900">لم يتم تسجيل أي تجارب حتى الآن</h3>
             <p className="text-xs text-emerald-700 max-w-md mx-auto">
               ابدأ بتسجيل أول تجربة تحويلية أو مختبرية وربطها بدفعة نوى مسجلة بحسابك.
             </p>
           </div>
           <Link
             href="/pit-management/experiments/new"
-            className="inline-flex items-center gap-2 bg-amber-400 text-emerald-950 font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-amber-300 transition-all shadow"
+            className="inline-flex items-center gap-2 bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-amber-300 transition-all shadow"
           >
             <PlusCircle className="w-4 h-4" />
             تسجيل أول تجربة الآن
@@ -95,7 +95,7 @@ export default function ExperimentsListPage() {
               <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
                 <div>
                   <span className="text-[10px] text-amber-600 font-bold block">رقم التجربة</span>
-                  <span className="text-base font-black text-emerald-950 dir-ltr text-right block">{exp.experiment_number}</span>
+                  <span className="text-base font-black text-slate-900 dir-ltr text-right block">{exp.experiment_number}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function ExperimentsListPage() {
               </div>
 
               <div className="space-y-2 text-xs">
-                <h4 className="font-bold text-emerald-950 text-sm">{exp.objective}</h4>
+                <h4 className="font-bold text-slate-900 text-sm">{exp.objective}</h4>
                 
                 <div className="grid grid-cols-2 gap-2 text-emerald-900">
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-emerald-100">
@@ -121,7 +121,7 @@ export default function ExperimentsListPage() {
                   </div>
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-emerald-100">
                     <span className="text-emerald-700 text-[10px] block">طريقة المعالجة:</span>
-                    <span className="font-semibold text-emerald-950">{exp.processing_method}</span>
+                    <span className="font-semibold text-slate-900">{exp.processing_method}</span>
                   </div>
                 </div>
 

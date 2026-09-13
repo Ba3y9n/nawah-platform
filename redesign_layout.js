@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const newLayoutCode = `"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -87,22 +89,22 @@ export default function PitManagementLayout({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center gap-3 p-3 rounded-2xl transition-all shrink-0 lg:shrink group ${
+                      className={\`flex items-center gap-3 p-3 rounded-2xl transition-all shrink-0 lg:shrink group \${
                         isActive
                           ? "bg-emerald-50 text-emerald-900"
                           : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                      }`}
+                      }\`}
                     >
-                      <div className={`p-2.5 rounded-xl transition-colors ${
+                      <div className={\`p-2.5 rounded-xl transition-colors \${
                         isActive ? "bg-emerald-200/50 text-emerald-700" : "bg-slate-100 text-slate-400 group-hover:bg-white group-hover:text-slate-600 group-hover:shadow-sm"
-                      }`}>
+                      }\`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
                         <div className="text-sm font-bold">
                           {item.label}
                         </div>
-                        <div className={`text-[10px] mt-0.5 ${isActive ? 'text-emerald-700/70' : 'text-slate-400'}`}>
+                        <div className={\`text-[10px] mt-0.5 \${isActive ? 'text-emerald-700/70' : 'text-slate-400'}\`}>
                           {item.desc}
                         </div>
                       </div>
@@ -123,3 +125,7 @@ export default function PitManagementLayout({
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/app/pit-management/layout.tsx', newLayoutCode, 'utf-8');
+console.log("Layout redesigned successfully");

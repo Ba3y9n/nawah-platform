@@ -1,4 +1,6 @@
-import Link from "next/link";
+const fs = require('fs');
+
+const dashboardCode = `import Link from "next/link";
 import { 
   Package, TestTube2, Building2, TrendingUp, PlusCircle, 
   ArrowLeft, Leaf, MapPin, Search
@@ -93,16 +95,16 @@ export default async function PitDashboardPage() {
       {/* STATS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { title: "إجمالي النوى المسجلة", val: `${totalQuantity} كجم`, icon: Package, col: "emerald" },
+          { title: "إجمالي النوى المسجلة", val: \`\${totalQuantity} كجم\`, icon: Package, col: "emerald" },
           { title: "عدد الدفعات", val: totalBatches, icon: Building2, col: "blue" },
           { title: "عدد التجارب", val: totalExperiments, icon: TestTube2, col: "amber" }
         ].map((s, i) => (
           <div key={i} className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex flex-col items-center justify-center text-center group hover:border-slate-300 transition-colors">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:-translate-y-1 ${
+            <div className={\`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:-translate-y-1 \${
               s.col === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
               s.col === 'blue' ? 'bg-blue-50 text-blue-600' :
               'bg-amber-50 text-amber-600'
-            }`}>
+            }\`}>
               <s.icon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-black text-slate-900 mb-1">{s.val}</p>
@@ -155,7 +157,7 @@ export default async function PitDashboardPage() {
               {recentBatches.map((batch) => (
                 <Link 
                   key={batch.id} 
-                  href={`/pit-management/batches/${batch.id}`}
+                  href={\`/pit-management/batches/\${batch.id}\`}
                   className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-colors group"
                 >
                   <div className="flex items-center gap-4">
@@ -186,3 +188,7 @@ export default async function PitDashboardPage() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/app/pit-management/dashboard/page.tsx', dashboardCode, 'utf-8');
+console.log("Dashboard redesigned successfully");

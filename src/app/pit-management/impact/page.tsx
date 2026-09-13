@@ -79,7 +79,7 @@ export default function ImpactPage() {
 
         <Link
           href="/pit-management/batches/new"
-          className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-emerald-950 font-extrabold px-5 py-2.5 rounded-2xl text-xs transition-all shadow-md shadow-amber-400/20"
+          className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold px-5 py-2.5 rounded-2xl text-xs transition-all shadow-md shadow-amber-400/20"
         >
           <PlusCircle className="w-4 h-4" />
           <span>تسجيل دفعة لزيادة الأثر</span>
@@ -89,29 +89,29 @@ export default function ImpactPage() {
       {/* METRICS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        <div className="bg-white border border-emerald-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-emerald-700">
             <span>إجمالي الكمية المسجلة</span>
             <Package className="w-4 h-4" />
           </div>
-          <div className="text-2xl md:text-3xl font-black text-emerald-950 dir-ltr text-right">
+          <div className="text-2xl md:text-3xl font-black text-slate-900 dir-ltr text-right">
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_registered_kg.toLocaleString()} كجم`}
           </div>
           <p className="text-[11px] text-emerald-600">مجموع كميات الدفعات المسجلة بحسابك</p>
         </div>
 
-        <div className="bg-white border border-emerald-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-amber-600">
             <span>الكمية المعاد استخدامها</span>
             <TestTube2 className="w-4 h-4" />
           </div>
-          <div className="text-2xl md:text-3xl font-black text-amber-500 dir-ltr text-right">
+          <div className="text-2xl md:text-3xl font-black text-slate-500 dir-ltr text-right">
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_reused_kg.toLocaleString()} كجم`}
           </div>
           <p className="text-[11px] text-emerald-600">المستهلكة في التجارب والتطبيقات</p>
         </div>
 
-        <div className="bg-white border border-emerald-200 p-5 rounded-3xl shadow-lg space-y-2">
+        <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-lg space-y-2">
           <div className="flex justify-between items-center text-xs font-bold text-emerald-700">
             <span>الكمية المتبقية المتاحة</span>
             <Database className="w-4 h-4" />
@@ -125,16 +125,16 @@ export default function ImpactPage() {
       </div>
 
       {/* DETAILED ENVIRONMENTAL CONVERSION MATH */}
-      <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl space-y-4">
-        <h3 className="text-sm font-bold text-emerald-950 border-b border-emerald-100 pb-3 flex items-center gap-2">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4">
+        <h3 className="text-sm font-bold text-slate-900 border-b border-emerald-100 pb-3 flex items-center gap-2">
           <Leaf className="w-5 h-5 text-emerald-600" />
           المؤشرات البيئية المحسوبة من الكميات الفعلية
         </h3>
 
         {summary.total_registered_kg === 0 ? (
-          <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-emerald-200 space-y-3">
-            <AlertCircle className="w-10 h-10 text-amber-500 mx-auto" />
-            <p className="text-xs font-bold text-emerald-950">لا توجد بيانات بعد في قاعدة البيانات</p>
+          <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-3">
+            <AlertCircle className="w-10 h-10 text-slate-500 mx-auto" />
+            <p className="text-xs font-bold text-slate-900">لا توجد بيانات بعد في قاعدة البيانات</p>
             <p className="text-[11px] text-emerald-700 max-w-sm mx-auto">
               تظهر الحسابات هنا فور تسجليك أول دفعة وتجربة حقيقية في النظام.
             </p>
@@ -143,7 +143,7 @@ export default function ImpactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
               <span className="text-emerald-700 font-bold block">النفايات المحولة عن المدافن:</span>
-              <p className="text-2xl font-black text-emerald-950">{summary.landfill_diverted_ton} طن</p>
+              <p className="text-2xl font-black text-slate-900">{summary.landfill_diverted_ton} طن</p>
               <p className="text-[11px] text-emerald-700">
                 منع تراكم المادة العضوية الصعبة التحلل في مدافن البلديات
               </p>
