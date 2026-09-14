@@ -1,171 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import { Bot, Send, User, Sparkles, RefreshCw, Leaf, AlertCircle } from "lucide-react";
-
-interface Message {
-  sender: 'user' | 'assistant';
-  text: string;
-}
+import { Bot, MessageSquare, Sparkles, ArrowLeft, ShieldCheck, Database } from "lucide-react";
 
 export default function AssistantPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      sender: 'assistant',
-      text: 'مرحباً بك! أنا مساعد نواة الذكي، مستشارك المباشر في المنصة الوطنية لإدارة وتدوير نوى التمر (NAWAH Platform). كيف يمكنني مساعدتك اليوم في تسجيل الدفعات، مسارات التفحيم والاستخلاص، أو فحص التحليل البصري لحساب الأثر البيئي؟'
-    }
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!input.trim() || loading) return;
-
-    const userText = input.trim();
-    setInput("");
-    setErrorMsg("");
-
-    const updatedMessages: Message[] = [...messages, { sender: 'user', text: userText }];
-    setMessages(updatedMessages);
-    setLoading(true);
-
-    try {
-      // Build simple history for server action API
-      const historyPayload = updatedMessages.map(m => ({
-        role: m.sender === 'user' ? 'user' : 'assistant',
-        content: m.text
-      }));
-
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: userText,
-          history: historyPayload
-        })
-      });
-
-      if (!res.ok) {
-        throw new Error('فشل الاتصال بخدمة المساعد');
-      }
-
-      const data = await res.json();
-      const replyText = data.reply || 'تم استلام استفسارك وتأكيده مع قاعدة بيانات نواة.';
-
-      setMessages(prev => [...prev, { sender: 'assistant', text: replyText }]);
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg("تعذر تشغيل المساعد الآن، يرجى إعادة المحاولة.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRetry = () => {
-    if (messages.length > 1) {
-      const lastUserMessage = [...messages].reverse().find(m => m.sender === 'user');
-      if (lastUserMessage) {
-        setInput(lastUserMessage.text);
-      }
+  const handleOpenChat = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("nawah:open-chat"));
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
+    <div className="container mx-auto px-4 py-12 max-w-4xl space-y-8" dir="rtl">
       
       {/* HEADER BANNER */}
-      <div className="bg-white border border-emerald-200 p-6 rounded-3xl shadow-xl flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-amber-400 text-emerald-950 flex items-center justify-center font-black shadow-lg shadow-amber-400/20">
-            <Bot className="w-7 h-7" />
+      <div className="bg-emerald-950 text-white border border-emerald-900 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="flex items-center gap-4 relative z-10 text-center md:text-right">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-800 border border-emerald-700 text-amber-400 flex items-center justify-center font-black shadow-lg shrink-0 mx-auto md:mx-0">
+            <Bot className="w-9 h-9" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-emerald-950 flex items-center gap-2">
-              مساعد نواة الذكي
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold border border-emerald-300">
-                AI Assistant
-              </span>
-            </h2>
-            <p className="text-xs text-emerald-700 mt-0.5">
-              مستشار متخصص في استغلال نوى التمر، مسارات التفحيم والاستخلاص، والأدلة العلمية
+            <div className="inline-flex items-center gap-1.5 bg-emerald-900/80 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold border border-emerald-800 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>المساعد الرسمي للمنصة</span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black text-white">مساعد نواة</h1>
+            <p className="text-xs md:text-sm text-emerald-200/80 mt-1 max-w-xl leading-relaxed">
+              مساعد ذكي متخصص في استكشاف نوى التمر، مسارات الاستفادة، التجارب المخبرية، والأدلة الموثقة.
             </p>
           </div>
         </div>
+
+        <button
+          onClick={handleOpenChat}
+          className="relative z-10 flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-xl shadow-emerald-950/40 hover:-translate-y-0.5 shrink-0"
+        >
+          <MessageSquare className="w-5 h-5 text-amber-300" />
+          <span>ابدأ المحادثة</span>
+          <ArrowLeft className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* CHAT MESSAGES CONTAINER */}
-      <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl h-[520px] flex flex-col justify-between space-y-4">
-        
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-          {messages.map((m, idx) => (
-            <div
-              key={idx}
-              className={`flex items-start gap-3 text-xs ${
-                m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
-              }`}
-            >
-              <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 font-bold ${
-                m.sender === 'user' ? 'bg-amber-400 text-emerald-950 shadow-sm' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-              }`}>
-                {m.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
-
-              <div className={`p-4 rounded-2xl max-w-[82%] leading-relaxed ${
-                m.sender === 'user'
-                  ? 'bg-amber-400 text-emerald-950 font-bold shadow-md'
-                  : 'bg-slate-50 text-emerald-950 border border-emerald-200 shadow-sm'
-              }`}>
-                {m.text}
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div className="flex items-center gap-2 text-xs text-emerald-700 animate-pulse bg-slate-50 p-3.5 rounded-2xl border border-emerald-200 w-max">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>مساعد نواة يفكر في الإجابة الفنية...</span>
-            </div>
-          )}
-
-          {errorMsg && (
-            <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3.5 rounded-2xl text-xs flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-              <button
-                onClick={handleRetry}
-                className="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-3 py-1 rounded-xl text-[11px] transition-colors flex items-center gap-1"
-              >
-                <RefreshCw className="w-3 h-3" />
-                إعادة المحاولة
-              </button>
-            </div>
-          )}
+      {/* CAPABILITIES & INFORMATION CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+            <Database className="w-5 h-5" />
+          </div>
+          <h3 className="font-bold text-sm text-emerald-950">إدارة الدفعات وتتبعها</h3>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            استفسر عن آليات تسجيل الدفعات برمز NW والمطابقة مع المصادر والكميات المخزنة في المنصة.
+          </p>
         </div>
 
-        {/* INPUT FORM */}
-        <form onSubmit={handleSend} className="flex items-center gap-2 pt-3 border-t border-emerald-100">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={loading}
-            placeholder="اسأل مساعد نواة عن تسجيل الدفعات، مسارات الفحم والزيوت، أو الاختبارات المطلوب إجراؤها..."
-            className="flex-1 bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-xs text-emerald-950 placeholder-emerald-700/50 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-          />
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <h3 className="font-bold text-sm text-emerald-950">استكشاف المسارات</h3>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            تعرف على تطبيقات الفحم المنشط، استخلاص الزيوت، بدائل القهوة، ومستحضرات التجميل.
+          </p>
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading || !input.trim()}
-            className="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-emerald-950 p-3.5 rounded-2xl font-bold transition-all shadow-md shadow-amber-400/20 disabled:opacity-50"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </form>
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <h3 className="font-bold text-sm text-emerald-950">الأدلة والتجارب المعملية</h3>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            تمييز دقيق بين الاستخدامات القائمة على أبحاث مثبتة والتطبيقات التجريبية المفتوحة.
+          </p>
+        </div>
+      </div>
 
+      {/* CTA FOOTER BANNER */}
+      <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 text-center space-y-4">
+        <h2 className="text-lg font-black text-emerald-950">هل لديك استفسار محدد حول نوى التمر؟</h2>
+        <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+          انقر على زر المحادثة لفتح واجهة دردشة "مساعد نواة" الموحدة على يمين الشاشة.
+        </p>
+        <button
+          onClick={handleOpenChat}
+          className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-7 py-3 rounded-2xl text-xs transition-all shadow-md"
+        >
+          <span>فتح مساعد نواة</span>
+          <MessageSquare className="w-4 h-4 text-amber-300" />
+        </button>
       </div>
 
     </div>
