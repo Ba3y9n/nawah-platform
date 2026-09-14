@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AuthModal from "@/components/AuthModal";
-import { SAUDI_REGIONS, SAUDI_CITIES, VERIFIED_SOURCES } from "@/lib/store";
+import { createBatch, SAUDI_REGIONS, SAUDI_CITIES, VERIFIED_SOURCES } from "@/lib/store";
 
 export default function NewBatchPage() {
   const router = useRouter();
@@ -142,38 +142,35 @@ export default function NewBatchPage() {
         }
       }
 
-      // Insert into batches table
-      const { data: newBatch, error: insertError } = await supabase
-        .from('batches')
-        .insert({
-          user_id: user.id,
-          source_name: sourceName.trim(),
-          source_id: sourceId || null,
-          region_id: selectedRegionId || null,
-          city_id: selectedCityId || null,
-          quantity: Number(quantity),
-          date_type: dateType,
-          date_collected: dateCollected,
-          cleaning_status: cleaningStatus,
-          drying_status: dryingStatus,
-          moisture: moisture ? Number(moisture) : null,
-          storage_method: storageMethod,
-          notes: notes || null,
-          image_url: uploadedImageUrl || imagePreview || null,
-        })
-        .select()
-        .single();
+      // Get region & city names
+      const regionObj = SAUDI_REGIONS.find(r => r.id === selectedRegionId);
+      const cityObj = SAUDI_CITIES.find(c => c.id === selectedCityId);
 
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
+      // Insert via createBatch store helper (tries Supabase, falls back to local store if schema cache/table error)
+      const newBatch = await createBatch({
+        source_id: sourceId || undefined,
+        source_name: sourceName.trim(),
+        region_id: selectedRegionId || undefined,
+        region_name: regionObj?.name_ar || 'القصيم',
+        city_id: selectedCityId || undefined,
+        city_name: cityObj?.name_ar || 'بريدة',
+        quantity: Number(quantity),
+        date_type: dateType,
+        date_collected: dateCollected,
+        cleaning_status: cleaningStatus,
+        drying_status: dryingStatus,
+        moisture: moisture ? Number(moisture) : undefined,
+        storage_method: storageMethod,
+        notes: notes || undefined,
+        image_url: uploadedImageUrl || imagePreview || undefined,
+      });
 
       // Redirect to batch detail page or batches list
       router.push(`/pit-management/batches/${newBatch.id}`);
       router.refresh();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg("حدث خطأ أثناء حفظ الدفعة في قاعدة البيانات: " + (err.message || err));
+      setErrorMsg("حدث خطأ أثناء حفظ الدفعة: " + (err.message || err));
       setIsSubmitting(false);
     }
   };

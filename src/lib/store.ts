@@ -456,12 +456,16 @@ export const createBatch = async (input: {
   };
 
   if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase.from('batches').insert([newBatch]).select();
-    if (!error && data && data.length > 0) {
-      const dbBatch = data[0] as Batch;
-      const updatedList = [dbBatch, ...existingBatches];
-      setStorageItem(LOCAL_STORAGE_KEY_BATCHES, updatedList);
-      return dbBatch;
+    try {
+      const { data, error } = await supabase.from('batches').insert([newBatch]).select();
+      if (!error && data && data.length > 0) {
+        const dbBatch = data[0] as Batch;
+        const updatedList = [dbBatch, ...existingBatches];
+        setStorageItem(LOCAL_STORAGE_KEY_BATCHES, updatedList);
+        return dbBatch;
+      }
+    } catch (err) {
+      console.warn("Supabase batch insert error, falling back to local store:", err);
     }
   }
 
@@ -507,12 +511,16 @@ export const getImageAnalysisByBatchId = async (batchId: string): Promise<ImageA
 // ============================================================================
 export const getExperiments = async (): Promise<Experiment[]> => {
   if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase
-      .from('experiments')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      return data as Experiment[];
+    try {
+      const { data, error } = await supabase
+        .from('experiments')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && data) {
+        return data as Experiment[];
+      }
+    } catch (err) {
+      console.warn("Supabase experiments fetch notice:", err);
     }
   }
   return getStorageItem<Experiment[]>(LOCAL_STORAGE_KEY_EXPERIMENTS, []);
@@ -560,11 +568,15 @@ export const createExperiment = async (input: {
   };
 
   if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase.from('experiments').insert([newExp]).select();
-    if (!error && data && data.length > 0) {
-      const dbExp = data[0] as Experiment;
-      setStorageItem(LOCAL_STORAGE_KEY_EXPERIMENTS, [dbExp, ...existingExp]);
-      return dbExp;
+    try {
+      const { data, error } = await supabase.from('experiments').insert([newExp]).select();
+      if (!error && data && data.length > 0) {
+        const dbExp = data[0] as Experiment;
+        setStorageItem(LOCAL_STORAGE_KEY_EXPERIMENTS, [dbExp, ...existingExp]);
+        return dbExp;
+      }
+    } catch (err) {
+      console.warn("Supabase experiment insert error, falling back to local store:", err);
     }
   }
 

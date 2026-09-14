@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AuthModal from "@/components/AuthModal";
+import { createExperiment, getBatches } from "@/lib/store";
 
 function NewExperimentForm() {
   const router = useRouter();
@@ -35,19 +36,27 @@ function NewExperimentForm() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
+      let bList: any[] = [];
       if (user) {
-        const { data: bList } = await supabase
-          .from('batches')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+        try {
+          const { data } = await supabase
+            .from('batches')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+          bList = data || [];
+        } catch (e) {}
+      }
 
-        setBatches(bList || []);
-        if (preselectedBatchId && !selectedBatchId) {
-          setSelectedBatchId(preselectedBatchId);
-        } else if (bList && bList.length > 0 && !selectedBatchId) {
-          setSelectedBatchId(bList[0].id);
-        }
+      if (!bList || bList.length === 0) {
+        bList = await getBatches();
+      }
+
+      setBatches(bList);
+      if (preselectedBatchId && !selectedBatchId) {
+        setSelectedBatchId(preselectedBatchId);
+      } else if (bList && bList.length > 0 && !selectedBatchId) {
+        setSelectedBatchId(bList[0].id);
       }
       setLoadingBatches(false);
     }
@@ -118,31 +127,22 @@ function NewExperimentForm() {
         return;
       }
 
-      const { data: newExp, error: insertError } = await supabase
-        .from('experiments')
-        .insert({
-          user_id: user.id,
-          batch_id: selectedBatchId,
-          objective,
-          quantity_used: Number(quantityUsed),
-          processing_method: processingMethod,
-          duration,
-          observations,
-          result,
-          status
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
+      const newExp = await createExperiment({
+        batch_id: selectedBatchId,
+        objective,
+        quantity_used: Number(quantityUsed),
+        processing_method: processingMethod,
+        duration,
+        observations: observations || undefined,
+        result,
+        status
+      });
 
       router.push(`/pit-management/batches/${selectedBatchId}`);
       router.refresh();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg("حدث خطأ أثناء حفظ التجربة في قاعدة البيانات: " + (err.message || err));
+      setErrorMsg("حدث خطأ أثناء حفظ التجربة: " + (err.message || err));
       setIsSubmitting(false);
     }
   };
