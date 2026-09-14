@@ -584,14 +584,21 @@ export default function LandingPage() {
 
               <motion.div 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex items-center justify-center lg:justify-start gap-4 pt-4"
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4"
               >
                 <Link
                   href="/pit-management/dashboard"
                   className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-0.5"
                 >
-                  <span>استكشف المنصة</span>
+                  <span>ابدأ مع نواة</span>
                   <ChevronLeft className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-2xl text-sm transition-all border border-slate-200 hover:-translate-y-0.5"
+                >
+                  <span>استكشف كيف تعمل نواة</span>
+                  <ArrowDown className="w-4 h-4 text-slate-500" />
                 </Link>
               </motion.div>
             </div>
