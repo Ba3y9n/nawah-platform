@@ -3,15 +3,14 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { Mail, Lock, Loader2, AlertCircle } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import { loginAction } from "@/app/auth/actions";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +27,8 @@ export default function LoginPage() {
         setErrorMsg(result.error);
         setLoading(false);
       } else if (result?.success) {
-        const nextUrl = searchParams.get('next') || '/pit-management/dashboard';
+        const urlParams = new URLSearchParams(window.location.search);
+        const nextUrl = urlParams.get('next') || '/pit-management/dashboard';
         router.push(nextUrl);
         router.refresh();
       }
