@@ -82,7 +82,7 @@ export default function Navbar() {
     { href: "/map", label: "الخريطة الذكية" },
     { href: "/evidence", label: "الأدلة والمصادر" },
     { href: "/assistant", label: "مساعد نواة" },
-    { href: "/about", label: "عن نواة" },
+    { href: "/#why-nawah", label: "عن نواة" },
   ];
 
   const handleLogout = async () => {

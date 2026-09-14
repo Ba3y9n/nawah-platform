@@ -825,10 +825,13 @@ export default function LandingPage() {
       </section>
 
       {/* 8. WHY NAWAH (Brief Visual Flow) */}
-      <section className="py-16 sm:py-32 pb-20 sm:pb-32 bg-white text-center">
+      <section id="why-nawah" className="py-16 sm:py-32 pb-20 sm:pb-32 bg-white text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-16">
           <div className="space-y-4">
-            <h2 className="text-3xl font-black text-emerald-950">لماذا نواة؟</h2>
+            <h2 className="text-3xl font-black text-emerald-950">عن نواة | لماذا نواة؟</h2>
+            <p className="text-slate-600 text-base max-w-2xl mx-auto leading-relaxed font-medium">
+              تسعى نواة إلى دعم تحويل نوى التمر من مورد ثانوي غير مستثمر بالكامل إلى مورد قابل للتتبع والدراسة والتثمين، من خلال ربط البيانات والذكاء الاصطناعي والأدلة والتجارب وقياس الأثر في منظومة رقمية واحدة.
+            </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-base sm:text-xl font-bold text-slate-400">
@@ -857,6 +860,10 @@ export default function LandingPage() {
               <ChevronLeft className="w-4 h-4 text-emerald-300" />
               <span className="bg-emerald-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-md">أثر</span>
             </div>
+            
+            <p className="text-xs text-slate-500 font-medium pt-2">
+              تعتمد نواة على سجلات رقمية مترابطة لتتبع الدفعات وربطها بالتحليل والتجارب والأدلة وقياس الأثر لضمان الشفافية والموثوقية.
+            </p>
           </div>
         </div>
       </section>

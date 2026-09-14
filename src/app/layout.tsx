@@ -60,7 +60,7 @@ export default function RootLayout({
               <div className="md:mx-auto">
                 <h4 className="text-sm font-black text-white mb-8 uppercase tracking-widest border-b-2 border-white/10 pb-2 inline-block">عن نواة</h4>
                 <ul className="space-y-4">
-                  <li><Link href="/about" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">عن المنصة</Link></li>
+                  <li><Link href="/#why-nawah" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">عن المنصة</Link></li>
                   <li><Link href="/#how-it-works" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">كيف تعمل نواة؟</Link></li>
                   <li><Link href="/#features" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">مميزات نواة</Link></li>
                 </ul>
