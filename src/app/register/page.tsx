@@ -1,47 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UserPlus, Leaf, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Mail, Lock, User, Loader2, AlertCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import AuthLayout from "@/components/auth/AuthLayout";
 import { signupAction } from "@/app/auth/actions";
-import { SAUDI_REGIONS, SAUDI_CITIES } from "@/lib/store";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [infoMsg, setInfoMsg] = useState("");
-  
-  const [selectedRegionId, setSelectedRegionId] = useState(SAUDI_REGIONS[0].id);
-  const [selectedCityId, setSelectedCityId] = useState(
-    SAUDI_CITIES.find(c => c.region_id === SAUDI_REGIONS[0].id)?.id || ""
-  );
-
-  const availableCities = SAUDI_CITIES.filter(c => c.region_id === selectedRegionId);
+  const [successMsg, setSuccessMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
 
     setErrorMsg("");
-    setInfoMsg("");
+    setSuccessMsg("");
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
 
     if (password !== confirmPassword) {
-      setErrorMsg("كلمات المرور غير متطابقة.");
+      setErrorMsg("كلمات المرور غير متطابقة / Passwords do not match."); 
+      setLoading(false);
       return;
     }
 
     if (password.length < 6) {
-      setErrorMsg("كلمة المرور يجب ألا تقل عن 6 أحرف.");
+      setErrorMsg("يجب أن تحتوي كلمة المرور على 6 أحرف كحد أدنى.");
+      setLoading(false);
       return;
     }
-
-    setLoading(true);
 
     try {
       const result = await signupAction(formData);
@@ -49,185 +43,117 @@ export default function RegisterPage() {
         setErrorMsg(result.error);
         setLoading(false);
       } else if (result?.info) {
-        setInfoMsg(result.info);
-        setLoading(false);
-      } else if (result?.success) {
+        // Needs email verification
+        router.push('/verify-email');
+      } else {
+        // Successful signup, session created
         router.push('/pit-management/dashboard');
         router.refresh();
       }
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg("حدث خطأ غير متوقع أثناء إنشاء الحساب. يرجى المحاولة لاحقاً.");
+    } catch (err) {
+      setErrorMsg("An unexpected error occurred.");
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[80vh] py-12 px-4 flex items-center justify-center bg-slate-50">
-      <div className="max-w-2xl w-full bg-white border border-emerald-200 rounded-3xl p-8 shadow-xl space-y-6">
-        
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-amber-400 text-emerald-950 flex items-center justify-center mx-auto font-black shadow-lg shadow-amber-400/20">
-            <Leaf className="w-7 h-7" />
+    <AuthLayout>
+      {(dict, lang) => (
+        <div className="flex flex-col space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-black text-slate-900">{dict.createAccount}</h1>
+            <p className="text-sm text-slate-500 font-medium">
+              {dict.registerSubtitle}
+            </p>
           </div>
-          <h2 className="text-2xl font-black text-emerald-950">إنشاء حساب في نواة</h2>
-          <p className="text-sm text-emerald-700/80">
-            انضم إلى المنصة الوطنية للتدوير الحيوي لنوى التمر
-          </p>
+
+          {errorMsg && (
+            <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in">
+              <User className="w-4 h-4 flex-shrink-0" />
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5 relative">
+              <label className="text-xs font-bold text-slate-700 block">{dict.fullName}</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  name="name" /* Changed from fullName to name to match backend action */
+                  required 
+                  className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                />
+                <User className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+              </div>
+            </div>
+
+            <div className="space-y-1.5 relative">
+              <label className="text-xs font-bold text-slate-700 block">{dict.emailLabel}</label>
+              <div className="relative">
+                <input 
+                  type="email" 
+                  name="email"
+                  required 
+                  className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                  dir="ltr"
+                />
+                <Mail className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+              </div>
+            </div>
+
+            <div className="space-y-1.5 relative">
+              <label className="text-xs font-bold text-slate-700 block">{dict.passwordLabel}</label>
+              <div className="relative">
+                <input 
+                  type="password" 
+                  name="password"
+                  required 
+                  className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                  dir="ltr"
+                />
+                <Lock className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1">{dict.passwordRequirements}</p>
+            </div>
+
+            <div className="space-y-1.5 relative">
+              <label className="text-xs font-bold text-slate-700 block">{dict.confirmPassword}</label>
+              <div className="relative">
+                <input 
+                  type="password" 
+                  name="confirmPassword"
+                  required 
+                  className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                  dir="ltr"
+                />
+                <Lock className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : dict.createAccount}
+            </button>
+          </form>
+
+          <div className="text-center pt-2">
+            <Link href="/login" className="text-sm font-bold text-slate-500 hover:text-emerald-600 transition-colors">
+              {dict.alreadyHaveAccount}
+            </Link>
+          </div>
         </div>
-
-        {errorMsg && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-xs flex items-center gap-3 animate-in fade-in">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {infoMsg && (
-          <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 p-4 rounded-2xl text-xs flex items-center gap-3 animate-in fade-in">
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
-            <span>{infoMsg}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">الاسم الكامل <span className="text-rose-500">*</span></label>
-              <input 
-                type="text" 
-                name="name" 
-                required 
-                disabled={loading}
-                placeholder="الاسم ثلاثي" 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50" 
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">البريد الإلكتروني <span className="text-rose-500">*</span></label>
-              <input 
-                type="email" 
-                name="email" 
-                required 
-                disabled={loading}
-                placeholder="name@domain.com" 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50" 
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">كلمة المرور <span className="text-rose-500">*</span></label>
-              <input 
-                type="password" 
-                name="password" 
-                required 
-                disabled={loading}
-                placeholder="أدخل 6 أحرف على الأقل" 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50" 
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">تأكيد كلمة المرور <span className="text-rose-500">*</span></label>
-              <input 
-                type="password" 
-                name="confirmPassword" 
-                required 
-                disabled={loading}
-                placeholder="أعد كتابة كلمة المرور" 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50" 
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">نوع المستخدم:</label>
-              <select 
-                name="user_type" 
-                disabled={loading}
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-              >
-                <option value="individual">فرد</option>
-                <option value="factory">مصنع / منشأة</option>
-                <option value="farmer">مزارع / نخيل</option>
-                <option value="waste_collector">مجمع نفايات عضوية</option>
-                <option value="researcher">باحث / مركز أبحاث</option>
-                <option value="other">جهة أخرى</option>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">اسم المنشأة/الجهة (إن وجد):</label>
-              <input 
-                type="text" 
-                name="organization" 
-                disabled={loading}
-                placeholder="مثال: مصنع تمور كذا" 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50" 
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">المنطقة:</label>
-              <select 
-                name="region_id"
-                disabled={loading}
-                value={selectedRegionId} 
-                onChange={(e) => {
-                  setSelectedRegionId(e.target.value);
-                  const firstCity = SAUDI_CITIES.find(c => c.region_id === e.target.value);
-                  if (firstCity) setSelectedCityId(firstCity.id);
-                }} 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-              >
-                {SAUDI_REGIONS.map(r => <option key={r.id} value={r.id}>{r.name_ar}</option>)}
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-emerald-900">المدينة:</label>
-              <select 
-                name="city_id"
-                disabled={loading}
-                value={selectedCityId} 
-                onChange={(e) => setSelectedCityId(e.target.value)} 
-                className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-4 py-3 text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
-              >
-                {availableCities.map(c => <option key={c.id} value={c.id}>{c.name_ar}</option>)}
-              </select>
-            </div>
-
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-emerald-950 font-black py-3 rounded-2xl transition-all shadow-lg shadow-amber-400/20 disabled:opacity-50 mt-4 flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>جاري إنشاء الحساب...</span>
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-5 h-5" />
-                <span>إنشاء حساب في نواة</span>
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="text-center pt-2 text-sm text-emerald-700/80">
-          لديك حساب مسبقاً؟{" "}
-          <Link href="/login" className="text-amber-500 font-bold hover:underline">
-            تسجيل الدخول
-          </Link>
-        </div>
-
-      </div>
-    </div>
+      )}
+    </AuthLayout>
   );
 }
