@@ -6,11 +6,13 @@ import { VerifiedSource } from "@/lib/types";
 interface MapProps {
   sources: VerifiedSource[];
   onSelectSource: (source: VerifiedSource) => void;
+  selectedSourceId?: string | null;
 }
 
-export default function Map({ sources, onSelectSource }: MapProps) {
+export default function Map({ sources, onSelectSource, selectedSourceId }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
+  const markersRef = useRef<{ [key: string]: any }>({});
 
   useEffect(() => {
     if (typeof window === "undefined" || !mapRef.current) return;
@@ -28,10 +30,21 @@ export default function Map({ sources, onSelectSource }: MapProps) {
       }
 
       if (!leafletMapRef.current && mapRef.current) {
-        // Center on Saudi Arabia (Riyadh / Qassim)
-        const map = L.map(mapRef.current as HTMLElement).setView([25.0, 44.5], 6);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // Center on Saudi Arabia (Qassim / Riyadh center view) with smooth interaction settings
+        const map = L.map(mapRef.current as HTMLElement, {
+          center: [25.0, 44.5],
+          zoom: 6,
+          zoomControl: false,
+          dragging: true,
+          touchZoom: true,
+          doubleClickZoom: true,
+          scrollWheelZoom: true,
+        });
+
+        // Minimal / Light tile layer
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+          attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 19
         }).addTo(map);
 
         leafletMapRef.current = map;
@@ -40,51 +53,67 @@ export default function Map({ sources, onSelectSource }: MapProps) {
       const map = leafletMapRef.current;
 
       // Clear existing markers
-      map.eachLayer((layer: any) => {
-        if (layer instanceof L.Marker) {
-          map.removeLayer(layer);
-        }
+      Object.values(markersRef.current).forEach((marker: any) => {
+        map.removeLayer(marker);
       });
+      markersRef.current = {};
 
-      // Add markers for verified & pending sources
+      // Add custom styled NAWAH markers
       sources.forEach((src) => {
         if (src.lat && src.lng) {
+          const isSelected = selectedSourceId === src.id;
           const isVerified = src.verification_status === 'verified';
-          const markerBg = isVerified ? '#022b1e' : '#f59e0b';
-          const markerBorder = isVerified ? '#10b981' : '#d97706';
+          
+          let iconColor = '#022c22'; // Emerald dark
+          if (src.source_type === 'factory') iconColor = '#047857';
+          else if (src.source_type === 'collection_center') iconColor = '#d97706';
+          else if (src.source_type === 'farm') iconColor = '#15803d';
+
+          const markerHtml = `
+            <div style="
+              position: relative;
+              width: ${isSelected ? '36px' : '28px'};
+              height: ${isSelected ? '36px' : '28px'};
+              background: ${iconColor};
+              border: 2.5px solid ${isVerified ? '#34d399' : '#fbbf24'};
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(2, 44, 34, 0.25);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: all 0.3s ease;
+              transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'};
+            ">
+              <div style="width: 8px; height: 8px; background: #ffffff; border-radius: 50%;"></div>
+            </div>
+          `;
 
           const customIcon = L.divIcon({
-            className: 'custom-leaflet-marker',
-            html: `<div style="background-color: ${markerBg}; color: #ffffff; font-weight: bold; width: 30px; height: 30px; border-radius: 50%; display: flex; items-center: center; justify-content: center; border: 2.5px solid ${markerBorder}; box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-size: 14px; line-height: 28px; text-align: center;">📍</div>`,
-            iconSize: [30, 30],
-            iconAnchor: [15, 30]
+            className: 'nawah-custom-marker',
+            html: markerHtml,
+            iconSize: [isSelected ? 36 : 28, isSelected ? 36 : 28],
+            iconAnchor: [isSelected ? 18 : 14, isSelected ? 18 : 14]
           });
 
           const marker = L.marker([src.lat, src.lng], { icon: customIcon }).addTo(map);
-          marker.bindPopup(`
-            <div style="font-family: sans-serif; text-align: right; direction: rtl; padding: 6px;">
-              <strong style="color: #022c22; font-size: 13px; display: block; margin-bottom: 2px;">${src.name}</strong>
-              <span style="font-size: 11px; color: ${isVerified ? '#047857' : '#b45309'}; display: inline-block; font-weight: bold;">
-                ${isVerified ? '✓ موثق رسمياً' : '⏳ قيد التحقق الميداني'}
-              </span>
-              <span style="font-size: 10px; color: #6b7280; display: block; margin-top: 4px;">${src.data_source || 'وزارة البيئة والمياه والزراعة'}</span>
-            </div>
-          `);
-
+          
           marker.on('click', () => {
             onSelectSource(src);
+            map.flyTo([src.lat!, src.lng!], 11, { duration: 1.2 });
           });
+
+          markersRef.current[src.id] = marker;
         }
       });
     };
 
     loadLeaflet();
-  }, [sources, onSelectSource]);
+  }, [sources, onSelectSource, selectedSourceId]);
 
   return (
     <div 
       ref={mapRef} 
-      className="h-[480px] w-full rounded-2xl border border-slate-200 z-10 overflow-hidden shadow-inner" 
+      className="w-full h-full min-h-[420px] lg:min-h-[640px] rounded-2xl z-10 overflow-hidden shadow-inner touch-pan-x touch-pan-y" 
     />
   );
 }
