@@ -449,9 +449,9 @@ export default function BatchDetailsPage({
             </div>
 
             <div className="bg-emerald-900/40 p-4 rounded-2xl border border-emerald-800/80 space-y-1">
-              <span className="text-emerald-300 font-bold text-[10px] block uppercase">تقدير حسابي (Calculated Estimate):</span>
+              <span className="text-emerald-300 font-bold text-[10px] block uppercase">تقدير حسابي محتمل للانبعاثات المتجنبة:</span>
               <span className="text-xl font-black text-amber-400">{batchCo2Ton} طن</span>
-              <p className="text-[11px] text-emerald-200/70">خفض CO2 مكافئ (معادلة 0.65 طن/طن نفايات)</p>
+              <p className="text-[11px] text-emerald-200/70">انبعاثات متجنبة محتملة (معامل تقديري نموذجياً: 0.65 طن CO2e / طن)</p>
             </div>
           </div>
         </div>
