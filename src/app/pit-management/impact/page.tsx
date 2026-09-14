@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { 
   TrendingUp, Leaf, Package, TestTube2, 
-  AlertCircle, PlusCircle, Database, Loader2, Info, ShieldAlert
+  AlertCircle, PlusCircle, Database, Loader2, Info, ShieldAlert, ChevronLeft
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getImpactSummary } from "@/lib/store";
@@ -74,26 +74,26 @@ export default function ImpactPage() {
   }, []);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="space-y-6 max-w-6xl mx-auto" dir="rtl">
       
       {/* TITLE BANNER */}
-      <div className="bg-[#022B1E] text-white border border-emerald-900 p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-emerald-950 text-white border border-emerald-900 p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-emerald-300 mb-1">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span>حاسبة ومؤشرات الأثر البيئي والاقتصادي التراكمية</span>
+          <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-800 mb-2">
+            <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+            <span>المرحلة 06 والأخيرة: قياس الأثر والنتائج</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-white">قياس الأثر الرقمي المستند للبيانات</h2>
-          <p className="text-xs text-emerald-100/80 mt-1">
-            التمييز الصريح بين البيانات الفعلية المسجلة، التقديرات النظرية، والتقديرات الحسابية للانبعاثات المتجنبة
+          <h2 className="text-xl md:text-2xl font-black text-white">شاشة قياس الأثر البيئي والاقتصادي التراكمي</h2>
+          <p className="text-xs text-emerald-200/80 mt-1">
+            مؤشرات محتسبة بناءً على تسلسل رحلة الدفعات والتجارب المسجلة في المنظومة الرقمية
           </p>
         </div>
 
         <Link
           href="/pit-management/batches/new"
-          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-2xl text-xs transition-all shadow-md shadow-emerald-950/20"
+          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3 rounded-2xl text-xs transition-all shadow-md shrink-0"
         >
-          <PlusCircle className="w-4 h-4" />
+          <PlusCircle className="w-4 h-4 text-amber-300" />
           <span>تسجيل دفعة لزيادة الأثر</span>
         </Link>
       </div>
@@ -102,70 +102,70 @@ export default function ImpactPage() {
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-          <span>بيانات فعلية (Actual Data):</span>
+          <span>بيانات فعلية موثقة (Actual Data):</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg shadow-emerald-900/5 space-y-2">
+          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>إجمالي الكمية المسجلة</span>
+              <span>الكمية الكلية المسجلة</span>
               <Package className="w-4 h-4 text-emerald-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 dir-ltr text-right">
+            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_registered_kg.toLocaleString()} كجم`}
             </div>
-            <p className="text-[11px] text-slate-500">مجموع الدفعات ذات الأكواد الفريدة (NW)</p>
+            <p className="text-[11px] text-slate-400">دفعات موثقة برمز NW الفردي</p>
           </div>
 
-          <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg shadow-emerald-900/5 space-y-2">
+          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>عدد الدفعات المسجلة</span>
+              <span>الدفعات المسجلة</span>
               <Database className="w-4 h-4 text-emerald-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 dir-ltr text-right">
+            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : summary.total_batches_count}
             </div>
-            <p className="text-[11px] text-slate-500">دفعات محددة بالصنع والمصدر</p>
+            <p className="text-[11px] text-slate-400">سجلات مصانع ومراكز تجميع</p>
           </div>
 
-          <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg shadow-emerald-900/5 space-y-2">
+          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>عدد التجارب الموثقة</span>
+              <span>التجارب الموثقة</span>
               <TestTube2 className="w-4 h-4 text-emerald-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 dir-ltr text-right">
+            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : summary.total_experiments_count}
             </div>
-            <p className="text-[11px] text-slate-500">تجارب مربوطة بأكواد EXP</p>
+            <p className="text-[11px] text-slate-400">اختبارات معملية وتطبيقية</p>
           </div>
 
-          <div className="bg-white border border-emerald-100/60 p-5 rounded-3xl shadow-lg shadow-emerald-900/5 space-y-2">
+          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>الكمية المستهلكة في التجارب</span>
+              <span>الكمية الموثقة بالتجارب</span>
               <Leaf className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="text-2xl font-black text-emerald-700 dir-ltr text-right">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_reused_kg.toLocaleString()} كجم`}
             </div>
-            <p className="text-[11px] text-slate-500">كميات موثقة في تجارب معملية وتطبيقية</p>
+            <p className="text-[11px] text-slate-400">كميات مستخدمة في التجارب</p>
           </div>
         </div>
       </div>
 
-      {/* ESTIMATED METRICS CARDS */}
+      {/* ESTIMATED MODEL CALCULATIONS */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-          <span>تقديرات حسابية ونظرية (Model Estimates):</span>
+          <span>تقديرات حسابية ونظرية (Model Calculations):</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-lg space-y-2">
+          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-amber-900">
-              <span className="bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">تقدير نظري (Theoretical Estimate)</span>
+              <span className="bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">تقدير تحويلي نظري (Theoretical Calculation)</span>
               <Leaf className="w-4 h-4 text-amber-600" />
             </div>
-            <div className="text-3xl font-black text-slate-900 dir-ltr text-right pt-1">
+            <div className="text-3xl font-black text-emerald-950 dir-ltr text-right pt-1">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.landfill_diverted_ton} طن`}
             </div>
             <p className="text-xs text-slate-600 font-medium leading-relaxed">
@@ -173,30 +173,30 @@ export default function ImpactPage() {
             </p>
           </div>
 
-          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-lg space-y-2">
+          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-sm space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-amber-900">
               <span className="bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">تقدير حسابي محتمل للانبعاثات المتجنبة</span>
               <TrendingUp className="w-4 h-4 text-amber-600" />
             </div>
-            <div className="text-3xl font-black text-slate-900 dir-ltr text-right pt-1">
+            <div className="text-3xl font-black text-emerald-950 dir-ltr text-right pt-1">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.estimated_co2_reduction_ton} طن CO2e`}
             </div>
             <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              تقدير نموذج حسابي محتمل متجنب عند تفادي التحلل اللاهوائي في المدافن (معامل تقديري محتسب نموذجياً: 0.65 طن CO2e / طن مخلفات عضوية).
+              تقدير حسابي محتمل للانبعاثات المتجنبة عند تفادي التحلل اللاهوائي (معامل تقديري مستخدم في هذا النموذج: 0.65 طن CO2e / طن مخلفات عضوية).
             </p>
           </div>
         </div>
       </div>
 
-      {/* METHODOLOGY TRANSPARENCY NOTICE */}
+      {/* METHODOLOGY NOTICE */}
       <div className="bg-amber-50/80 border border-amber-200 p-5 rounded-3xl text-xs text-amber-950 space-y-2">
         <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
           <ShieldAlert className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <span>إيضاح المنهجية العلمية وحدود القياس:</span>
+          <span>إيضاح المنهجية وحدود النموذج:</span>
         </div>
         <p className="leading-relaxed font-medium text-amber-900/90">
-          • <strong>المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري محتسب نموذجياً يمثل التقييم التبسيطي لتفادي الميثان في المدافن التقليدية.<br/>
-          • <strong>الحسابات العلمية القطعية (LCA):</strong> تتطلب إجراء دراسة تقييم دورة الحياة (Life Cycle Assessment) المخصصة لكل مسار تحويلي لنوى التمر (مثل التفحيم الحراري أو استخلاص الزيوت) لتحديد الأثر الكربون الحقيقي بدقة.
+          • <strong>المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري مستخدم في هذا النموذج لتوضيح العائد البيئي التخميني.<br/>
+          • <strong>دراسات تقييم دورة الحياة (LCA):</strong> الحسابات النهائية الصارمة تتطلب إجراء التقييم المعملي المخصص لكل مسار تحويلي (كالتفحيم الحراري أو الاستخلاص).
         </p>
       </div>
 
