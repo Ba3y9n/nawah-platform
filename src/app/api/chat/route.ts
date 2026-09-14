@@ -1,26 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import fs from "fs";
 
-const apiKey = process.env.GEMINI_API_KEY || "";
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+function getGeminiClient(): GoogleGenerativeAI | null {
+  let key = (process.env.GEMINI_API_KEY || "").replace(/\0/g, "").trim();
+  if (!key && typeof window === "undefined") {
+    try {
+      if (fs.existsSync(".env")) {
+        const content = fs.readFileSync(".env", "utf-16le");
+        const match = content.match(/GEMINI_API_KEY=(.*)/);
+        if (match) key = match[1].replace(/\0/g, "").trim();
+      }
+    } catch (e) {
+      // Ignore fallback read errors
+    }
+  }
+  return key ? new GoogleGenerativeAI(key) : null;
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { message, history } = await req.json();
 
     if (!message || typeof message !== 'string') {
-      return NextResponse.json({ error: "المقصد مطلوب" }, { status: 400 });
+      return NextResponse.json({ error: "الرسالة مطلوبة" }, { status: 400 });
     }
 
-    const systemPrompt = `أنت "مساعد نواة" — المساعد الذكي الرسمي لمنصة (نواة | NAWAH)، المنصة الوطنية لتتبع وإدارة وتدوير نوى التمر وتطبيقات الاقتصاد الدائري في المملكة العربية السعودية.
-مهامك:
-- الإجابة على استفسارات المستخدمين حول نوى التمر، طرق الجمع، التجفيف، ونسب الرطوبة.
-- شرح مسارات الاستفادة التحويلية: الفحم المنشط وتصفية المياه، استخلاص الزيوت للمستحضرات التجميلية، بدائل القهوة الخالية من الكافيين، والأعلاف المجهزة.
-- مساعدة الباحثين والمصانع في كيفية تسجيل الدفعات برقم NW فريد، وإجراء التجارب برقم EXP، ومتابعة مؤشرات الأثر البيئي (كمية النفايات المحولة وبصمة الكربون).
-- التحدث بأسلوب رسمي، احترافي، ودود باللغة العربية، والالتزام بالحقائق التقنية العلمية دون ادعاء دراسات أو أرقام وهمية غير موجودة.`;
+    const systemPrompt = `أنت "مساعد نواة" — الخبير والمساعد الذكي الرسمي لمنصة (نواة | NAWAH)، المنصة الوطنية لتتبع وتدوير نوى التمر وتطبيقات الاقتصاد الدائري في المملكة العربية السعودية.
+
+قواعد الاستجابة الصارمة:
+1. التخصص التام: إجاباتك محصورة في نوى التمر، الاقتصاد الدائري، تتبع الدفعات (NW)، سجل التجارب (EXP)، مسارات الاستفادة التحويلية، والأدلة الرسمية والمعملية.
+2. التمييز الواضح في المفاهيم:
+   - فرق دائماً بين "مسار محتمل / Potential Use" و "نتيجة مثبتة وموثقة / Validated Result".
+   - لا تحوّل الاحتمال أو الفكرة البحثية إلى حقيقة علمية قطعية بدون مصدر.
+   - عند ذكر أي أرقام بيئية أو تقديرية، وضح أنها "تقدير نظري / حسابي".
+3. الأمان والدقة العلمية:
+   - لا تخترع أبحاثاً، مصادر، أسماء علماء، أو أرقاماً غير موجودة.
+   - إذا لم تتوفر لديك معلومة مؤكدة أو كانت تتطلب فحصاً مخبرياً دقيقاً (كالرطوبة الحقيقية، التركيب الكيميائي، أو السلامة الميكروبية)، اذكر بوضوح: "هذه المعلومة تتطلب اختباراً مخبرياً معتمداً أو مصدر موثق".
+4. الأسلوب: رسمي، احترافي، ودود، باللغة العربية، وواضح ومباشر.`;
+
+    const genAI = getGeminiClient();
 
     if (!genAI) {
-      // Intelligent fallback when GEMINI_API_KEY is not set
       const fallbackReply = generateFallbackReply(message);
       return NextResponse.json({ reply: fallbackReply });
     }
@@ -33,13 +54,13 @@ export async function POST(req: NextRequest) {
           }))
         : [];
 
-      // Primary model attempt (Gemini 2.5/1.5 Flash)
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // Use gemini-3.6-flash model as required
+      const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 
       const chat = model.startChat({
         history: [
           { role: "user", parts: [{ text: systemPrompt }] },
-          { role: "model", parts: [{ text: "أهلاً بك! أنا مساعد نواة الذكي، خبير منصة (نواة | NAWAH) لإدارة وتدوير نوى التمر في المملكة. كيف يمكنني مساعدتك اليوم؟" }] },
+          { role: "model", parts: [{ text: "أهلاً بك! أنا مساعد نواة الذكي، خبير منصة (نواة | NAWAH) لإدارة وتدوير نوى التمر وتطبيقات الاقتصاد الدائري. كيف يمكنني إجابتك اليوم؟" }] },
           ...formattedHistory
         ],
       });
@@ -50,7 +71,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ reply: text });
     } catch (aiError: any) {
-      console.warn("Gemini API call failed, using intelligent NAWAH Assistant fallback:", aiError.message);
+      console.warn("Gemini 3.6 Flash Chat API warning, using local assistant fallback:", aiError?.message || aiError);
       const fallbackReply = generateFallbackReply(message);
       return NextResponse.json({ reply: fallbackReply });
     }
@@ -58,7 +79,7 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Chat Route Error:", error);
     return NextResponse.json(
-      { reply: "تعذر تشغيل خدمة المساعد الذكي حالياً، يرجى إعادة المحاولة بعد قليل." },
+      { reply: "تعذر التواصل مع المساعد الذكي حالياً، يرجى المحاولة بعد قليل." },
       { status: 200 }
     );
   }
@@ -68,23 +89,23 @@ function generateFallbackReply(userMessage: string): string {
   const msg = userMessage.toLowerCase();
   
   if (msg.includes('دفعة') || msg.includes('تسجيل') || msg.includes('كود') || msg.includes('nw')) {
-    return "لتسجيل دفعة نوى جديدة في منصة نواة، انتقل إلى قسم (إدارة النوى) ثم اضغط على (تسجيل دفعة جديدة). سيقوم النظام تلقائياً بتوليد كود تتبع فريد بنمط NW-2026-XXXX، وتوثيق المصدر والكمية بالكيلوجرام ونسبة الرطوبة وطريقة التجفيف.";
+    return "لتسجيل دفعة نوى جديدة في منصة نواة، يمكنك الانتقال إلى قسم (إدارة النوى) ثم (تسجيل دفعة جديدة). سيصدر النظام كود تتبع فريد NW-2026-XXXX لربط الدفعة لاحقاً بالتحليل البصري والتجارب المخبرية وسجل الأثر.";
   }
   if (msg.includes('فحم') || msg.includes('تصفية') || msg.includes('مياه') || msg.includes('كربون')) {
-    return "مسار الفحم المنشط (Activated Carbon) يُعد من أعلى المسارات قيمة لنوى التمر؛ حيث خضعت النوى للتحليل الحراري بمعزل عن الأكسجين لإنتاج فحم عالي الامتصاص يُستخدم في تصفية الفلزات الثقيلة ومياه الصرف الصناعي وفق الأبحاث المعتمدة.";
+    return "مسار إنتاج الفحم المنشط (Activated Carbon) يُعد من مسارات الاستفادة المحتملة ذات القيمة العالية، حيث تتم المعالجة بالتحليل الحراري ثم التنشيط البخاري أو الكيميائي لإنتاج فحم بمساحة سطحية تتجاوز 1000 م²/غم لاستخدامه في تنقية المياه وتصفية الفلزات وفق الأبحاث المعتمدة.";
   }
   if (msg.includes('زيت') || msg.includes('تجميل') || msg.includes('مستحضر')) {
-    return "مسار استخلاص زيت نواة التمر (Date Seed Oil) يتم عبر العصر على البارد لاستخراج الزيت الغني بمضادات الأكسدة والأحماض الدهنية الأساسية (مثل الأوليك واللينوليك) لاستخدامه في كريمات ومستحضرات التجميل العضوية.";
+    return "مسار استخلاص زيت نوى التمر (Date Seed Oil) يمثل مساراً محتملاً في مستحضرات التجميل العضوية؛ نظراً لاحتوائه على حمض الأولييك والتوكوفيرول (فيتامين E). ويتطلب تأكيد الصلاحية إجراء فحوصات حموضة وبيروكسيد معملية.";
   }
   if (msg.includes('قهوة') || msg.includes('كافيين') || msg.includes('مشروب')) {
-    return "بديل القهوة الخالي من الكافيين يتم تحضيره بتحميص وتجفيف وطحن نوى التمر بدرجات حرارة مخصصة، ليعطي نكهة زكية تشبه البن العربي الأصيل بدون أي نسبة كافيين، مما يجعله منتجاً استهلاكياً بيئياً مرغوباً.";
+    return "بديل القهوة الخالي من الكافيين هو مسار محتمل يعتمد على تحميص وطحن نوى التمر المغسولة والمجففة. يتطلب تحضير هذا المنتج التأكد من السلامة الميكروبولوجية والخلو التام من ألياف التمر السكرية لتجنب الاحتراق أثناء التحميص.";
   }
   if (msg.includes('تحليل') || msg.includes('صورة') || msg.includes('كاميرا') || msg.includes('رطوبة')) {
-    return "يمكنك استخدام قسم (تحليل النواة) لالتقاط أو رفع صورة لشحنة النوى؛ حيث يستخرج نظام الرؤية الحاسوبية الخصائص البصرية والشوائب وتجانس التحميص. ننصح دائماً بإرفاق فحص معملي دقيق لنسبة الرطوبة والتركيب الكيميائي.";
+    return "يوفر قسم (التحليل البصري) فحصاً بصرية تقديرياً لاستخراج الخصائص السطحية ومؤشر الشوائب والتجانس. تنبيه هام: الفحص البصري التقديري لا يغني عن الفحوصات المعملية المعتمِدة لتحديد نسبة الرطوبة والتركيب الكيميائي ودقة السلامة الميكروبية.";
   }
   if (msg.includes('تجربة') || msg.includes('مختبر') || msg.includes('exp')) {
-    return "قسم (سجل التجارب) يتيح للباحثين والمختبرات تسجيل أي اختبار تحويلي تجريبي على الدفعات برقم مخصص EXP-2026-XXXX، وتوثيق كمية النوى المستخدمة والنتائج والأثر المترتب عليها.";
+    return "سجل التجارب في منصة نواة يربط الدفعة (NW) بالفرضية البحثية والمخرج التجريبي وتوثيق النتيجة (EXP). يساعدك هذا السجل على تحويل المسار المحتمل إلى نتيجة مثبتة وموثقة بالأدلة.";
   }
   
-  return "أهلاً بك في منصة (نواة | NAWAH). أنا مساعد نواة الذكي لإرشادك في إدارة وتتبع وتسجيل دفعات نوى التمور، واكتشاف مسارات الاستفادة التحويلية (كالفحم المنشط، الزيوت التجميلية، وبدائل القهوة)، وتتبع الأثر البيئي والاقتصادي. كيف يمكنني إجابتك حول مشروعك اليوم؟";
+  return "أهلاً بك في منصة (نواة | NAWAH). أنا مساعد نواة الذكي لإرشادك في إدارة وتتبع وتدوير نوى التمر، واكتشاف مسارات الاستفادة المحتملة، وتوثيق التجارب والأدلة العلمية. كيف يمكنني مساعدتك اليوم؟";
 }

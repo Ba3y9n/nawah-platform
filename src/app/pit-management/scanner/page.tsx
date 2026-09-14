@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
   Scan, Camera, Upload, CheckCircle2, Sparkles, AlertCircle, 
-  Package, Database, Loader2, RefreshCw
+  Package, Database, Loader2, RefreshCw, ShieldAlert, FileText
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -97,7 +97,6 @@ function ScannerContent() {
       if (selectedFile) {
         formData.append("image", selectedFile);
       } else {
-        // Blob fallback from data URL
         const res = await fetch(imagePreview);
         const blob = await res.blob();
         formData.append("image", blob, "camera-image.jpg");
@@ -109,13 +108,13 @@ function ScannerContent() {
       });
 
       if (!apiRes.ok) {
-        throw new Error("فشل الاتصال بمحرك الرؤية الحاسوبية");
+        throw new Error("تعذر الاتصال بمحرك الفحص البصري");
       }
 
       const resData = await apiRes.json();
       setAnalysisResult(resData);
 
-      // Link and Save to PostgreSQL database if batch is selected
+      // Save to Database if batch is selected
       if (selectedBatchId) {
         const supabase = createClient();
         await supabase.from('image_analysis').insert({
@@ -127,7 +126,6 @@ function ScannerContent() {
           notes: resData.moisture_note
         });
 
-        // Update batch image_url if empty
         await supabase.from('batches')
           .update({ image_url: publicImageUrl, status: 'قيد التحليل' })
           .eq('id', selectedBatchId);
@@ -136,7 +134,7 @@ function ScannerContent() {
       }
     } catch (e: any) {
       console.error(e);
-      setErrorMsg("تعذر تحليل الصورة حالياً، يرجى المحاولة مرة أخرى.");
+      setErrorMsg("تعذر إجراء الفحص البصري التقديري حالياً، يرجى المحاولة مرة أخرى.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -149,12 +147,12 @@ function ScannerContent() {
       <div className="bg-white border border-emerald-100/60 p-6 sm:p-8 rounded-3xl shadow-xl shadow-emerald-900/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
-            <Scan className="w-4 h-4" />
-            <span>نظام الفحص والتصنيف البصري</span>
+            <Scan className="w-4 h-4 text-emerald-600" />
+            <span>الفحص والتصنيف البصري التقديري (Visual Assessment)</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-slate-900">تحليل نوى التمر بالذكاء الاصطناعي</h2>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900">فحص الخصائص البصرية بالذكاء الاصطناعي</h2>
           <p className="text-xs text-slate-500 mt-1">
-            التقط أو ارفع صورة لشحنة النوى لتحليل التجانس والنقاء والخصائص السطحية المبدئية
+            استخراج المؤشرات المرئية السطحية وتحديد مسارات الاستفادة المحتملة (Potential Uses) لشحنات النوى
           </p>
         </div>
 
@@ -167,6 +165,17 @@ function ScannerContent() {
         </Link>
       </div>
 
+      {/* MANDATORY LAB TESTING DISCLAIMER BANNER */}
+      <div className="bg-amber-50/80 border border-amber-200 p-4 rounded-2xl text-xs text-amber-900 flex items-start gap-3 shadow-sm">
+        <ShieldAlert className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <span className="font-black block text-amber-950">تنبيه المنهجية العلمية والتحليل البصري:</span>
+          <p className="leading-relaxed font-medium">
+            هذا الفحص البصري التقديري يحلل المظهر السطحي والشوائب الظاهرة فقط، ولا يغني عن الفحوصات المعملية لتحديد الرطوبة والتركيب الكيميائي أو السلامة الميكروبية.
+          </p>
+        </div>
+      </div>
+
       {/* INPUT CONTROLS */}
       <div className="bg-white border border-emerald-100/60 rounded-3xl p-6 shadow-xl space-y-6">
         
@@ -174,7 +183,7 @@ function ScannerContent() {
         <div className="space-y-2">
           <label className="text-xs font-bold text-emerald-900 flex items-center gap-2">
             <Database className="w-4 h-4 text-slate-500" />
-            ربط نتيجة التحليل بدفعة مسجلة في قاعدة البيانات:
+            ربط نتيجة الفحص البصري بدفعة مسجلة في المنظومة:
           </label>
           <select
             value={selectedBatchId}
@@ -243,12 +252,12 @@ function ScannerContent() {
                   {isAnalyzing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>جاري تحليل الخصائص البصرية بالذكاء الاصطناعي...</span>
+                      <span>جاري استخراج الخصائص والمؤشرات البصرية...</span>
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>بدء التحليل البصري الآن</span>
+                      <span>بدء الفحص البصري التقديري الآن</span>
                     </>
                   )}
                 </button>
@@ -286,17 +295,17 @@ function ScannerContent() {
           <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
             <div className="flex items-center gap-2 text-amber-600 font-bold text-sm">
               <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-              <span>نتيجة الفحص والتصنيف البصري الذكي</span>
+              <span>نتيجة الفحص البصري التقديري</span>
             </div>
 
             <span className="bg-emerald-100 text-slate-800 border border-slate-200 px-3 py-1 rounded-full text-xs font-extrabold">
-              درجة الثقة: {analysisResult.confidence || 94}%
+              مستوى الثقة البصري: {analysisResult.confidence || 92}%
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-slate-500 font-bold block">الخصائص البصرية السطحية:</span>
+              <span className="text-slate-500 font-bold block">الملاحظات البصرية السطحية:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visual_features}</p>
             </div>
 
@@ -306,33 +315,33 @@ function ScannerContent() {
             </div>
 
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-slate-500 font-bold block">درجة التجانس البصري واللوني:</span>
+              <span className="text-slate-500 font-bold block">التجانس البصري واللوني التقريبي:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.visual_homogeneity}</p>
             </div>
 
             <div className="bg-slate-50 p-4 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-amber-600 font-bold block">ملاحظة حالة التجفيف والرطوبة البصرية:</span>
+              <span className="text-amber-600 font-bold block">مؤشر التجفيف والرطوبة البصري التقديري:</span>
               <p className="text-slate-800 leading-relaxed">{analysisResult.moisture_note}</p>
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="bg-emerald-50/60 border border-emerald-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
             <div>
-              <span className="text-amber-600 font-bold block">المسار التحويلي الأفضل الموصى به:</span>
-              <span className="text-slate-900 font-black text-sm">{analysisResult.recommended_pathway}</span>
+              <span className="text-emerald-950 font-bold block text-[11px] uppercase tracking-wide">المسار التحويلي المحتمل (Potential Use):</span>
+              <span className="text-emerald-900 font-black text-sm">{analysisResult.recommended_pathway}</span>
             </div>
 
             {selectedBatchId && savedSuccess && (
-              <span className="bg-emerald-100 text-slate-800 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                تم حفظ التحليل في قاعدة البيانات وح ربطه بالدفعة
+              <span className="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 self-start shadow-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+                تم حفظ الفحص البصري ورطه بسجل الدفعة
               </span>
             )}
           </div>
 
-          <div className="bg-slate-50 p-3.5 rounded-xl text-[11px] text-slate-500 flex items-start gap-2 border border-emerald-100 leading-relaxed">
-            <AlertCircle className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
-            <span>{analysisResult.visual_limitations || "تنبيه هام: هذا الفحص البصري التقديري يحلل المظهر السطحي والشوائب الظاهرة فقط، ولا يغني عن الفحوصات المعملية لدقة نسبة الرطوبة والتركيب الكيميائي أو السلامة الميكروبية."}</span>
+          <div className="bg-amber-50 p-3.5 rounded-xl text-[11px] text-amber-900 flex items-start gap-2 border border-amber-200 leading-relaxed font-medium">
+            <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+            <span>{analysisResult.visual_limitations || "تنبيه هام: هذا الفحص البصري التقديري يحلل المظهر السطحي والشوائب الظاهرة فقط، ولا يغني عن الفحوصات المعملية لتحديد الرطوبة والتركيب الكيميائي أو السلامة الميكروبية."}</span>
           </div>
         </div>
       )}
@@ -345,7 +354,7 @@ export default function ScannerPage() {
   return (
     <Suspense fallback={
       <div className="text-center py-16 text-slate-500 text-xs animate-pulse">
-        جاري تحميل ماسح فحص النوى...
+        جاري تحميل ماسح الفحص البصري...
       </div>
     }>
       <ScannerContent />
