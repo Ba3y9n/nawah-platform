@@ -99,10 +99,10 @@ export default function ResetPasswordPage() {
                     type="password" 
                     name="password"
                     required 
-                    className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                    className={`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
                     dir="ltr"
                   />
-                  <Lock className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+                  <Lock className={`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 ${lang === 'ar' ? 'right-3.5' : 'left-3.5'}`} />
                 </div>
               </div>
 
@@ -113,10 +113,10 @@ export default function ResetPasswordPage() {
                     type="password" 
                     name="confirmPassword"
                     required 
-                    className={\`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 \${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors\`}
+                    className={`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
                     dir="ltr"
                   />
-                  <Lock className={\`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 \${lang === 'ar' ? 'right-3.5' : 'left-3.5'}\`} />
+                  <Lock className={`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 ${lang === 'ar' ? 'right-3.5' : 'left-3.5'}`} />
                 </div>
               </div>
 

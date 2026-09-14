@@ -38,7 +38,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       dir={isRtl ? "rtl" : "ltr"}
     >
       {/* LANGUAGE SWITCHER - Floating */}
-      <div className={\`absolute top-6 \${isRtl ? 'left-6' : 'right-6'} z-50\`}>
+      <div className={`absolute top-6 ${isRtl ? 'left-6' : 'right-6'} z-50`}>
         <button 
           onClick={toggleLang}
           className="bg-white/80 backdrop-blur-md border border-emerald-100 text-emerald-900 font-bold px-4 py-2 rounded-full text-sm shadow-sm hover:shadow-md transition-all flex items-center gap-2"
@@ -50,7 +50,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </div>
 
       {/* BRAND PANEL - Always on the Right side visually on desktop */}
-      <div className={\`flex-1 bg-emerald-950 text-white relative flex flex-col items-center justify-center p-12 min-h-[40vh] md:min-h-[100dvh] overflow-hidden \${isRtl ? 'md:order-1' : 'md:order-2'} order-1\`}>
+      <div className={`flex-1 bg-emerald-950 text-white relative flex flex-col items-center justify-center p-12 min-h-[40vh] md:min-h-[100dvh] overflow-hidden ${isRtl ? 'md:order-1' : 'md:order-2'} order-1`}>
         {/* Subtle pattern background */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400 via-transparent to-transparent bg-[length:20px_20px]" style={{ backgroundImage: 'radial-gradient(circle, #34d399 1px, transparent 1px)' }} />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-emerald-950/90" />
@@ -79,7 +79,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </div>
 
       {/* FORM PANEL - Always on the Left side visually on desktop */}
-      <div className={\`flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10 min-h-[100dvh] \${isRtl ? 'md:order-2' : 'md:order-1'} order-2\`}>
+      <div className={`flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10 min-h-[100dvh] ${isRtl ? 'md:order-2' : 'md:order-1'} order-2`}>
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-emerald-900/5 border border-emerald-100/60 p-8 relative">
           {children(dict, lang)}
         </div>
