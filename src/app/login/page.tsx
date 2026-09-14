@@ -79,7 +79,7 @@ export default function LoginPage() {
                   type="email" 
                   name="email"
                   required 
-                  className={`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
+                  className={`w-full bg-slate-50/50 border border-slate-200 rounded-2xl py-3 focus:bg-white ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
                   dir="ltr"
                 />
                 <Mail className={`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 ${lang === 'ar' ? 'right-3.5' : 'left-3.5'}`} />
@@ -93,7 +93,7 @@ export default function LoginPage() {
                   type="password" 
                   name="password"
                   required 
-                  className={`w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
+                  className={`w-full bg-slate-50/50 border border-slate-200 rounded-2xl py-3 focus:bg-white ${lang === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors`}
                   dir="ltr"
                 />
                 <Lock className={`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 ${lang === 'ar' ? 'right-3.5' : 'left-3.5'}`} />
@@ -113,17 +113,13 @@ export default function LoginPage() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-[#022B1E] hover:bg-[#033D2B] text-white font-bold py-3.5 rounded-2xl transition-all shadow-md shadow-[#022B1E]/10 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : dict.signIn}
             </button>
           </form>
 
-          <div className="relative flex items-center py-2">
-            <div className="flex-grow border-t border-slate-100"></div>
-            <span className="flex-shrink-0 mx-4 text-xs font-medium text-slate-400">{dict.or}</span>
-            <div className="flex-grow border-t border-slate-100"></div>
-          </div>
+          
 
           <div className="space-y-3">
             <button 

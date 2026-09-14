@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Language, authDict } from "@/lib/i18n/authDict";
+import { Globe } from "lucide-react";
 
 interface AuthLayoutProps {
   children: (dict: typeof authDict.ar, lang: Language) => React.ReactNode;
@@ -34,54 +35,56 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
   return (
     <div 
-      className="min-h-screen w-full flex flex-col md:flex-row bg-[#f8faf9] overflow-hidden font-sans transition-all duration-300"
+      className="min-h-screen w-full flex flex-col md:flex-row bg-[#FAFAFA] font-sans"
       dir={isRtl ? "rtl" : "ltr"}
     >
-      {/* LANGUAGE SWITCHER - Floating */}
-      <div className={`absolute top-6 ${isRtl ? 'left-6' : 'right-6'} z-50`}>
-        <button 
-          onClick={toggleLang}
-          className="bg-white/80 backdrop-blur-md border border-emerald-100 text-emerald-900 font-bold px-4 py-2 rounded-full text-sm shadow-sm hover:shadow-md transition-all flex items-center gap-2"
-        >
-          <span className={lang === 'ar' ? 'text-emerald-700' : 'text-slate-400'}>العربية</span>
-          <span className="text-slate-300">|</span>
-          <span className={lang === 'en' ? 'text-emerald-700' : 'text-slate-400'}>English</span>
-        </button>
-      </div>
-
-      {/* BRAND PANEL - Always on the Right side visually on desktop */}
-      <div className={`flex-1 bg-emerald-950 text-white relative flex flex-col items-center justify-center p-12 min-h-[40vh] md:min-h-[100dvh] overflow-hidden ${isRtl ? 'md:order-1' : 'md:order-2'} order-1`}>
-        {/* Subtle pattern background */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400 via-transparent to-transparent bg-[length:20px_20px]" style={{ backgroundImage: 'radial-gradient(circle, #34d399 1px, transparent 1px)' }} />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-emerald-950/90" />
+      {/* BRAND PANEL - Premium Dark Emerald */}
+      <div className={`flex-1 relative flex flex-col items-center justify-center p-8 md:p-12 min-h-[30vh] md:min-h-screen overflow-hidden ${isRtl ? 'md:order-1' : 'md:order-2'} order-1 bg-[#022B1E]`}>
+        {/* Soft atmospheric gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-600/20 via-[#022B1E] to-[#01140E]"></div>
         
-        <div className="relative z-10 text-center max-w-lg mx-auto flex flex-col items-center">
-          <Link href="/" className="mb-8 block transform hover:scale-105 transition-transform">
-            <div className="bg-white/95 p-4 rounded-2xl shadow-2xl backdrop-blur-sm">
-              <Image 
-                src="/nawah-logo.png" 
-                alt="نواة | NAWAH" 
-                width={160} 
-                height={64} 
-                className="h-12 w-auto object-contain"
-                priority
-              />
-            </div>
+        {/* Minimal grid pattern */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]"></div>
+        
+        <div className="relative z-10 w-full max-w-md flex flex-col items-start md:items-center text-start md:text-center">
+          <Link href="/" className="mb-10 inline-block">
+            <Image 
+              src="/nawah-logo.png" 
+              alt="نواة | NAWAH" 
+              width={180} 
+              height={72} 
+              className="h-10 md:h-14 w-auto object-contain brightness-0 invert opacity-90"
+              priority
+            />
           </Link>
           
-          <h2 className="text-2xl md:text-3xl font-black mb-4 leading-tight">
+          <h2 className="text-2xl md:text-4xl font-black mb-5 text-white leading-snug tracking-tight">
             نواة | NAWAH
           </h2>
-          <p className="text-emerald-100/90 leading-relaxed text-sm md:text-base font-medium max-w-md">
+          <p className="text-emerald-100/70 leading-relaxed text-sm md:text-base font-medium">
             {dict.nawahMessage}
           </p>
         </div>
       </div>
 
-      {/* FORM PANEL - Always on the Left side visually on desktop */}
-      <div className={`flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10 min-h-[100dvh] ${isRtl ? 'md:order-2' : 'md:order-1'} order-2`}>
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-emerald-900/5 border border-emerald-100/60 p-8 relative">
-          {children(dict, lang)}
+      {/* FORM PANEL - Clean & Minimal */}
+      <div className={`flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10 min-h-screen ${isRtl ? 'md:order-2' : 'md:order-1'} order-2`}>
+        <div className="w-full max-w-[420px] relative">
+          
+          {/* Subtle Language Switcher */}
+          <div className="absolute -top-12 md:-top-16 right-0 left-auto flex justify-end">
+            <button 
+              onClick={toggleLang}
+              className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>{lang === 'ar' ? 'English' : 'العربية'}</span>
+            </button>
+          </div>
+
+          <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/50 p-8 sm:p-10">
+            {children(dict, lang)}
+          </div>
         </div>
       </div>
     </div>
