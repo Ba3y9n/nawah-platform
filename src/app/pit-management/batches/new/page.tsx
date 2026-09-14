@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -37,6 +37,28 @@ export default function NewBatchPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const pending = localStorage.getItem('nawah_pending_batch_data');
+        if (pending) {
+          const data = JSON.parse(pending);
+          if (data.sourceName) setSourceName(data.sourceName);
+          if (data.quantity) setQuantity(data.quantity);
+          if (data.dateType) setDateType(data.dateType);
+          if (data.cleaningStatus) setCleaningStatus(data.cleaningStatus);
+          if (data.dryingStatus) setDryingStatus(data.dryingStatus);
+          if (data.moisture) setMoisture(data.moisture);
+          if (data.storageMethod) setStorageMethod(data.storageMethod);
+          if (data.notes) setNotes(data.notes);
+          localStorage.removeItem('nawah_pending_batch_data');
+          localStorage.removeItem('nawah_pending_action');
+        }
+      } catch(e) {}
+    }
+  }, []);
 
   const availableCities = SAUDI_CITIES.filter(c => c.region_id === selectedRegionId);
 
