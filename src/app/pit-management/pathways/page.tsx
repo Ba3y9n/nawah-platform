@@ -42,7 +42,7 @@ function PathwaysContent() {
   const selectedBatch = batches.find(b => b.id === selectedBatchId);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto" dir="rtl">
+    <div className="space-y-8 max-w-6xl mx-auto" dir="rtl">
       
       {/* TITLE BANNER */}
       <div className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
@@ -59,12 +59,9 @@ function PathwaysContent() {
                 </Link>
               </div>
             )}
-            <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200 mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>المرحلة 04 من رحلة النواة: الاستخدامات المحتملة</span>
-            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 block mb-1">مستكشف المسارات التحويلية (Pathway Explorer)</span>
             <h2 className="text-xl md:text-2xl font-black text-emerald-950">مسارات الاستفادة الحيوية والصناعية المحتملة من نوى التمر</h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 mt-1 font-medium">
               مسارات مرشحة غير قطعية (Potential Uses) وتستدعي إجراء تجارب واختبارات لرفع درجة الموثوقية.
             </p>
           </div>
@@ -73,7 +70,7 @@ function PathwaysContent() {
             href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
             className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-3 rounded-2xl text-xs transition-all shadow-md shrink-0"
           >
-            <TestTube2 className="w-4 h-4 text-amber-300" />
+            <TestTube2 className="w-4 h-4 text-emerald-300" />
             <span>إنشاء تجربة لهذا المسار</span>
           </Link>
         </div>
@@ -86,39 +83,46 @@ function PathwaysContent() {
         </div>
       </div>
 
-      {/* PATHWAYS SELECTOR CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        {REUSE_PATHWAYS.map((path) => {
-          const isSelected = selectedPathway.id === path.id;
-          return (
-            <button
-              key={path.id}
-              onClick={() => setSelectedPathway(path)}
-              className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between space-y-3 ${
-                isSelected
-                  ? "bg-emerald-950 border-emerald-950 text-white shadow-md"
-                  : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
-              }`}
-            >
-              <div className="space-y-2">
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block ${
-                  isSelected ? "bg-amber-400 text-emerald-950" : "bg-amber-50 text-amber-900 border border-amber-200"
-                }`}>
-                  استخدام محتمل
+      {/* CENTRAL PATHWAY EXPLORER INTERACTIVE FLOW */}
+      <div className="bg-emerald-950 text-white p-6 sm:p-8 rounded-3xl border border-emerald-900 shadow-xl space-y-6">
+        <div className="text-center space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">مركز الموارد والمسارات</span>
+          <h3 className="text-lg font-black text-white">نوى التمر → اختر المسار التحويلي للاستكشاف</h3>
+        </div>
+
+        {/* HORIZONTAL PATHWAY NODES */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2">
+          {REUSE_PATHWAYS.map((path) => {
+            const isSelected = selectedPathway.id === path.id;
+            return (
+              <button
+                key={path.id}
+                onClick={() => setSelectedPathway(path)}
+                className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between space-y-3 ${
+                  isSelected
+                    ? "bg-white text-emerald-950 border-white shadow-lg font-black"
+                    : "bg-emerald-900/50 text-emerald-200 border-emerald-800/60 hover:bg-emerald-900 hover:text-white"
+                }`}
+              >
+                <div className="space-y-2">
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block ${
+                    isSelected ? "bg-amber-400 text-emerald-950" : "bg-emerald-800 text-emerald-300"
+                  }`}>
+                    استخدام محتمل
+                  </span>
+                  <h4 className="text-xs font-bold leading-snug line-clamp-2">{path.name}</h4>
+                </div>
+                <span className={`text-[10px] font-semibold flex items-center gap-1 mt-2 ${isSelected ? "text-emerald-800" : "text-emerald-400"}`}>
+                  عرض التفاصيل ←
                 </span>
-                <h3 className="text-xs font-bold leading-snug line-clamp-2">{path.name}</h3>
-              </div>
-              <span className={`text-[10px] font-semibold flex items-center gap-1 mt-2 ${isSelected ? "text-emerald-200" : "text-slate-400"}`}>
-                عرض التفاصيل والأدلة ←
-              </span>
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* SELECTED PATHWAY DETAILS */}
+      {/* SELECTED PATHWAY EXPANDED EDITORIAL DETAILS */}
       <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        
         <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -134,7 +138,7 @@ function PathwaysContent() {
             href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : `/pit-management/experiments/new`}
             className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-2xl text-xs font-bold transition-all shadow-md shrink-0"
           >
-            <TestTube2 className="w-4 h-4 text-amber-300" />
+            <TestTube2 className="w-4 h-4 text-emerald-300" />
             <span>توثيق تجربة لتأكيد هذا المسار</span>
           </Link>
         </div>
@@ -187,7 +191,7 @@ export default function PathwaysPage() {
   return (
     <Suspense fallback={
       <div className="text-center py-16 text-slate-500 text-xs animate-pulse">
-        جاري تحميل مسارات الاستفادة المحتملة...
+        جاري تحميل مستكشف المسارات...
       </div>
     }>
       <PathwaysContent />
