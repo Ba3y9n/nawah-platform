@@ -544,7 +544,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 text-emerald-950 font-sans selection:bg-amber-200 selection:text-emerald-900 overflow-hidden" dir="rtl">
       
       {/* 1. PRODUCT HERO */}
-      <section className="relative pt-16 pb-28 sm:pt-20 sm:pb-40 lg:pt-32 lg:pb-56 xl:pb-64 bg-slate-50 overflow-hidden">
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center py-16 lg:py-0 bg-slate-50 overflow-hidden">
         
         {/* --- Premium Tech Background --- */}
         {/* 1. Ambient Glows */}
@@ -555,10 +555,10 @@ export default function LandingPage() {
         {/* 2. Modern Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#94a3b8_1px,transparent_1px),linear-gradient(to_bottom,#94a3b8_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl relative z-10 w-full">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8 w-full">
             
-            <div className="lg:w-1/2 space-y-8 text-center lg:text-right pt-10">
+            <div className="lg:w-1/2 space-y-8 text-center lg:text-right">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 px-4 py-1.5 rounded-full text-xs font-bold text-slate-600 mb-2"
@@ -824,57 +824,94 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 8. WHY NAWAH (Brief Visual Flow) */}
-      <section id="why-nawah" className="py-16 sm:py-32 pb-20 sm:pb-32 bg-white text-center">
-        <div className="container mx-auto px-4 max-w-4xl space-y-16">
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black text-emerald-950">عن نواة | لماذا نواة؟</h2>
-            <p className="text-slate-600 text-base max-w-2xl mx-auto leading-relaxed font-medium">
+      {/* 8. WHY NAWAH (Interactive Visual Flow) */}
+      <section id="why-nawah" className="py-24 sm:py-32 bg-white text-center relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.05)_0%,transparent_70%)] pointer-events-none" />
+        
+        <div className="container mx-auto px-4 max-w-5xl space-y-20 relative z-10">
+          <div className="space-y-6">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="text-4xl font-black text-emerald-950"
+            >
+              عن نواة | لماذا نواة؟
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+              className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed font-medium"
+            >
               تسعى نواة إلى دعم تحويل نوى التمر من مورد ثانوي غير مستثمر بالكامل إلى مورد قابل للتتبع والدراسة والتثمين، من خلال ربط البيانات والذكاء الاصطناعي والأدلة والتجارب وقياس الأثر في منظومة رقمية واحدة.
-            </p>
+            </motion.p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-base sm:text-xl font-bold text-slate-400">
-            <span>هناك إنتاج.</span>
-            <span>وهناك مصادر.</span>
-            <span>وهناك نوى.</span>
-            <span>وهناك دراسات.</span>
-            <span>وهناك تجارب.</span>
-          </div>
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.1 } },
+              hidden: {}
+            }}
+            className="flex flex-wrap justify-center gap-4 sm:gap-6 text-lg sm:text-2xl font-black text-slate-300"
+          >
+            {["هناك إنتاج.", "وهناك مصادر.", "وهناك نوى.", "وهناك دراسات.", "وهناك تجارب."].map((text, i) => (
+              <motion.span 
+                key={i}
+                variants={{
+                  visible: { opacity: 1, y: 0, color: "#94a3b8" },
+                  hidden: { opacity: 0, y: 10 }
+                }}
+                className="hover:text-emerald-500 transition-colors cursor-default"
+              >
+                {text}
+              </motion.span>
+            ))}
+          </motion.div>
 
-          <div className="bg-emerald-50 rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-emerald-100 space-y-6 sm:space-y-8">
-            <p className="text-xl font-black text-emerald-900">
-              لكن القيمة الأكبر تظهر عندما تصبح هذه العناصر مرتبطة ببعضها رقميًا.
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+            className="bg-emerald-950 rounded-[2.5rem] p-8 sm:p-14 shadow-2xl relative overflow-hidden group"
+          >
+            <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(16,185,129,0.1)_0%,transparent_100%)] opacity-50" />
+            
+            <p className="text-2xl sm:text-3xl font-black text-white mb-16 relative z-10">
+              لكن القيمة الأكبر تظهر عندما تصبح هذه العناصر <span className="text-amber-400">مرتبطة ببعضها رقميًا</span>.
             </p>
             
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-emerald-700">
-              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تسجيل</span>
-              <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تحليل</span>
-              <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">دليل</span>
-              <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تجربة</span>
-              <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-sm border border-emerald-100">تتبع</span>
-              <ChevronLeft className="w-4 h-4 text-emerald-300" />
-              <span className="bg-emerald-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl shadow-md">أثر</span>
+            <div className="relative flex flex-wrap lg:flex-nowrap items-center justify-center gap-4 sm:gap-6 text-sm sm:text-base font-bold text-emerald-950 z-10 mb-12">
+              <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-emerald-800/50 -translate-y-1/2 z-0 rounded-full" />
+              
+              {[
+                { id: "تسجيل", color: "bg-emerald-100" },
+                { id: "تحليل", color: "bg-emerald-200" },
+                { id: "دليل", color: "bg-emerald-300" },
+                { id: "تجربة", color: "bg-emerald-400" },
+                { id: "تتبع", color: "bg-emerald-500" },
+                { id: "أثر", color: "bg-amber-400 text-emerald-950 shadow-[0_0_20px_rgba(251,191,36,0.4)]" }
+              ].map((step, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 + idx * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className={`relative z-10 px-6 py-3 rounded-2xl cursor-default transition-transform ${step.color} ${!step.color.includes('text-') ? 'text-emerald-950 shadow-lg' : ''}`}
+                >
+                  {step.id}
+                </motion.div>
+              ))}
             </div>
             
-            <p className="text-xs text-slate-500 font-medium pt-2">
+            <p className="text-sm text-emerald-100/60 font-medium max-w-xl mx-auto mb-10 relative z-10">
               تعتمد نواة على سجلات رقمية مترابطة لتتبع الدفعات وربطها بالتحليل والتجارب والأدلة وقياس الأثر لضمان الشفافية والموثوقية.
             </p>
 
-            <div className="pt-4">
+            <div className="relative z-10 flex justify-center">
               <Link 
                 href="/about" 
-                className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-6 py-3 rounded-2xl text-xs transition-all shadow-md"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-emerald-600/30 group/btn"
               >
                 <span>تعرّف بالتفصيل على رؤية ورسالة ومبادئ نواة</span>
-                <ChevronLeft className="w-4 h-4 text-emerald-300" />
+                <ChevronLeft className="w-4 h-4 text-emerald-200 group-hover/btn:-translate-x-1 transition-transform" />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

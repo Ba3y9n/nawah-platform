@@ -104,14 +104,23 @@ export default function Navbar() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             
-            {/* BRAND LOGO */}
-            <Link href="/" className="flex items-center gap-3 group">
+            {/* BRAND LOGOS */}
+            <Link href="/" className="flex items-center gap-4 group">
               <Image 
                 src="/nawah-logo.png" 
                 alt="نواة | NAWAH" 
-                width={120} 
-                height={48} 
+                width={110} 
+                height={44} 
                 className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+                priority
+              />
+              <div className="h-8 w-px bg-slate-200"></div>
+              <Image 
+                src="/mewa-logo.png" 
+                alt="وزارة البيئة والمياه والزراعة" 
+                width={110} 
+                height={44} 
+                className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
                 priority
               />
             </Link>
