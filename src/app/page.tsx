@@ -864,6 +864,16 @@ export default function LandingPage() {
             <p className="text-xs text-slate-500 font-medium pt-2">
               تعتمد نواة على سجلات رقمية مترابطة لتتبع الدفعات وربطها بالتحليل والتجارب والأدلة وقياس الأثر لضمان الشفافية والموثوقية.
             </p>
+
+            <div className="pt-4">
+              <Link 
+                href="/about" 
+                className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-6 py-3 rounded-2xl text-xs transition-all shadow-md"
+              >
+                <span>تعرّف بالتفصيل على رؤية ورسالة ومبادئ نواة</span>
+                <ChevronLeft className="w-4 h-4 text-emerald-300" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

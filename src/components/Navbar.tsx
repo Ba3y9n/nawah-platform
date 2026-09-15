@@ -79,10 +79,10 @@ export default function Navbar() {
 
   const mainLinks = [
     { href: "/", label: "الرئيسية" },
+    { href: "/about", label: "عن نواة" },
     { href: "/map", label: "الخريطة الذكية" },
     { href: "/evidence", label: "الأدلة والمصادر" },
     { href: "/assistant", label: "مساعد نواة" },
-    { href: "/#why-nawah", label: "عن نواة" },
   ];
 
   const handleLogout = async () => {
@@ -119,24 +119,55 @@ export default function Navbar() {
             {/* DESKTOP NAVIGATION LINKS */}
             <div className="hidden xl:flex items-center gap-2">
               
-              {mainLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link 
-                    key={link.href} 
-                    href={link.href}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                      isActive 
-                        ? "bg-emerald-50 text-emerald-800" 
-                        : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
+              {/* 1. الرئيسية */}
+              <Link 
+                href="/" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <span>الرئيسية</span>
+              </Link>
 
-              {/* DROPDOWN MENU: إدارة النوى */}
+              {/* 2. عن نواة */}
+              <Link 
+                href="/about" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/about" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <span>عن نواة</span>
+              </Link>
+
+              {/* 3. الخريطة الذكية */}
+              <Link 
+                href="/map" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/map" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <span>الخريطة الذكية</span>
+              </Link>
+
+              {/* 4. الأدلة والمصادر */}
+              <Link 
+                href="/evidence" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/evidence" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <span>الأدلة والمصادر</span>
+              </Link>
+
+              {/* 5. إدارة النوى (DROPDOWN MENU) */}
               <div 
                 className="relative"
                 onMouseEnter={() => setPitDropdown(true)}
@@ -175,6 +206,19 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
+
+              {/* 6. مساعد نواة */}
+              <Link 
+                href="/assistant" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/assistant" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <span>مساعد نواة</span>
+              </Link>
+
             </div>
 
             {/* LANGUAGE & AUTH */}
