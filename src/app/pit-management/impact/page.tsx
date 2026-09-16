@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { 
   TrendingUp, Leaf, Package, TestTube2, 
-  AlertCircle, PlusCircle, Database, Loader2, Info, ShieldAlert, ChevronLeft
+  AlertCircle, PlusCircle, Database, Loader2, Info, ShieldAlert, ChevronLeft, Activity, Globe
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getImpactSummary } from "@/lib/store";
+import { motion } from "framer-motion";
 
 export default function ImpactPage() {
   const [summary, setSummary] = useState({
@@ -73,133 +74,144 @@ export default function ImpactPage() {
     loadData();
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <div className="space-y-6 max-w-6xl mx-auto" dir="rtl">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-8 max-w-6xl mx-auto" 
+      dir="rtl"
+    >
       
       {/* TITLE BANNER */}
-      <div className="bg-emerald-950 text-white border border-emerald-900 p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-800 mb-2">
-            <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
-            <span>المرحلة 06 والأخيرة: قياس الأثر والنتائج</span>
+      <motion.div variants={itemVariants} className="bg-gradient-to-r from-emerald-950 to-emerald-900 p-8 rounded-3xl shadow-lg border border-emerald-800 text-white relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
+        <div className="absolute -left-20 -top-20 w-64 h-64 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-emerald-300 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-700 mb-4 backdrop-blur-sm">
+            <Globe className="w-4 h-4" />
+            <span>لوحة المؤشرات البيئية</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-white">شاشة قياس الأثر البيئي والاقتصادي التراكمي</h2>
-          <p className="text-xs text-emerald-200/80 mt-1">
-            مؤشرات محتسبة بناءً على تسلسل رحلة الدفعات والتجارب المسجلة في المنظومة الرقمية
+          <h2 className="text-2xl md:text-3xl font-black">شاشة قياس الأثر البيئي والاقتصادي التراكمي</h2>
+          <p className="text-sm text-emerald-100/80 mt-2 font-medium max-w-xl leading-relaxed">
+            مؤشرات رقمية محتسبة بناءً على تسلسل رحلة الدفعات، والكميات المسجلة، والتجارب الموثقة في المنظومة.
           </p>
         </div>
 
-        <Link
-          href="/pit-management/batches/new"
-          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3 rounded-2xl text-xs transition-all shadow-md shrink-0"
-        >
-          <PlusCircle className="w-4 h-4 text-amber-300" />
-          <span>تسجيل دفعة لزيادة الأثر</span>
-        </Link>
-      </div>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative z-10">
+          <Link
+            href="/pit-management/batches/new"
+            className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0"
+          >
+            <PlusCircle className="w-5 h-5" />
+            <span>تسجيل دفعة لزيادة الأثر</span>
+          </Link>
+        </motion.div>
+      </motion.div>
 
       {/* ACTUAL DATA METRICS CARDS */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-          <span>بيانات فعلية موثقة (Actual Data):</span>
+      <motion.div variants={itemVariants} className="space-y-4">
+        <div className="flex items-center gap-3 text-sm font-black text-emerald-950">
+          <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+          <span>بيانات المنظومة الفعلية الموثقة (Actual Data):</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>الكمية الكلية المسجلة</span>
-              <Package className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_registered_kg.toLocaleString()} كجم`}
-            </div>
-            <p className="text-[11px] text-slate-400">دفعات موثقة برمز NW الفردي</p>
-          </div>
-
-          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>الدفعات المسجلة</span>
-              <Database className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : summary.total_batches_count}
-            </div>
-            <p className="text-[11px] text-slate-400">سجلات مصانع ومراكز تجميع</p>
-          </div>
-
-          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>التجارب الموثقة</span>
-              <TestTube2 className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-2xl font-black text-emerald-950 dir-ltr text-right">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : summary.total_experiments_count}
-            </div>
-            <p className="text-[11px] text-slate-400">اختبارات معملية وتطبيقية</p>
-          </div>
-
-          <div className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-slate-500">
-              <span>الكمية الموثقة بالتجارب</span>
-              <Leaf className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-2xl font-black text-emerald-700 dir-ltr text-right">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.total_reused_kg.toLocaleString()} كجم`}
-            </div>
-            <p className="text-[11px] text-slate-400">كميات مستخدمة في التجارب</p>
-          </div>
+          {[
+            { title: "الكمية الكلية المسجلة", val: `${summary.total_registered_kg.toLocaleString()} كجم`, sub: "دفعات موثقة برمز NW", icon: Package, color: "text-emerald-600", bg: "bg-emerald-50" },
+            { title: "الدفعات المسجلة", val: summary.total_batches_count, sub: "سجلات مصادر موثقة", icon: Database, color: "text-blue-600", bg: "bg-blue-50" },
+            { title: "التجارب الموثقة", val: summary.total_experiments_count, sub: "اختبارات معملية وتطبيقية", icon: TestTube2, color: "text-amber-600", bg: "bg-amber-50" },
+            { title: "الكمية الموظفة", val: `${summary.total_reused_kg.toLocaleString()} كجم`, sub: "مستخدمة في التجارب", icon: Activity, color: "text-rose-600", bg: "bg-rose-50" }
+          ].map((stat, i) => (
+            <motion.div 
+              key={i}
+              whileHover={{ y: -5 }}
+              className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm hover:shadow-md transition-all space-y-3 group"
+            >
+              <div className="flex justify-between items-center text-xs font-bold text-slate-500">
+                <span className="group-hover:text-slate-800 transition-colors">{stat.title}</span>
+                <div className={`w-8 h-8 rounded-full ${stat.bg} flex items-center justify-center`}>
+                  <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                </div>
+              </div>
+              <div className="text-3xl font-black text-slate-900 dir-ltr text-right">
+                {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-slate-300" /> : stat.val}
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium">{stat.sub}</p>
+            </motion.div>
+          ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* ESTIMATED MODEL CALCULATIONS */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-          <span>تقديرات حسابية ونظرية (Model Calculations):</span>
+      <motion.div variants={itemVariants} className="space-y-4 pt-4">
+        <div className="flex items-center gap-3 text-sm font-black text-amber-900">
+          <span className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_10px_#f59e0b]"></span>
+          <span>التقديرات الحسابية لتأثير المنظومة البيئي (Model Calculations):</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-amber-900">
-              <span className="bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">تقدير تحويلي نظري (Theoretical Calculation)</span>
-              <Leaf className="w-4 h-4 text-amber-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-white to-amber-50/50 border border-amber-200 p-8 rounded-3xl shadow-sm space-y-4 relative overflow-hidden group">
+            <div className="flex justify-between items-start">
+              <span className="bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full border border-amber-300 text-xs font-bold shadow-sm">التحويل النظري للمدافن</span>
+              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Leaf className="w-5 h-5 text-amber-600" />
+              </div>
             </div>
-            <div className="text-3xl font-black text-emerald-950 dir-ltr text-right pt-1">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.landfill_diverted_ton} طن`}
+            <div className="text-4xl font-black text-emerald-950 dir-ltr text-right pt-2">
+              {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : `${summary.landfill_diverted_ton} طن`}
             </div>
-            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              تحويل تحويلي مباشر: {summary.total_registered_kg.toLocaleString()} كجم = {summary.landfill_diverted_ton} طن متري من النفايات العضوية المحولة عن المدافن البلديّة.
+            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+              تحويل مباشر: <strong className="text-slate-900">{summary.total_registered_kg.toLocaleString()} كجم</strong> = <strong className="text-slate-900">{summary.landfill_diverted_ton} طن متري</strong> من النفايات العضوية المحولة عن المدافن البلديّة.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="bg-white border border-amber-200 p-6 rounded-3xl shadow-sm space-y-2">
-            <div className="flex justify-between items-center text-xs font-bold text-amber-900">
-              <span className="bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">تقدير حسابي محتمل للانبعاثات المتجنبة</span>
-              <TrendingUp className="w-4 h-4 text-amber-600" />
+          <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-white to-emerald-50/50 border border-emerald-200 p-8 rounded-3xl shadow-sm space-y-4 relative overflow-hidden group">
+            <div className="flex justify-between items-start">
+              <span className="bg-emerald-100 text-emerald-900 px-4 py-1.5 rounded-full border border-emerald-300 text-xs font-bold shadow-sm">التقدير الحسابي للانبعاثات المتجنبة</span>
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
+              </div>
             </div>
-            <div className="text-3xl font-black text-emerald-950 dir-ltr text-right pt-1">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${summary.estimated_co2_reduction_ton} طن CO2e`}
+            <div className="text-4xl font-black text-emerald-950 dir-ltr text-right pt-2">
+              {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : `${summary.estimated_co2_reduction_ton} CO2e`}
             </div>
-            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              تقدير حسابي محتمل للانبعاثات المتجنبة عند تفادي التحلل اللاهوائي (معامل تقديري مستخدم في هذا النموذج: 0.65 طن CO2e / طن مخلفات عضوية).
+            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+              تقدير حسابي محتمل للانبعاثات المتجنبة عند تفادي التحلل اللاهوائي (المعامل التقديري: <strong className="text-slate-900">0.65 طن CO2e / طن</strong> مخلفات عضوية).
             </p>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* METHODOLOGY NOTICE */}
-      <div className="bg-amber-50/80 border border-amber-200 p-5 rounded-3xl text-xs text-amber-950 space-y-2">
-        <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
-          <ShieldAlert className="w-5 h-5 text-amber-600 flex-shrink-0" />
+      <motion.div variants={itemVariants} className="bg-amber-50/80 border border-amber-200 p-6 rounded-3xl text-sm text-amber-950 space-y-3 shadow-sm">
+        <div className="flex items-center gap-2 font-black text-amber-900">
+          <ShieldAlert className="w-6 h-6 text-amber-600 flex-shrink-0" />
           <span>إيضاح المنهجية وحدود النموذج:</span>
         </div>
-        <p className="leading-relaxed font-medium text-amber-900/90">
-          • <strong>المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري مستخدم في هذا النموذج لتوضيح العائد البيئي التخميني.<br/>
-          • <strong>دراسات تقييم دورة الحياة (LCA):</strong> الحسابات النهائية الصارمة تتطلب إجراء التقييم المعملي المخصص لكل مسار تحويلي (كالتفحيم الحراري أو الاستخلاص).
-        </p>
-      </div>
+        <div className="space-y-2 leading-relaxed font-medium text-amber-900/90 pr-8">
+          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري مستخدم في هذا النموذج لتوضيح العائد البيئي التخميني فقط.</p>
+          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">دراسات تقييم دورة الحياة (LCA):</strong> الحسابات النهائية الصارمة تتطلب إجراء التقييم المعملي المخصص لكل مسار تحويلي (كالتفحيم الحراري أو الاستخلاص).</p>
+        </div>
+      </motion.div>
 
-    </div>
+      <motion.div variants={itemVariants} className="flex justify-center pt-8">
+         <Link href="/pit-management/dashboard" className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-8 py-3 rounded-2xl text-sm transition-colors shadow-sm">
+            العودة إلى لوحة القيادة المركزية
+         </Link>
+      </motion.div>
+
+    </motion.div>
   );
 }
