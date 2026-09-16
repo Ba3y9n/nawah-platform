@@ -11,7 +11,11 @@ import {
   ImpactSummary,
   UserType
 } from './types';
-import { supabase, isSupabaseConfigured } from './supabase';
+import { createClient } from '@/lib/supabase/client';
+
+export const isSupabaseConfigured = (): boolean => {
+  return true;
+};
 
 // ============================================================================
 // REAL SAUDI ARABIA GEOGRAPHY SEED DATA (Regions & Cities)
@@ -323,26 +327,25 @@ export const registerUser = async (data: {
   city_id?: string;
   organization?: string;
 }): Promise<UserProfile> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: data.email,
-      password: 'TemporaryPassword123!', // In production UI user will enter password
-      options: {
-        data: {
-          name: data.name,
-          user_type: data.user_type,
-          organization: data.organization
-        }
+  const supabase = createClient();
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email: data.email,
+    password: 'TemporaryPassword123!',
+    options: {
+      data: {
+        name: data.name,
+        user_type: data.user_type,
+        organization: data.organization
       }
-    });
-
-    if (authError && !authData.user) {
-      console.warn('Supabase Auth error, using client session mode', authError.message);
     }
+  });
+
+  if (authError && !authData.user) {
+    console.warn('Supabase Auth error', authError.message);
   }
 
   const newProfile: UserProfile = {
-    id: 'user-' + Date.now(),
+    id: authData.user?.id || ('user-' + Date.now()),
     name: data.name,
     email: data.email,
     user_type: data.user_type,
@@ -375,9 +378,8 @@ export const loginUser = async (email: string): Promise<UserProfile> => {
 };
 
 export const logoutUser = async (): Promise<void> => {
-  if (isSupabaseConfigured() && supabase) {
-    await supabase.auth.signOut();
-  }
+  const supabase = createClient();
+  await supabase.auth.signOut();
   if (typeof window !== 'undefined') {
     localStorage.removeItem(LOCAL_STORAGE_KEY_USER);
     notifyListeners();
@@ -388,16 +390,15 @@ export const logoutUser = async (): Promise<void> => {
 // BATCHES MANAGEMENT (No fake data!)
 // ============================================================================
 export const getBatches = async (): Promise<Batch[]> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase
-      .from('batches')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      return data as Batch[];
-    }
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('batches')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (!error && data) {
+    return data as Batch[];
   }
-  return getStorageItem<Batch[]>(LOCAL_STORAGE_KEY_BATCHES, []);
+  return [];
 };
 
 export const getBatchById = async (id: string): Promise<Batch | null> => {
@@ -422,11 +423,11 @@ export const createBatch = async (input: {
   notes?: string;
   image_url?: string;
 }): Promise<Batch> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      throw new Error("يجب تسجيل الدخول أولاً لحفظ الدفعة في قاعدة البيانات");
-    }
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("يجب تسجيل الدخول أولاً لحفظ الدفعة في قاعدة البيانات");
+  }
 
     const payload = {
       user_id: user.id,
@@ -476,9 +477,6 @@ export const createBatch = async (input: {
 
     notifyListeners();
     return verifiedRecord as Batch;
-  }
-
-  throw new Error("الاتصال بقاعدة البيانات غير مهيأ. لا يمكن حفظ الدفعة.");
 };
 
 // ============================================================================
@@ -492,62 +490,58 @@ export const saveImageAnalysis = async (record: {
   confidence: number;
   notes?: string;
 }): Promise<ImageAnalysisRecord> => {
-  if (isSupabaseConfigured() && supabase) {
-    const payload = {
-      batch_id: record.batch_id,
-      visual_features: record.visual_features,
-      visible_impurities: record.visible_impurities,
-      visual_homogeneity: record.visual_homogeneity,
-      confidence: record.confidence,
-      notes: record.notes || null
-    };
+  const supabase = createClient();
+  const payload = {
+    batch_id: record.batch_id,
+    visual_features: record.visual_features,
+    visible_impurities: record.visible_impurities,
+    visual_homogeneity: record.visual_homogeneity,
+    confidence: record.confidence,
+    notes: record.notes || null
+  };
 
-    const { data: insertData, error: insertError } = await supabase
-      .from('image_analysis')
-      .insert([payload])
-      .select();
+  const { data: insertData, error: insertError } = await supabase
+    .from('image_analysis')
+    .insert([payload])
+    .select();
 
-    if (insertError) {
-      console.error("Supabase image_analysis INSERT failed:", insertError);
-      throw new Error(`فشل حفظ نتيجة التحليل البصري في قاعدة البيانات: ${insertError.message}`);
-    }
-
-    if (!insertData || insertData.length === 0) {
-      throw new Error("لم يتم إرجاع سجل التحليل البصري من قاعدة البيانات");
-    }
-
-    const createdRecord = insertData[0] as ImageAnalysisRecord;
-
-    // Verify by re-select
-    const { data: verifiedRecord, error: verifyError } = await supabase
-      .from('image_analysis')
-      .select('*')
-      .eq('id', createdRecord.id)
-      .single();
-
-    if (verifyError || !verifiedRecord) {
-      throw new Error("تعذر التثبت من وجود تحليل الصورة في قاعدة البيانات");
-    }
-
-    notifyListeners();
-    return verifiedRecord as ImageAnalysisRecord;
+  if (insertError) {
+    console.error("Supabase image_analysis INSERT failed:", insertError);
+    throw new Error(`فشل حفظ نتيجة التحليل البصري في قاعدة البيانات: ${insertError.message}`);
   }
 
-  throw new Error("الاتصال بقاعدة البيانات غير مهيأ.");
+  if (!insertData || insertData.length === 0) {
+    throw new Error("لم يتم إرجاع سجل التحليل البصري من قاعدة البيانات");
+  }
+
+  const createdRecord = insertData[0] as ImageAnalysisRecord;
+
+  // Verify by re-select
+  const { data: verifiedRecord, error: verifyError } = await supabase
+    .from('image_analysis')
+    .select('*')
+    .eq('id', createdRecord.id)
+    .single();
+
+  if (verifyError || !verifiedRecord) {
+    throw new Error("تعذر التثبت من وجود تحليل الصورة في قاعدة البيانات");
+  }
+
+  notifyListeners();
+  return verifiedRecord as ImageAnalysisRecord;
 };
 
 export const getImageAnalysisByBatchId = async (batchId: string): Promise<ImageAnalysisRecord | null> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase
-      .from('image_analysis')
-      .select('*')
-      .eq('batch_id', batchId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-    if (!error && data) {
-      return data as ImageAnalysisRecord;
-    }
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('image_analysis')
+    .select('*')
+    .eq('batch_id', batchId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+  if (!error && data) {
+    return data as ImageAnalysisRecord;
   }
   return null;
 };
@@ -556,28 +550,26 @@ export const getImageAnalysisByBatchId = async (batchId: string): Promise<ImageA
 // EXPERIMENTS MANAGEMENT (Linked directly to batches)
 // ============================================================================
 export const getExperiments = async (): Promise<Experiment[]> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase
-      .from('experiments')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      return data as Experiment[];
-    }
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('experiments')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (!error && data) {
+    return data as Experiment[];
   }
   return [];
 };
 
 export const getExperimentsByBatchId = async (batchId: string): Promise<Experiment[]> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data, error } = await supabase
-      .from('experiments')
-      .select('*')
-      .eq('batch_id', batchId)
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      return data as Experiment[];
-    }
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('experiments')
+    .select('*')
+    .eq('batch_id', batchId)
+    .order('created_at', { ascending: false });
+  if (!error && data) {
+    return data as Experiment[];
   }
   return [];
 };
@@ -592,56 +584,53 @@ export const createExperiment = async (input: {
   result: string;
   status: 'قيد التنفيذ' | 'مكتملة بنجاح' | 'مكتملة بملاحظات' | 'غير ناجحة';
 }): Promise<Experiment> => {
-  if (isSupabaseConfigured() && supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      throw new Error("يجب تسجيل الدخول أولاً لحفظ التجربة");
-    }
-
-    const payload = {
-      user_id: user.id,
-      batch_id: input.batch_id,
-      objective: input.objective,
-      quantity_used: Number(input.quantity_used),
-      processing_method: input.processing_method,
-      duration: input.duration,
-      observations: input.observations || null,
-      result: input.result,
-      status: input.status
-    };
-
-    const { data: insertData, error: insertError } = await supabase
-      .from('experiments')
-      .insert([payload])
-      .select();
-
-    if (insertError) {
-      console.error("Supabase experiment INSERT failed:", insertError);
-      throw new Error(`فشل حفظ التجربة في قاعدة البيانات: ${insertError.message}`);
-    }
-
-    if (!insertData || insertData.length === 0) {
-      throw new Error("لم يتم إرجاع سجل التجربة من قاعدة البيانات");
-    }
-
-    const createdRecord = insertData[0] as Experiment;
-
-    // Verify by re-select
-    const { data: verifiedRecord, error: verifyError } = await supabase
-      .from('experiments')
-      .select('*')
-      .eq('id', createdRecord.id)
-      .single();
-
-    if (verifyError || !verifiedRecord) {
-      throw new Error("تعذر التثبت من وجود التجربة في قاعدة البيانات بعد الحفظ");
-    }
-
-    notifyListeners();
-    return verifiedRecord as Experiment;
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("يجب تسجيل الدخول أولاً لحفظ التجربة");
   }
 
-  throw new Error("الاتصال بقاعدة البيانات غير مهيأ.");
+  const payload = {
+    user_id: user.id,
+    batch_id: input.batch_id,
+    objective: input.objective,
+    quantity_used: Number(input.quantity_used),
+    processing_method: input.processing_method,
+    duration: input.duration,
+    observations: input.observations || null,
+    result: input.result,
+    status: input.status
+  };
+
+  const { data: insertData, error: insertError } = await supabase
+    .from('experiments')
+    .insert([payload])
+    .select();
+
+  if (insertError) {
+    console.error("Supabase experiment INSERT failed:", insertError);
+    throw new Error(`فشل حفظ التجربة في قاعدة البيانات: ${insertError.message}`);
+  }
+
+  if (!insertData || insertData.length === 0) {
+    throw new Error("لم يتم إرجاع سجل التجربة من قاعدة البيانات");
+  }
+
+  const createdRecord = insertData[0] as Experiment;
+
+  // Verify by re-select
+  const { data: verifiedRecord, error: verifyError } = await supabase
+    .from('experiments')
+    .select('*')
+    .eq('id', createdRecord.id)
+    .single();
+
+  if (verifyError || !verifiedRecord) {
+    throw new Error("تعذر التثبت من وجود التجربة في قاعدة البيانات بعد الحفظ");
+  }
+
+  notifyListeners();
+  return verifiedRecord as Experiment;
 };
 
 // ============================================================================
