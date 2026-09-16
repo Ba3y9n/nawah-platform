@@ -62,45 +62,44 @@ function PathwaysContent() {
     >
       
       {/* TITLE BANNER */}
-      <motion.div variants={itemVariants} className="bg-gradient-to-r from-emerald-950 to-emerald-900 p-8 rounded-3xl shadow-lg border border-emerald-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
-        <div className="absolute -left-20 -top-20 w-64 h-64 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+      <motion.div variants={itemVariants} className="bg-white p-8 md:p-10 rounded-[2rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] border border-slate-100 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute -left-20 -top-20 w-64 h-64 bg-[#F0FDF4] rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
 
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 z-10">
+        <div className="relative z-10">
           <div>
             {batchId && selectedBatch && (
               <div className="flex items-center gap-2 mb-4">
                 <Link 
                   href={`/pit-management/batches/${batchId}`}
-                  className="inline-flex items-center gap-2 text-sm font-bold text-emerald-950 bg-emerald-300 px-4 py-1.5 rounded-full shadow-sm hover:bg-white transition-colors"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#064E3B] bg-[#F0FDF4] px-4 py-2 rounded-full border border-[#86EFAC]/50 hover:bg-[#DCFCE7] transition-colors"
                 >
                   <ArrowRight className="w-4 h-4" />
                   <span>الدفعة المحددة: {selectedBatch.batch_number}</span>
                 </Link>
               </div>
             )}
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300 block mb-2">مستكشف المسارات التحويلية (Pathway Explorer)</span>
-            <h2 className="text-2xl md:text-3xl font-black">مسارات الاستفادة الحيوية والصناعية</h2>
-            <p className="text-sm text-emerald-100/80 mt-2 font-medium max-w-xl leading-relaxed">
+            <span className="text-[11px] font-black uppercase tracking-widest text-[#059669] block mb-2">مستكشف المسارات التحويلية</span>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900">مسارات الاستفادة الحيوية والصناعية</h2>
+            <p className="text-sm text-slate-500 mt-2 font-medium max-w-xl leading-relaxed">
               استكشف المسارات المرشحة والمحتملة لتوظيف نوى التمر بناءً على الفحص البصري، تمهيداً للاختبارات المخبرية.
             </p>
           </div>
-
-          <Link
-            href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
-            className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0"
-          >
-            <TestTube2 className="w-5 h-5" />
-            <span>توثيق تجربة جديدة</span>
-          </Link>
         </div>
+
+        <Link
+          href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
+          className="inline-flex items-center gap-2 bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_8px_16px_-6px_rgba(6,78,59,0.3)] shrink-0 relative z-10"
+        >
+          <TestTube2 className="w-5 h-5 text-emerald-300" />
+          <span>توثيق تجربة جديدة</span>
+        </Link>
       </motion.div>
 
       {/* CENTRAL PATHWAY EXPLORER INTERACTIVE FLOW */}
-      <motion.div variants={itemVariants} className="bg-white border border-slate-200/80 p-8 rounded-3xl shadow-sm space-y-8 relative">
+      <motion.div variants={itemVariants} className="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] space-y-8 relative">
         <div className="text-center space-y-2">
-          <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">شبكة المسارات المحتملة</span>
-          <h3 className="text-xl font-black text-emerald-950">اختر المسار التحويلي لاستكشاف متطلباته</h3>
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#94A3B8]">شبكة المسارات المحتملة</span>
+          <h3 className="text-xl font-black text-slate-900">اختر المسار التحويلي لاستكشاف متطلباته</h3>
         </div>
 
         {/* HORIZONTAL PATHWAY NODES */}
@@ -113,19 +112,19 @@ function PathwaysContent() {
                 whileTap={{ scale: 0.98 }}
                 key={path.id}
                 onClick={() => setSelectedPathway(path)}
-                className={`p-5 rounded-3xl border-2 text-right transition-all flex flex-col justify-between space-y-4 min-h-[140px] shadow-sm ${
+                className={`p-5 rounded-[1.5rem] border-2 text-right transition-all flex flex-col justify-between space-y-4 min-h-[140px] ${
                   isSelected
-                    ? "bg-emerald-50 border-emerald-500 shadow-md ring-4 ring-emerald-500/20"
-                    : "bg-white border-slate-200 hover:border-emerald-300 hover:bg-slate-50 text-slate-600"
+                    ? "bg-[#F0FDF4] border-[#86EFAC] shadow-sm"
+                    : "bg-white border-slate-100 hover:border-emerald-200 hover:bg-slate-50 text-slate-600"
                 }`}
               >
                 <div className="space-y-3">
                   <span className={`text-[10px] px-3 py-1 rounded-full font-bold inline-block ${
-                    isSelected ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+                    isSelected ? "bg-[#059669] text-white" : "bg-slate-100 text-slate-500"
                   }`}>
                     استخدام محتمل
                   </span>
-                  <h4 className={`text-sm font-black leading-snug ${isSelected ? "text-emerald-950" : "text-slate-700"}`}>
+                  <h4 className={`text-sm font-black leading-snug ${isSelected ? "text-[#064E3B]" : "text-slate-700"}`}>
                     {path.name}
                   </h4>
                 </div>
@@ -139,28 +138,28 @@ function PathwaysContent() {
       <AnimatePresence mode="wait">
         <motion.div 
           key={selectedPathway.id}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ type: "spring", damping: 25 }}
-          className="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm space-y-8"
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ type: "spring", damping: 30 }}
+          className="bg-white border border-slate-100 rounded-[2rem] p-8 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] space-y-8"
         >
-          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-6 gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-50 pb-6 gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold px-4 py-1 rounded-full">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="bg-amber-50 text-amber-800 border border-amber-100 text-[11px] font-bold px-4 py-1.5 rounded-full">
                   المسار المحدد
                 </span>
-                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">الموثوقية: {selectedPathway.evidence_level}</span>
+                <span className="text-[11px] font-bold text-slate-500 bg-slate-50 border border-slate-100 px-4 py-1.5 rounded-full">الموثوقية: {selectedPathway.evidence_level}</span>
               </div>
-              <h3 className="text-2xl md:text-3xl font-black text-emerald-950">{selectedPathway.name}</h3>
+              <h3 className="text-2xl font-black text-slate-900">{selectedPathway.name}</h3>
             </div>
 
             <Link
               href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : `/pit-management/experiments/new`}
-              className="inline-flex items-center gap-2 bg-emerald-950 hover:bg-emerald-800 text-white px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-md shrink-0"
+              className="inline-flex items-center gap-2 bg-[#F8FAFC] hover:bg-slate-100 text-slate-800 border border-slate-200 px-6 py-3 rounded-2xl text-xs font-bold transition-all shadow-sm shrink-0"
             >
-              <TestTube2 className="w-5 h-5 text-emerald-400" />
+              <TestTube2 className="w-4 h-4 text-emerald-600" />
               <span>انتقال للمعمل المخبري</span>
             </Link>
           </div>
