@@ -422,56 +422,63 @@ export const createBatch = async (input: {
   notes?: string;
   image_url?: string;
 }): Promise<Batch> => {
-  const currentUser = getCurrentUser();
-  const userId = currentUser?.id || 'user-guest';
-  const existingBatches = await getBatches();
-  
-  // Generate Unique Auto Batch Number NW-2026-0001
-  const year = new Date().getFullYear();
-  const sequenceNum = existingBatches.length + 1;
-  const batch_number = `NW-${year}-${String(sequenceNum).padStart(4, '0')}`;
-
-  const newBatch: Batch = {
-    id: 'batch-' + Date.now(),
-    user_id: userId,
-    batch_number: batch_number,
-    source_id: input.source_id,
-    source_name: input.source_name || 'مصدر مسجل',
-    region_id: input.region_id,
-    region_name: input.region_name || 'القصيم',
-    city_id: input.city_id,
-    city_name: input.city_name || 'بريدة',
-    quantity: Number(input.quantity),
-    date_type: input.date_type,
-    date_collected: input.date_collected || new Date().toISOString().split('T')[0],
-    cleaning_status: input.cleaning_status,
-    drying_status: input.drying_status,
-    moisture: input.moisture ? Number(input.moisture) : undefined,
-    storage_method: input.storage_method || 'أكياس تهوية محكومة',
-    status: 'مسجلة',
-    notes: input.notes,
-    image_url: input.image_url,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  };
-
   if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase.from('batches').insert([newBatch]).select();
-      if (!error && data && data.length > 0) {
-        const dbBatch = data[0] as Batch;
-        const updatedList = [dbBatch, ...existingBatches];
-        setStorageItem(LOCAL_STORAGE_KEY_BATCHES, updatedList);
-        return dbBatch;
-      }
-    } catch (err) {
-      console.warn("Supabase batch insert error, falling back to local store:", err);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error("يجب تسجيل الدخول أولاً لحفظ الدفعة في قاعدة البيانات");
     }
+
+    const payload = {
+      user_id: user.id,
+      source_id: (input.source_id && input.source_id.startsWith('src-')) ? null : (input.source_id || null),
+      source_name: input.source_name || 'مصدر مسجل',
+      region_id: (input.region_id && input.region_id.startsWith('reg-')) ? null : (input.region_id || null),
+      city_id: (input.city_id && input.city_id.startsWith('city-')) ? null : (input.city_id || null),
+      quantity: Number(input.quantity),
+      date_type: input.date_type,
+      date_collected: input.date_collected || new Date().toISOString().split('T')[0],
+      cleaning_status: input.cleaning_status,
+      drying_status: input.drying_status,
+      moisture: input.moisture ? Number(input.moisture) : null,
+      storage_method: input.storage_method || 'أكياس تهوية محكومة',
+      status: 'مسجلة',
+      notes: input.notes || null,
+      image_url: input.image_url || null
+    };
+
+    // 1. INSERT into Supabase database
+    const { data: insertData, error: insertError } = await supabase
+      .from('batches')
+      .insert([payload])
+      .select();
+
+    if (insertError) {
+      console.error("Supabase batch INSERT failed:", insertError);
+      throw new Error(`فشلت عملية حفظ الدفعة في قاعدة البيانات: ${insertError.message}`);
+    }
+
+    if (!insertData || insertData.length === 0) {
+      throw new Error("لم يتم إرجاع الدفعة المحفوظة من قاعدة البيانات");
+    }
+
+    const createdRecord = insertData[0] as Batch;
+
+    // 2. VERIFY BY RE-SELECTING FROM SUPABASE (Rule 29: Read-after-write verification)
+    const { data: verifiedRecord, error: verifyError } = await supabase
+      .from('batches')
+      .select('*')
+      .eq('id', createdRecord.id)
+      .single();
+
+    if (verifyError || !verifiedRecord) {
+      throw new Error("تعذر التثبت من وجود الدفعة في قاعدة البيانات بعد الحفظ");
+    }
+
+    notifyListeners();
+    return verifiedRecord as Batch;
   }
 
-  const updatedList = [newBatch, ...existingBatches];
-  setStorageItem(LOCAL_STORAGE_KEY_BATCHES, updatedList);
-  return newBatch;
+  throw new Error("الاتصال بقاعدة البيانات غير مهيأ. لا يمكن حفظ الدفعة.");
 };
 
 // ============================================================================
@@ -485,25 +492,64 @@ export const saveImageAnalysis = async (record: {
   confidence: number;
   notes?: string;
 }): Promise<ImageAnalysisRecord> => {
-  const newRecord: ImageAnalysisRecord = {
-    id: 'anl-' + Date.now(),
-    batch_id: record.batch_id,
-    visual_features: record.visual_features,
-    visible_impurities: record.visible_impurities,
-    visual_homogeneity: record.visual_homogeneity,
-    confidence: record.confidence,
-    notes: record.notes,
-    created_at: new Date().toISOString()
-  };
+  if (isSupabaseConfigured() && supabase) {
+    const payload = {
+      batch_id: record.batch_id,
+      visual_features: record.visual_features,
+      visible_impurities: record.visible_impurities,
+      visual_homogeneity: record.visual_homogeneity,
+      confidence: record.confidence,
+      notes: record.notes || null
+    };
 
-  const existing = getStorageItem<ImageAnalysisRecord[]>(LOCAL_STORAGE_KEY_ANALYSIS, []);
-  setStorageItem(LOCAL_STORAGE_KEY_ANALYSIS, [newRecord, ...existing]);
-  return newRecord;
+    const { data: insertData, error: insertError } = await supabase
+      .from('image_analysis')
+      .insert([payload])
+      .select();
+
+    if (insertError) {
+      console.error("Supabase image_analysis INSERT failed:", insertError);
+      throw new Error(`فشل حفظ نتيجة التحليل البصري في قاعدة البيانات: ${insertError.message}`);
+    }
+
+    if (!insertData || insertData.length === 0) {
+      throw new Error("لم يتم إرجاع سجل التحليل البصري من قاعدة البيانات");
+    }
+
+    const createdRecord = insertData[0] as ImageAnalysisRecord;
+
+    // Verify by re-select
+    const { data: verifiedRecord, error: verifyError } = await supabase
+      .from('image_analysis')
+      .select('*')
+      .eq('id', createdRecord.id)
+      .single();
+
+    if (verifyError || !verifiedRecord) {
+      throw new Error("تعذر التثبت من وجود تحليل الصورة في قاعدة البيانات");
+    }
+
+    notifyListeners();
+    return verifiedRecord as ImageAnalysisRecord;
+  }
+
+  throw new Error("الاتصال بقاعدة البيانات غير مهيأ.");
 };
 
 export const getImageAnalysisByBatchId = async (batchId: string): Promise<ImageAnalysisRecord | null> => {
-  const existing = getStorageItem<ImageAnalysisRecord[]>(LOCAL_STORAGE_KEY_ANALYSIS, []);
-  return existing.find(a => a.batch_id === batchId) || null;
+  if (isSupabaseConfigured() && supabase) {
+    const { data, error } = await supabase
+      .from('image_analysis')
+      .select('*')
+      .eq('batch_id', batchId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    if (!error && data) {
+      return data as ImageAnalysisRecord;
+    }
+  }
+  return null;
 };
 
 // ============================================================================
@@ -511,24 +557,29 @@ export const getImageAnalysisByBatchId = async (batchId: string): Promise<ImageA
 // ============================================================================
 export const getExperiments = async (): Promise<Experiment[]> => {
   if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('experiments')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (!error && data) {
-        return data as Experiment[];
-      }
-    } catch (err) {
-      console.warn("Supabase experiments fetch notice:", err);
+    const { data, error } = await supabase
+      .from('experiments')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      return data as Experiment[];
     }
   }
-  return getStorageItem<Experiment[]>(LOCAL_STORAGE_KEY_EXPERIMENTS, []);
+  return [];
 };
 
 export const getExperimentsByBatchId = async (batchId: string): Promise<Experiment[]> => {
-  const experiments = await getExperiments();
-  return experiments.filter(e => e.batch_id === batchId);
+  if (isSupabaseConfigured() && supabase) {
+    const { data, error } = await supabase
+      .from('experiments')
+      .select('*')
+      .eq('batch_id', batchId)
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      return data as Experiment[];
+    }
+  }
+  return [];
 };
 
 export const createExperiment = async (input: {
@@ -541,47 +592,56 @@ export const createExperiment = async (input: {
   result: string;
   status: 'قيد التنفيذ' | 'مكتملة بنجاح' | 'مكتملة بملاحظات' | 'غير ناجحة';
 }): Promise<Experiment> => {
-  const currentUser = getCurrentUser();
-  const userId = currentUser?.id || 'user-guest';
-  const batch = await getBatchById(input.batch_id);
-  const existingExp = await getExperiments();
-
-  const year = new Date().getFullYear();
-  const sequenceNum = existingExp.length + 1;
-  const experiment_number = `EXP-${year}-${String(sequenceNum).padStart(4, '0')}`;
-
-  const newExp: Experiment = {
-    id: 'exp-' + Date.now(),
-    user_id: userId,
-    batch_id: input.batch_id,
-    batch_number: batch ? batch.batch_number : 'NW-2026-0000',
-    experiment_number: experiment_number,
-    objective: input.objective,
-    quantity_used: Number(input.quantity_used),
-    processing_method: input.processing_method,
-    duration: input.duration,
-    observations: input.observations,
-    result: input.result,
-    status: input.status,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  };
-
   if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase.from('experiments').insert([newExp]).select();
-      if (!error && data && data.length > 0) {
-        const dbExp = data[0] as Experiment;
-        setStorageItem(LOCAL_STORAGE_KEY_EXPERIMENTS, [dbExp, ...existingExp]);
-        return dbExp;
-      }
-    } catch (err) {
-      console.warn("Supabase experiment insert error, falling back to local store:", err);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error("يجب تسجيل الدخول أولاً لحفظ التجربة");
     }
+
+    const payload = {
+      user_id: user.id,
+      batch_id: input.batch_id,
+      objective: input.objective,
+      quantity_used: Number(input.quantity_used),
+      processing_method: input.processing_method,
+      duration: input.duration,
+      observations: input.observations || null,
+      result: input.result,
+      status: input.status
+    };
+
+    const { data: insertData, error: insertError } = await supabase
+      .from('experiments')
+      .insert([payload])
+      .select();
+
+    if (insertError) {
+      console.error("Supabase experiment INSERT failed:", insertError);
+      throw new Error(`فشل حفظ التجربة في قاعدة البيانات: ${insertError.message}`);
+    }
+
+    if (!insertData || insertData.length === 0) {
+      throw new Error("لم يتم إرجاع سجل التجربة من قاعدة البيانات");
+    }
+
+    const createdRecord = insertData[0] as Experiment;
+
+    // Verify by re-select
+    const { data: verifiedRecord, error: verifyError } = await supabase
+      .from('experiments')
+      .select('*')
+      .eq('id', createdRecord.id)
+      .single();
+
+    if (verifyError || !verifiedRecord) {
+      throw new Error("تعذر التثبت من وجود التجربة في قاعدة البيانات بعد الحفظ");
+    }
+
+    notifyListeners();
+    return verifiedRecord as Experiment;
   }
 
-  setStorageItem(LOCAL_STORAGE_KEY_EXPERIMENTS, [newExp, ...existingExp]);
-  return newExp;
+  throw new Error("الاتصال بقاعدة البيانات غير مهيأ.");
 };
 
 // ============================================================================
