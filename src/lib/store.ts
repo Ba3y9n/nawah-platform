@@ -424,59 +424,74 @@ export const createBatch = async (input: {
   image_url?: string;
 }): Promise<Batch> => {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  console.log('[NAWAH STORE AUTH DEBUG]', {
+    hasUser: !!user,
+    userId: user?.id || null,
+    userError: userError?.message || null,
+    hasSession: !!session,
+    sessionUserId: session?.user?.id || null,
+  });
+
   if (!user) {
     throw new Error("يجب تسجيل الدخول أولاً لحفظ الدفعة في قاعدة البيانات");
   }
 
-    const payload = {
-      user_id: user.id,
-      source_id: (input.source_id && input.source_id.startsWith('src-')) ? null : (input.source_id || null),
-      source_name: input.source_name || 'مصدر مسجل',
-      region_id: (input.region_id && input.region_id.startsWith('reg-')) ? null : (input.region_id || null),
-      city_id: (input.city_id && input.city_id.startsWith('city-')) ? null : (input.city_id || null),
-      quantity: Number(input.quantity),
-      date_type: input.date_type,
-      date_collected: input.date_collected || new Date().toISOString().split('T')[0],
-      cleaning_status: input.cleaning_status,
-      drying_status: input.drying_status,
-      moisture: input.moisture ? Number(input.moisture) : null,
-      storage_method: input.storage_method || 'أكياس تهوية محكومة',
-      status: 'مسجلة',
-      notes: input.notes || null,
-      image_url: input.image_url || null
-    };
+  const payload = {
+    user_id: user.id,
+    source_id: (input.source_id && input.source_id.startsWith('src-')) ? null : (input.source_id || null),
+    source_name: input.source_name || 'مصدر مسجل',
+    region_id: (input.region_id && input.region_id.startsWith('reg-')) ? null : (input.region_id || null),
+    city_id: (input.city_id && input.city_id.startsWith('city-')) ? null : (input.city_id || null),
+    quantity: Number(input.quantity),
+    date_type: input.date_type,
+    date_collected: input.date_collected || new Date().toISOString().split('T')[0],
+    cleaning_status: input.cleaning_status,
+    drying_status: input.drying_status,
+    moisture: input.moisture ? Number(input.moisture) : null,
+    storage_method: input.storage_method || 'أكياس تهوية محكومة',
+    status: 'مسجلة',
+    notes: input.notes || null,
+    image_url: input.image_url || null
+  };
 
-    // 1. INSERT into Supabase database
-    const { data: insertData, error: insertError } = await supabase
-      .from('batches')
-      .insert([payload])
-      .select();
+  console.log('[NAWAH STORE BATCH INSERT PAYLOAD]', payload);
 
-    if (insertError) {
-      console.error("Supabase batch INSERT failed:", insertError);
-      throw new Error(`فشلت عملية حفظ الدفعة في قاعدة البيانات: ${insertError.message}`);
-    }
+  // 1. INSERT into Supabase database
+  const { data: insertData, error: insertError } = await supabase
+    .from('batches')
+    .insert([payload])
+    .select();
 
-    if (!insertData || insertData.length === 0) {
-      throw new Error("لم يتم إرجاع الدفعة المحفوظة من قاعدة البيانات");
-    }
+  if (insertError) {
+    console.error("[NAWAH STORE BATCH INSERT ERROR]", insertError);
+    throw new Error(`فشلت عملية حفظ الدفعة في قاعدة البيانات: [${insertError.code || 'DB_ERR'}] ${insertError.message}`);
+  }
 
-    const createdRecord = insertData[0] as Batch;
+  if (!insertData || insertData.length === 0) {
+    throw new Error("لم يتم إرجاع الدفعة المحفوظة من قاعدة البيانات");
+  }
 
-    // 2. VERIFY BY RE-SELECTING FROM SUPABASE (Rule 29: Read-after-write verification)
-    const { data: verifiedRecord, error: verifyError } = await supabase
-      .from('batches')
-      .select('*')
-      .eq('id', createdRecord.id)
-      .single();
+  const createdRecord = insertData[0] as Batch;
 
-    if (verifyError || !verifiedRecord) {
-      throw new Error("تعذر التثبت من وجود الدفعة في قاعدة البيانات بعد الحفظ");
-    }
+  console.log('[NAWAH STORE BATCH INSERT SUCCESS]', createdRecord);
 
-    notifyListeners();
-    return verifiedRecord as Batch;
+  // 2. VERIFY BY RE-SELECTING FROM SUPABASE (Rule 29: Read-after-write verification)
+  const { data: verifiedRecord, error: verifyError } = await supabase
+    .from('batches')
+    .select('*')
+    .eq('id', createdRecord.id)
+    .single();
+
+  if (verifyError || !verifiedRecord) {
+    console.error("[NAWAH STORE BATCH VERIFY ERROR]", verifyError);
+    throw new Error("تعذر التثبت من وجود الدفعة في قاعدة البيانات بعد الحفظ");
+  }
+
+  notifyListeners();
+  return verifiedRecord as Batch;
 };
 
 // ============================================================================

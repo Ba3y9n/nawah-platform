@@ -107,15 +107,25 @@ export default function NewBatchPage() {
 
     try {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      console.log('[NAWAH AUTH DEBUG]', {
+        isAuthenticated: !!user,
+        userId: user?.id || null,
+        userError: userError?.message || null,
+        sessionExists: !!session,
+        sessionUserId: session?.user?.id || null,
+        sessionError: sessionError?.message || null,
+        emailConfirmed: !!user?.email_confirmed_at
+      });
 
       if (!user) {
+        console.warn('[NAWAH AUTH DEBUG] No authenticated user returned by supabase.auth.getUser(). Triggering Auth Modal.');
         setIsSubmitting(false);
         setShowAuthModal(true);
-        // Save form state to local storage to persist after login
         if (typeof window !== 'undefined') {
           try {
-            // Save basic form fields if needed
             localStorage.setItem('nawah_pending_action', 'new_batch');
           } catch(e) {}
         }
@@ -146,7 +156,8 @@ export default function NewBatchPage() {
       const regionObj = SAUDI_REGIONS.find(r => r.id === selectedRegionId);
       const cityObj = SAUDI_CITIES.find(c => c.id === selectedCityId);
 
-      // Insert via createBatch store helper (tries Supabase, falls back to local store if schema cache/table error)
+      console.log('[NAWAH BATCH DEBUG] Calling createBatch with payload...');
+
       const newBatch = await createBatch({
         source_id: sourceId || undefined,
         source_name: sourceName.trim(),
@@ -165,11 +176,12 @@ export default function NewBatchPage() {
         image_url: uploadedImageUrl || imagePreview || undefined,
       });
 
-      // Redirect to batch detail page or batches list
+      console.log('[NAWAH BATCH DEBUG] Batch created successfully:', newBatch);
+
       router.push(`/pit-management/batches/${newBatch.id}`);
       router.refresh();
     } catch (err: any) {
-      console.error(err);
+      console.error('[NAWAH BATCH DEBUG ERROR]', err);
       setErrorMsg("حدث خطأ أثناء حفظ الدفعة: " + (err.message || err));
       setIsSubmitting(false);
     }
