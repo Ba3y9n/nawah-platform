@@ -439,6 +439,19 @@ export const createBatch = async (input: {
     throw new Error("يجب تسجيل الدخول أولاً لحفظ الدفعة في قاعدة البيانات");
   }
 
+  // Ensure user profile exists in public.profiles to satisfy Foreign Key constraint (batches_user_id_fkey)
+  const { error: profileUpsertError } = await supabase.from('profiles').upsert({
+    id: user.id,
+    full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'مستخدم نواة',
+    email: user.email || '',
+    user_type: user.user_metadata?.user_type || 'individual',
+    organization: user.user_metadata?.organization || null,
+  }, { onConflict: 'id' });
+
+  if (profileUpsertError) {
+    console.warn('Profile auto-creation notice:', profileUpsertError.message);
+  }
+
   const payload = {
     user_id: user.id,
     source_id: (input.source_id && input.source_id.startsWith('src-')) ? null : (input.source_id || null),
