@@ -79,7 +79,6 @@ export default function Navbar() {
 
   const mainLinks = [
     { href: "/", label: "الرئيسية" },
-    { href: "/about", label: "عن نواة" },
     { href: "/map", label: "الخريطة الذكية" },
     { href: "/evidence", label: "الأدلة والمصادر" },
     { href: "/assistant", label: "مساعد نواة" },
@@ -138,18 +137,6 @@ export default function Navbar() {
                 }`}
               >
                 <span>الرئيسية</span>
-              </Link>
-
-              {/* 2. عن نواة */}
-              <Link 
-                href="/about" 
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                  pathname === "/about" 
-                    ? "bg-emerald-50 text-emerald-800" 
-                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
-                }`}
-              >
-                <span>عن نواة</span>
               </Link>
 
               {/* 3. الخريطة الذكية */}
