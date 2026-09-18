@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import AIChatWidget from "@/components/AIChatWidget";
 import Link from "next/link";
 
 const cairo = Cairo({
@@ -28,9 +27,6 @@ export default function RootLayout({
         <main className="flex-grow">
           {children}
         </main>
-        
-        {/* Floating AI Assistant Widget */}
-        <AIChatWidget />
 
         <footer className="bg-emerald-950 pt-20 pb-10 relative overflow-hidden">
           {/* Subtle background texture */}

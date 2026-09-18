@@ -20,17 +20,24 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
     const loadLeaflet = async () => {
       const L = (await import("leaflet")).default;
       
-      // Inject CSS if missing
       if (!document.getElementById("leaflet-css")) {
         const link = document.createElement("link");
         link.id = "leaflet-css";
         link.rel = "stylesheet";
         link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
         document.head.appendChild(link);
+        
+        const style = document.createElement("style");
+        style.innerHTML = `
+          @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
       }
 
       if (!leafletMapRef.current && mapRef.current) {
-        // Center on Saudi Arabia (Qassim / Riyadh center view) with smooth interaction settings
         const map = L.map(mapRef.current as HTMLElement, {
           center: [25.0, 44.5],
           zoom: 6,
@@ -41,9 +48,9 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
           scrollWheelZoom: true,
         });
 
-        // Minimal / Light tile layer
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-          attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        // Clean Tech Light Basemap
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+          attribution: '&copy; CARTO',
           maxZoom: 19
         }).addTo(map);
 
@@ -52,59 +59,71 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
 
       const map = leafletMapRef.current;
 
-      // Clear existing markers
-      Object.values(markersRef.current).forEach((marker: any) => {
-        map.removeLayer(marker);
+      // Clear layers
+      map.eachLayer((layer: any) => {
+        if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+          map.removeLayer(layer);
+        }
       });
       markersRef.current = {};
 
-      // Add custom styled NAWAH markers
+      const coordinates: [number, number][] = [];
+
       sources.forEach((src) => {
         if (src.lat && src.lng) {
+          coordinates.push([src.lat, src.lng]);
           const isSelected = selectedSourceId === src.id;
           const isVerified = src.verification_status === 'verified';
           
-          let iconColor = '#022c22'; // Emerald dark
-          if (src.source_type === 'factory') iconColor = '#047857';
-          else if (src.source_type === 'collection_center') iconColor = '#d97706';
-          else if (src.source_type === 'farm') iconColor = '#15803d';
+          const iconColor = isVerified ? '#10b981' : '#f59e0b'; // Emerald or Amber
+          const shadowColor = isVerified ? 'rgba(16, 185, 129, 0.4)' : 'rgba(245, 158, 11, 0.4)';
 
           const markerHtml = `
-            <div style="
-              position: relative;
-              width: ${isSelected ? '36px' : '28px'};
-              height: ${isSelected ? '36px' : '28px'};
-              background: ${iconColor};
-              border: 2.5px solid ${isVerified ? '#34d399' : '#fbbf24'};
-              border-radius: 50%;
-              box-shadow: 0 4px 12px rgba(2, 44, 34, 0.25);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              transition: all 0.3s ease;
-              transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'};
-            ">
-              <div style="width: 8px; height: 8px; background: #ffffff; border-radius: 50%;"></div>
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+              ${isSelected ? `<div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background: ${iconColor}; animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;"></div>` : ''}
+              <div style="
+                position: relative;
+                width: ${isSelected ? '24px' : '16px'};
+                height: ${isSelected ? '24px' : '16px'};
+                background: ${iconColor};
+                border: 2px solid white;
+                border-radius: 50%;
+                box-shadow: 0 0 15px ${shadowColor};
+                transition: all 0.3s ease;
+                z-index: 2;
+              "></div>
             </div>
           `;
 
           const customIcon = L.divIcon({
-            className: 'nawah-custom-marker',
+            className: 'nawah-tech-marker',
             html: markerHtml,
-            iconSize: [isSelected ? 36 : 28, isSelected ? 36 : 28],
-            iconAnchor: [isSelected ? 18 : 14, isSelected ? 18 : 14]
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
           });
 
           const marker = L.marker([src.lat, src.lng], { icon: customIcon }).addTo(map);
           
           marker.on('click', () => {
             onSelectSource(src);
-            map.flyTo([src.lat!, src.lng!], 11, { duration: 1.2 });
+            map.flyTo([src.lat!, src.lng!], 11, { duration: 1.5, easeLinearity: 0.25 });
           });
 
           markersRef.current[src.id] = marker;
         }
       });
+
+      // Draw dashed connecting lines to represent "Tracking / Digital Bridge"
+      if (coordinates.length > 1) {
+        L.polyline(coordinates, {
+          color: '#34d399',
+          weight: 1.5,
+          opacity: 0.4,
+          dashArray: '5, 10',
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(map);
+      }
     };
 
     loadLeaflet();
@@ -113,7 +132,7 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
   return (
     <div 
       ref={mapRef} 
-      className="w-full h-full min-h-[420px] lg:min-h-[640px] rounded-2xl z-10 overflow-hidden shadow-inner touch-pan-x touch-pan-y" 
+      className="w-full h-full min-h-[500px] lg:min-h-[640px] rounded-[2rem] z-10 overflow-hidden shadow-inner touch-pan-x touch-pan-y" 
     />
   );
 }

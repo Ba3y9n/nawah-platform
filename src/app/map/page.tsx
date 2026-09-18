@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { 
   MapPin, Building2, ShieldCheck, 
   AlertCircle, Database, Clock, ShieldAlert, CheckCircle2,
-  Search, Filter, Maximize2, RotateCcw, ExternalLink, Navigation, Compass
+  Search, Filter, Maximize2, RotateCcw, ExternalLink, Navigation, Compass, ChevronLeft
 } from "lucide-react";
 import { VERIFIED_SOURCES, SAUDI_REGIONS } from "@/lib/store";
 import { createClient } from "@/lib/supabase/client";
@@ -125,133 +125,49 @@ export default function SmartMapPage() {
         </div>
 
         {/* METRICS DISCLOSURE */}
-        <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-xs shrink-0 relative z-10">
-          <div>
-            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">موثق رسمياً</span>
+        <div className="flex flex-wrap items-center gap-4 bg-white/5 backdrop-blur-md p-4 rounded-3xl border border-white/10 text-xs shrink-0 relative z-10 mt-6 md:mt-0">
+          <div className="text-center px-4">
+            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">إجمالي المصادر</span>
+            <span className="text-2xl font-black text-white">{sources.length}</span>
+          </div>
+          <div className="w-px h-8 bg-white/10" />
+          <div className="text-center px-4">
+            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">مواقع موثقة</span>
             <span className="text-2xl font-black text-emerald-400">{verifiedCount}</span>
-            <span className="text-xs text-emerald-100/50 mr-1">موقع</span>
           </div>
-          <div className="w-px h-10 bg-white/10" />
-          <div>
-            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">يحتاج تحقق</span>
-            <span className="text-2xl font-black text-amber-400">{pendingCount}</span>
-            <span className="text-xs text-emerald-100/50 mr-1">موقع</span>
+          <div className="w-px h-8 bg-white/10 hidden sm:block" />
+          <div className="text-center px-4 hidden sm:block">
+            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">المناطق المغطاة</span>
+            <span className="text-2xl font-black text-amber-400">{new Set(sources.map(s => s.region_id)).size}</span>
           </div>
-        </div>
-      </motion.div>
-
-      {/* SEARCH AND FILTERS BAR */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm space-y-4"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          
-          {/* SEARCH INPUT */}
-          <div className="md:col-span-5 relative">
-            <Search className="w-5 h-5 text-slate-400 absolute right-4 top-3.5" />
-            <input
-              type="text"
-              placeholder="ابحث عن جهة، مدينة، أو مصدر..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl pr-12 pl-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all font-medium"
-            />
-          </div>
-
-          {/* TYPE FILTER */}
-          <div className="md:col-span-3">
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 font-bold transition-all"
-            >
-              <option value="all">جميع أنواع الجهات</option>
-              <option value="factory">مصانع تمور</option>
-              <option value="collection_center">مراكز تجميع</option>
-              <option value="farm">مزارع ومعالجة</option>
-            </select>
-          </div>
-
-          {/* VERIFICATION FILTER */}
-          <div className="md:col-span-2">
-            <select
-              value={filterVerification}
-              onChange={(e) => setFilterVerification(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 font-bold transition-all"
-            >
-              <option value="all">كافة درجات التوثيق</option>
-              <option value="verified">موثق رسمياً</option>
-              <option value="needs_verification">يحتاج تحقق</option>
-            </select>
-          </div>
-
-          {/* REGION FILTER */}
-          <div className="md:col-span-2">
-            <select
-              value={filterRegion}
-              onChange={(e) => setFilterRegion(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 font-bold transition-all"
-            >
-              <option value="all">جميع المناطق</option>
-              {SAUDI_REGIONS.map(r => (
-                <option key={r.id} value={r.id}>{r.name_ar}</option>
-              ))}
-            </select>
-          </div>
-
-        </div>
-
-        {/* NEARBY EXPLORER TOOL BAR */}
-        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-sm">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleRequestLocation}
-              className="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold px-4 py-2 rounded-xl transition-colors text-xs border border-emerald-100"
-            >
-              <Navigation className="w-4 h-4 text-emerald-600" />
-              <span>استكشاف المواقع حولي</span>
-            </button>
-
-            {userLocation && (
-              <motion.div 
-                initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold"
-              >
-                <span className="text-slate-500">نطاق البحث:</span>
-                {[25, 50, 100].map(dist => (
-                  <button
-                    key={dist}
-                    onClick={() => setNearbyDistance(dist)}
-                    className={`px-3 py-1 rounded-lg transition-colors ${nearbyDistance === dist ? 'bg-emerald-950 text-white' : 'hover:bg-slate-100 text-slate-600'}`}
-                  >
-                    {dist} كم
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </div>
-
-          <div className="text-xs font-medium text-slate-500 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-            تم العثور على <strong className="text-emerald-950 font-black text-sm mx-1">{filteredSources.length}</strong> موقع مطابق
+          <div className="w-px h-8 bg-white/10 hidden sm:block" />
+          <div className="text-center px-4 hidden sm:block">
+            <span className="text-[10px] text-emerald-200/70 font-bold block uppercase mb-1">حالة الشبكة</span>
+            <span className="text-sm font-black text-emerald-300 flex items-center gap-1 mt-1"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> متصل نشط</span>
           </div>
         </div>
       </motion.div>
 
       {/* MAIN MAP AREA & SIDE PANEL GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative min-h-[700px]">
         
-        {/* HERO MAP CONTAINER (8 Cols Desktop / Full Mobile) */}
+        {/* HERO MAP CONTAINER */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="lg:col-span-8 bg-white border border-slate-200/80 rounded-[2.5rem] p-4 shadow-xl shadow-slate-200/50 relative overflow-hidden h-[600px]"
+          className="lg:col-span-8 bg-white border border-slate-200/80 rounded-[2.5rem] p-3 shadow-xl shadow-slate-200/50 relative overflow-hidden h-[700px]"
         >
-          <div className="absolute inset-0 bg-slate-50 rounded-[2rem] m-4 overflow-hidden border border-slate-100 z-0">
-             {/* Note: MapComponent is rendered inside the rounded container */}
+          <div className="absolute top-6 left-6 z-20 flex flex-col gap-2 pointer-events-none">
+             <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+               <span className="w-2 h-2 rounded-full bg-emerald-500"></span> موثق رسمياً
+             </span>
+             <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+               <span className="w-2 h-2 rounded-full bg-amber-500"></span> يحتاج تحقق
+             </span>
+          </div>
+
+          <div className="absolute inset-0 bg-slate-50 rounded-[2rem] overflow-hidden z-0">
             <MapComponent 
               sources={filteredSources} 
               selectedSourceId={selectedSource?.id}
@@ -260,15 +176,16 @@ export default function SmartMapPage() {
           </div>
         </motion.div>
 
-        {/* DETAIL SIDE PANEL / MOBILE BOTTOM SHEET (4 Cols Desktop) */}
-        <div className="lg:col-span-4 h-full">
+        {/* DETAIL SIDE PANEL / LIST */}
+        <div className="lg:col-span-4 h-[700px] flex flex-col">
           
           {selectedSource ? (
             /* SELECTED SOURCE DETAIL PANEL */
             <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white border border-slate-200/80 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 space-y-6"
+              initial={{ opacity: 0, x: -20, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white border border-slate-200/80 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 space-y-6 h-full overflow-y-auto custom-scrollbar"
             >
               
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
@@ -285,13 +202,13 @@ export default function SmartMapPage() {
                   ) : (
                     <>
                       <Clock className="w-4 h-4 text-amber-600" />
-                      <span>يحتاج تحقق ميداني</span>
+                      <span>قيد المراجعة</span>
                     </>
                   )}
                 </span>
 
                 <span className="text-[10px] bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl font-bold">
-                  {selectedSource.source_type === 'factory' ? 'مصنع تمور' : selectedSource.source_type === 'collection_center' ? 'مركز تجميع' : 'مزرعة/معالجة'}
+                  {selectedSource.source_type === 'factory' ? 'مصنع تمور' : selectedSource.source_type === 'collection_center' ? 'مركز تجميع' : 'مزرعة'}
                 </span>
               </div>
 
@@ -305,11 +222,11 @@ export default function SmartMapPage() {
 
               {/* WHY THIS SOURCE APPEARS DISCLOSURE */}
               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2 text-sm shadow-inner">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">سبب الظهور في الخريطة الوطنية:</span>
+                <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">الربط بمنظومة نواة:</span>
                 <p className="text-slate-800 font-bold leading-relaxed text-xs">
                   {selectedSource.data_source.includes('المركز الوطني')
-                    ? 'منشأة مسجلة لدى المركز الوطني للنخيل والتمور وتملك سبيلاً معتمداً لتوفير الموارد الثانوية.'
-                    : 'موقع مرخص رسمياً في سجلاّت وزارة البيئة والمياه والزراعة.'}
+                    ? 'هذا المصدر مسجل في الشبكة كنقطة توفير نوى معتمدة قابلة للتتبع.'
+                    : 'نقطة معالجة مرتبطة بسجلات رسمية.'}
                 </p>
               </div>
 
@@ -320,14 +237,10 @@ export default function SmartMapPage() {
                   <span className="font-bold text-emerald-950 text-left truncate max-w-[160px] bg-slate-50 px-2 py-1 rounded-md">{selectedSource.data_source}</span>
                 </div>
                 <div className="flex justify-between items-center pb-2 border-b border-slate-50">
-                  <span className="text-slate-400">درجة الموثوقية:</span>
-                  <span className="font-bold text-emerald-700">
-                    {selectedSource.verification_status === 'verified' ? 'عالية (سجل رسمي)' : 'متوسطة (قيد التحقق)'}
+                  <span className="text-slate-400">حالة الربط:</span>
+                  <span className="font-bold text-emerald-700 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> نشط في المنصة
                   </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">تاريخ التحقق:</span>
-                  <span className="font-bold text-slate-800 font-mono">{selectedSource.last_verified_at || '2026-01-15'}</span>
                 </div>
               </div>
 
@@ -338,31 +251,19 @@ export default function SmartMapPage() {
                     href={getDirectionsUrl(selectedSource.lat, selectedSource.lng)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-emerald-950 hover:bg-emerald-800 text-white font-bold py-3.5 rounded-2xl text-sm transition-all shadow-lg hover:shadow-emerald-900/30 group"
+                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-sm transition-all shadow-lg hover:-translate-y-0.5 group"
                   >
-                    <span>الحصول على الاتجاهات</span>
-                    <Navigation className="w-4 h-4 text-amber-400 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
-                  </a>
-                )}
-                
-                {selectedSource.website && (
-                  <a
-                    href={selectedSource.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-white border-2 border-slate-100 hover:border-emerald-200 text-slate-800 font-bold py-3.5 rounded-2xl text-sm transition-all hover:bg-slate-50 group"
-                  >
-                    <span>فتح الموقع الإلكتروني للمصدر</span>
-                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                    <span>استكشاف الموقع جغرافياً</span>
+                    <Navigation className="w-4 h-4 text-emerald-200 group-hover:translate-x-0.5 transition-transform" />
                   </a>
                 )}
               </div>
 
               <button
                 onClick={() => setSelectedSource(null)}
-                className="w-full text-slate-400 hover:text-emerald-700 py-2 rounded-xl text-xs font-bold transition-colors underline underline-offset-4"
+                className="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 py-3 rounded-xl text-xs font-bold transition-colors"
               >
-                العودة لقائمة جميع الجهات
+                العودة لشبكة المصادر
               </button>
 
             </motion.div>
@@ -372,51 +273,62 @@ export default function SmartMapPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-slate-200/50 space-y-6 h-full max-h-[600px] flex flex-col"
+              className="bg-white border border-slate-200/80 rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 flex flex-col h-full"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0">
-                <h3 className="text-sm font-black text-emerald-950 uppercase tracking-wider">
-                  قائمة الجهات والمصادر
-                </h3>
-                <span className="text-xs bg-emerald-50 text-emerald-700 font-black px-2 py-1 rounded-lg">{filteredSources.length}</span>
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4 shrink-0">
+                <div>
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
+                    الشبكة الموثقة
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-bold mt-1">اختر موقعاً لاستكشاف نقطة الربط</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                  <Database className="w-5 h-5" />
+                </div>
+              </div>
+
+              {/* SEARCH */}
+              <div className="mb-4 relative shrink-0">
+                <Search className="w-4 h-4 text-slate-400 absolute right-3 top-3" />
+                <input
+                  type="text"
+                  placeholder="بحث سريع..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-9 pl-3 py-2 text-xs font-bold focus:border-emerald-400 focus:outline-none transition-colors"
+                />
               </div>
 
               {filteredSources.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center space-y-3">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
-                    <Search className="w-8 h-8 text-slate-300" />
+                  <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center">
+                    <Search className="w-6 h-6 text-slate-300" />
                   </div>
-                  <p className="text-sm text-slate-500 font-medium">لا توجد مواقع مطابقة للفلاتر الحالية.</p>
-                  <button
-                    onClick={() => { setSearchTerm(""); setFilterType("all"); setFilterVerification("all"); setFilterRegion("all"); }}
-                    className="text-xs text-emerald-700 font-bold bg-emerald-50 px-4 py-2 rounded-xl"
-                  >
-                    إعادة ضبط الفلاتر
-                  </button>
+                  <p className="text-xs text-slate-500 font-bold">لا توجد مواقع مطابقة.</p>
                 </div>
               ) : (
-                <div className="flex-1 space-y-3 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar">
                   {filteredSources.map((s) => (
-                    <button
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       key={s.id}
                       onClick={() => setSelectedSource(s)}
-                      className="w-full text-right p-4 rounded-2xl bg-white border-2 border-slate-50 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-900/5 transition-all space-y-2 block group"
+                      className="w-full cursor-pointer p-4 rounded-2xl bg-white border border-slate-100 hover:border-emerald-300 hover:shadow-md transition-all flex items-center gap-4 group"
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="text-sm font-bold text-slate-800 group-hover:text-emerald-950 leading-tight">{s.name}</span>
-                        <span className={`text-[10px] px-2 py-1 rounded-md font-bold shrink-0 ${
-                          s.verification_status === 'verified'
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-amber-50 text-amber-700'
-                        }`}>
-                          {s.verification_status === 'verified' ? 'موثق' : 'مراجعة'}
-                        </span>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${s.verification_status === 'verified' ? 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
+                        <Building2 className="w-5 h-5" />
                       </div>
-                      <p className="text-xs text-slate-400 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        <span className="truncate">{s.location_address || s.city_name}</span>
-                      </p>
-                    </button>
+                      <div className="flex-1 text-right">
+                        <h4 className="text-xs font-black text-slate-800 line-clamp-1">{s.name}</h4>
+                        <div className="flex items-center gap-2 mt-1 text-[10px] font-bold text-slate-500">
+                           <span className="flex items-center gap-1"><MapPin className="w-3 h-3"/>{s.city_name || "غير محدد"}</span>
+                        </div>
+                      </div>
+                      <div className="shrink-0 pl-1">
+                        <ChevronLeft className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -424,9 +336,7 @@ export default function SmartMapPage() {
           )}
 
         </div>
-
       </div>
-
     </div>
   );
 }

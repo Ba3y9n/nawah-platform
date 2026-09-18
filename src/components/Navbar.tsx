@@ -203,18 +203,6 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* 6. مساعد نواة */}
-              <Link 
-                href="/assistant" 
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                  pathname === "/assistant" 
-                    ? "bg-emerald-50 text-emerald-800" 
-                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
-                }`}
-              >
-                <span>مساعد نواة</span>
-              </Link>
-
             </div>
 
             {/* LANGUAGE & AUTH */}
