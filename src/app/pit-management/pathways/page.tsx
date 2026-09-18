@@ -11,12 +11,7 @@ import { REUSE_PATHWAYS } from "@/lib/store";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 
-const pathwayIcons: Record<string | number, any> = {
-  1: Flame,
-  2: Droplet,
-  3: Coffee,
-  4: Leaf,
-  5: Beaker,
+const pathwayIcons: Record<string, any> = {
   "1": Flame,
   "2": Droplet,
   "3": Coffee,
@@ -85,7 +80,7 @@ function PathwaysContent() {
         <div className="w-full lg:w-1/3 flex flex-col gap-3">
           {REUSE_PATHWAYS.map((path) => {
             const isSelected = selectedPathway.id === path.id;
-            const Icon = pathwayIcons[path.id] || Sparkles;
+            const Icon = pathwayIcons[String(path.id)] || Sparkles;
             
             return (
               <motion.button
