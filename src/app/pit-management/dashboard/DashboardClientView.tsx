@@ -42,25 +42,86 @@ export default function DashboardClientView({
         <div className="absolute -left-20 -top-20 w-64 h-64 bg-[#F0FDF4] rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
         <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-[#F0F9FF] rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
 
-        <div className="relative z-10">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#059669] block mb-3 bg-[#F0FDF4] w-fit px-3 py-1 rounded-full border border-[#86EFAC]/50">لوحة التحكم التفاعلية</span>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900">
-            أهلاً بك، {userName}
-          </h1>
-          <p className="text-sm text-slate-600 mt-3 max-w-xl font-bold leading-relaxed">
-            <span className="text-[#059669] font-black">نواة هي حلقة وصل رقمية للتوثيق فقط.</span> أنت هنا لإنشاء "سجل إلكتروني" لدفعات النوى لربطها بالتحليل والشركات المستفيدة، ولست بحاجة لشحن أو تسليم أي نوى فعلياً إلينا.
-          </p>
-        </div>
+        <div className="relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12">
+          
+          <div className="flex-1 space-y-6">
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#059669] block mb-3 bg-[#F0FDF4] w-fit px-3 py-1 rounded-full border border-[#86EFAC]/50">حلقة الوصل الرقمية</span>
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight">
+                أهلاً بك، {userName}
+              </h1>
+              <p className="text-sm text-slate-500 mt-2 font-bold max-w-sm">
+                نواة منصة ربط إلكترونية فقط. نحن لا نستلم النوى، بل نوثق بياناتها.
+              </p>
+            </div>
 
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="relative z-10">
-          <Link
-            href="/pit-management/batches/new"
-            className="flex items-center justify-center gap-2 bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-[0_8px_16px_-6px_rgba(6,78,59,0.3)] shrink-0"
-          >
-            <PlusCircle className="w-5 h-5 text-emerald-300" />
-            <span>تسجيل دفعة جديدة</span>
-          </Link>
-        </motion.div>
+            <Link
+              href="/pit-management/batches/new"
+              className="inline-flex items-center justify-center gap-2 bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-[0_8px_16px_-6px_rgba(6,78,59,0.3)]"
+            >
+              <PlusCircle className="w-5 h-5 text-emerald-300" />
+              <span>إنشاء سجل دفعة جديد</span>
+            </Link>
+          </div>
+
+          {/* INTERACTIVE CIRCLE LOOP */}
+          <div className="flex-1 w-full relative h-[180px] flex items-center justify-center">
+            {/* Connecting Line */}
+            <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-emerald-100 -translate-y-1/2 overflow-hidden">
+              <motion.div 
+                initial={{ x: "-100%" }}
+                animate={{ x: "100%" }}
+                transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                className="w-full h-full bg-emerald-400"
+              />
+            </div>
+
+            <div className="relative z-10 w-full flex items-center justify-between">
+              
+              <motion.div whileHover={{ scale: 1.1, y: -5 }} className="flex flex-col items-center gap-2 group cursor-pointer bg-white">
+                <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-amber-600 shadow-sm group-hover:shadow-md transition-all">
+                  <Leaf className="w-6 h-6" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-[11px] font-black text-slate-800">المصنع</span>
+                  <span className="block text-[9px] text-slate-500">يسجل النوى</span>
+                </div>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.1, y: -5 }} className="flex flex-col items-center gap-2 group cursor-pointer bg-white">
+                <div className="w-16 h-16 rounded-full bg-emerald-600 border-4 border-emerald-100 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-all">
+                  <Sparkles className="w-7 h-7" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-[11px] font-black text-emerald-700">نواة</span>
+                  <span className="block text-[9px] text-slate-500">منصة الوثوق والربط</span>
+                </div>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.1, y: -5 }} className="flex flex-col items-center gap-2 group cursor-pointer bg-white">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 border-2 border-blue-200 flex items-center justify-center text-blue-600 shadow-sm group-hover:shadow-md transition-all">
+                  <TestTube2 className="w-6 h-6" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-[11px] font-black text-slate-800">المختبر</span>
+                  <span className="block text-[9px] text-slate-500">يوثق التجارب</span>
+                </div>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.1, y: -5 }} className="flex flex-col items-center gap-2 group cursor-pointer bg-white">
+                <div className="w-14 h-14 rounded-2xl bg-purple-50 border-2 border-purple-200 flex items-center justify-center text-purple-600 shadow-sm group-hover:shadow-md transition-all">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div className="text-center">
+                  <span className="block text-[11px] font-black text-slate-800">الشركات</span>
+                  <span className="block text-[9px] text-slate-500">تشتري الموثق</span>
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
+
+        </div>
       </motion.div>
 
       {/* COMPACT DATA METRICS BAR (Floating Effect) */}
