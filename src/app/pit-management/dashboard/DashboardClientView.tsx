@@ -47,8 +47,8 @@ export default function DashboardClientView({
           <h1 className="text-3xl md:text-4xl font-black text-slate-900">
             أهلاً بك، {userName}
           </h1>
-          <p className="text-sm text-slate-500 mt-3 max-w-xl font-medium leading-relaxed">
-            تابع الرحلة الرقمية لدفعات نوى التمر المسجلة، بدءاً من بيانات المصدر ووصولاً إلى التحليل والأدلة والتجارب وقياس الأثر.
+          <p className="text-sm text-slate-600 mt-3 max-w-xl font-bold leading-relaxed">
+            <span className="text-[#059669] font-black">نواة هي حلقة وصل رقمية للتوثيق فقط.</span> أنت هنا لإنشاء "سجل إلكتروني" لدفعات النوى لربطها بالتحليل والشركات المستفيدة، ولست بحاجة لشحن أو تسليم أي نوى فعلياً إلينا.
           </p>
         </div>
 

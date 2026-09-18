@@ -59,9 +59,10 @@ export default function PitManagementLayout({
                 <span className="text-[10px] font-black tracking-widest uppercase text-[#059669] block mb-2">مركز التحكم والرحلة</span>
                 <h2 className="text-2xl font-black text-slate-900">إدارة النوى</h2>
                 <p className="text-xs text-slate-500 mt-2 font-medium leading-relaxed">
-                  أنشئ سجلًا رقميًا لدفعة من نوى التمر، وأضف بيانات مصدرها وكميتها وحالتها. يساعدك السجل على توثيق الدفعة ومتابعة ما يرتبط بها من تحليل وأدلة وتجارب ونتائج.
+                  نواة هي <strong>حلقة وصل رقمية</strong> بين المصانع والمختبرات والشركات.<br/>
+                  أنشئ سجلاً إلكترونياً لدفعة النوى الخاصة بك لتوثيقها وعرضها للمستفيدين.
                   <br/><br/>
-                  <span className="font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">التسجيل يتم رقميًا ولا يعني إرسال النوى أو تسليمها لنواة.</span>
+                  <span className="font-bold text-amber-700 bg-amber-100 px-2.5 py-1.5 rounded-lg border border-amber-200 block text-center">لا نقوم باستلام أو تخزين النوى فعلياً. المنصة للتوثيق والربط فقط.</span>
                 </p>
               </div>
 
