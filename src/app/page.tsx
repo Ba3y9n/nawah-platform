@@ -145,8 +145,8 @@ function InteractiveFeatures() {
   
   const features = [
     { 
-      num: "01", title: "إدارة الدفعات", icon: Database,
-      desc: "تسجيل وتتبع دفعات نوى التمر وربطها ببيانات المصدر والكمية والحالة وطرق التخزين والمعالجة لتكوين سجل رقمي موثوق وقابل للتتبع.", 
+      num: "01", title: "سجل رقمي للدفعات", icon: Database,
+      desc: "حفظ بيانات كل دفعة وربطها برحلتها.", 
       visual: (
         <div className="flex flex-col gap-3 w-full max-w-[220px]">
           {[1,2,3].map(i => (
@@ -162,8 +162,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "02", title: "الذكاء الاصطناعي", icon: BrainCircuit,
-      desc: "تحليل وتوقع الفرص والمسارات باستخدام نماذج الذكاء الاصطناعي لاكتشاف أفضل الاستخدامات.", 
+      num: "02", title: "تحليل بصري بالذكاء الاصطناعي", icon: BrainCircuit,
+      desc: "قراءة أولية للمظهر والخصائص الظاهرة من الصورة.", 
       visual: (
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 flex items-center justify-center">
            <div className="absolute inset-0 border border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed" />
@@ -178,8 +178,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "03", title: "قاعدة الأدلة", icon: BookOpen,
-      desc: "مكتبة الأبحاث العلمية الموثقة التي تدعم مسارات الاستخدام المحتملة وتميز بين ما هو مثبت وما يحتاج للتحقق.", 
+      num: "03", title: "قاعدة أدلة علمية", icon: BookOpen,
+      desc: "الوصول إلى مصادر مرتبطة بمسارات الاستفادة.", 
       visual: (
         <div className="flex gap-4 w-full max-w-[280px]">
            <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
@@ -204,7 +204,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "04", title: "إدارة التجارب", icon: TestTube2,
-      desc: "توثيق نتائج المعالجة المخبرية وربطها بالدفعات لضمان تتبع جودة التجارب وسهولة العودة لها.", 
+      desc: "توثيق التجارب والنتائج وربطها بالدفعة.", 
       visual: (
         <div className="flex items-end justify-center gap-4 h-40">
            <div className="w-12 h-full bg-white border border-slate-100 rounded-full p-2 flex flex-col justify-end relative overflow-hidden shadow-sm">
@@ -222,8 +222,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "05", title: "الخريطة الذكية", icon: Map,
-      desc: "توزيع المصادر والمصانع جغرافياً لتسهيل فهم وتتبع مسارات الإمداد وتوضيح العلاقة بين المنتج والمصدر.", 
+      num: "05", title: "خريطة ذكية", icon: Map,
+      desc: "استكشاف المصادر والمواقع المرتبطة بالمنظومة.", 
       visual: (
         <div className="relative w-40 h-40 sm:w-56 sm:h-56 bg-slate-50 border border-slate-100 rounded-xl sm:rounded-[2rem] overflow-hidden flex items-center justify-center shadow-inner">
            <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#10b981_1px,transparent_1px),linear-gradient(to_bottom,#10b981_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]" />
@@ -240,8 +240,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "06", title: "لوحة البيانات", icon: LayoutDashboard,
-      desc: "مؤشرات أداء وتحليلات فورية توفر رؤية شاملة للمنظومة وتدعم اتخاذ قرارات مبنية على بيانات دقيقة.", 
+      num: "06", title: "لوحة متابعة", icon: LayoutDashboard,
+      desc: "متابعة الدفعات والتجارب والبيانات المرتبطة بها.", 
       visual: (
         <div className="w-full max-w-[220px] sm:max-w-[256px] grid grid-cols-2 gap-3 sm:gap-4">
            <div className="col-span-2 bg-emerald-500 rounded-3xl h-28 p-5 relative overflow-hidden shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
@@ -262,7 +262,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "07", title: "قياس الأثر", icon: LineChart,
-      desc: "تتبع العوائد البيئية والاقتصادية لمسارات معالجة وإعادة استخدام نوى التمر وتحويلها من مخلف إلى مورد.", 
+      desc: "تحويل البيانات المسجلة إلى مؤشرات أثر قابلة للتتبع.", 
       visual: (
         <div className="w-full max-w-[220px] sm:max-w-[256px] h-40 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] p-4 sm:p-6 shadow-md flex flex-col justify-end relative">
            <div className="absolute top-6 right-6 h-2 w-16 bg-slate-100 rounded-full" />
@@ -280,7 +280,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "08", title: "التتبع", icon: QrCode,
-      desc: "مسح سريع لمعلومات الشحنات والدفعات لضمان موثوقية وسرعة تدفق البيانات في أي مرحلة من السلسلة.", 
+      desc: "الحفاظ على ارتباط الدفعة بمراحل رحلتها.", 
       visual: (
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] flex items-center justify-center shadow-lg">
            <div className="absolute inset-5 border-2 border-emerald-500/20 rounded-2xl" />
@@ -399,13 +399,13 @@ function InteractiveFeatures() {
 function InteractiveTimeline() {
   const [activeStep, setActiveStep] = useState(0);
   const steps = [
-    { num: "01", title: "تسجيل الدفعات", desc: "تسجيل وتتبع دفعات نوى التمر وربطها بالمصدر والكمية والحالة وطرق التخزين والمعالجة لتكوين سجل رقمي قابل للتتبع داخل المنصة.", icon: Database },
-    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "ارفع صورة لنوى التمر للحصول على تحليل بصري مبدئي. يساعد في التعرف على الخصائص البصرية الظاهرة كالشكل واللون والتجانس.", icon: BrainCircuit },
-    { num: "03", title: "اكتشاف الاستخدامات المحتملة", desc: "استكشف مسارات الاستفادة المحتملة من نوى التمر بناءً على البيانات المتاحة ومستوى الأدلة العلمية (استخدامات مدعومة بالدراسات، قيد التحقق، وتجريبية).", icon: Search },
-    { num: "04", title: "التجارب", desc: "أنشئ تجربة مرتبطة بالدفعة التي تعمل عليها. وثّق هدف التجربة، الكمية المستخدمة، طريقة المعالجة، والنتائج، لتكوين سجل قابل للتتبع.", icon: TestTube2 },
-    { num: "05", title: "الأدلة والمصادر", desc: "تربط نواة مسارات الاستخدام بالمصادر والدراسات المتاحة، مع توضيح مستوى الأدلة وتمييز ما هو مثبت عما يحتاج للتحقق.", icon: BookOpen },
-    { num: "06", title: "الخريطة الذكية", desc: "تعرض الخريطة المصادر والدفعات المرتبطة بها جغرافيًا، مع تنظيم البيانات (المنطقة ← المدينة ← المصدر ← الدفعات).", icon: Map },
-    { num: "07", title: "قياس الأثر", desc: "تحول البيانات المسجلة في المنصة إلى مؤشرات أداء ككمية النوى المسجلة وعدد الدفعات والمصادر والتجارب لدعم اتخاذ القرار.", icon: LineChart },
+    { num: "01", title: "تسجيل الدفعة", desc: "أدخل مصدر النوى، الكمية، نوع التمر، الموقع، حالة النوى وبيانات التخزين، ثم تُنشئ نواة سجلًا رقميًا للدفعة.", icon: Database },
+    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "أضف صورة للدفعة للحصول على تحليل بصري تقديري للمظهر والخصائص الظاهرة. التحليل البصري لا يستبدل الفحوصات المخبرية.", icon: BrainCircuit },
+    { num: "03", title: "الاستخدامات المحتملة", desc: "تستعرض نواة مسارات استخدام محتملة للنوى، مع الفصل بين الاستخدام المحتمل والنتيجة التي تم التحقق منها بالتجربة.", icon: Search },
+    { num: "04", title: "التجارب", desc: "سجّل التجارب المرتبطة بالدفعة وما تم استخدامه منها والنتائج والملاحظات.", icon: TestTube2 },
+    { num: "05", title: "الأدلة والمصادر", desc: "اربط مسارات الاستفادة بالأبحاث والمصادر العلمية ذات الصلة.", icon: BookOpen },
+    { num: "06", title: "الخريطة الذكية", desc: "استكشف المصادر والمنشآت والمواقع المرتبطة بمنظومة التمور وفق حالة التوثيق والمصدر.", icon: Map },
+    { num: "07", title: "قياس الأثر", desc: "تتبع الكميات والنتائج المرتبطة بالدفعة، مع توضيح الفرق بين البيانات الفعلية والتقديرات الحسابية.", icon: LineChart },
   ];
 
   return (
@@ -571,15 +571,15 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.2]"
               >
-                من نواة التمر... <br />
-                <span className="text-emerald-600">نصنع قيمة</span>
+                من الهدر إلى... <br />
+                <span className="text-emerald-600">مورد قابل للتتبع</span>
               </motion.h1>
 
               <motion.p 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0"
               >
-                منصة رقمية ذكية لإدارة نوى التمر واستكشاف فرص الاستفادة منها، تربط البيانات والذكاء الاصطناعي والأدلة العلمية والتجارب وقياس الأثر في منظومة واحدة، لدعم الانتقال من التعامل مع النوى كمخلف إلى التعامل معه كمورد قابل للتتبع والدراسة والتثمين.
+                <span className="font-bold">نواة | NAWAH</span> منصة رقمية لتوثيق نوى التمر وتتبعها، وربط بياناتها بالتحليل بالذكاء الاصطناعي والأدلة العلمية والتجارب وقياس الأثر؛ لدعم الاستفادة من الموارد الثانوية في قطاع التمور.
               </motion.p>
 
               <motion.div 
@@ -619,7 +619,7 @@ export default function LandingPage() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="text-center space-y-4 mb-16 relative z-10">
             <h2 className="text-3xl font-black text-white">المشكلة</h2>
-            <p className="text-emerald-100 text-lg">قطاع ضخم… ومورد ثانوي يحتاج إلى منظومة استثمار</p>
+            <p className="text-emerald-100 text-lg">موارد موجودة، لكن بياناتها ومسارات الاستفادة منها متفرقة.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12">
@@ -651,7 +651,8 @@ export default function LandingPage() {
                <span>192.5% نمو الصادرات منذ 2016</span>
              </div>
              <p className="text-lg text-emerald-50/90 leading-relaxed font-medium relative z-10">
-               ومع هذا الحجم من الإنتاج والتجهيز والتصنيع، تظهر منتجات ثانوية من بينها نوى التمر.
+               يرتبط قطاع التمور بكميات من النوى التي قد تُعامل كمخلفات دون توثيق أو تتبع واضح لمسارات الاستفادة منها. وفي المقابل، توجد أبحاث وتجارب واستخدامات محتملة للنوى، لكنها موزعة بين مصادر مختلفة.<br/><br/>
+               <span className="text-amber-300 font-bold">تجمع نواة هذه العناصر في رحلة رقمية واحدة قابلة للتتبع.</span>
              </p>
           </div>
         </div>
@@ -664,7 +665,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
           <div className="text-center space-y-4 mb-10 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">حجم المورد المحتمل</h2>
-            <p className="text-emerald-600/80 text-lg font-bold">من كل ثمرة... مورد يستحق الدراسة</p>
+            <p className="text-emerald-600/80 text-lg font-bold max-w-3xl mx-auto">تشير الدراسات إلى أن النوى قد تمثل نحو 10% من وزن الثمرة، وبناءً على إنتاج التمور في المملكة يمكن تقدير حجم نظري محتمل للنوى.</p>
           </div>
 
           <div className="bg-white border border-slate-100 rounded-2xl sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] overflow-hidden max-w-4xl mx-auto relative">
@@ -712,7 +713,7 @@ export default function LandingPage() {
              </div>
              
              <div className="p-5 bg-slate-50 text-center border-t border-slate-100">
-                 <span className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">ملاحظة: هذا تقدير حسابي مبني على نسبة منشورة في الدراسات، وليس إحصائية رسمية لكمية نوى التمر المتخلفة فعليًا في المملكة. وهو يوضح حجم الفرصة المحتملة لدراسة وتثمين نوى التمر.</span>
+                 <span className="text-xs text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">هذا تقدير حسابي وليس إحصائية رسمية لكمية النوى المتخلفة فعليًا.</span>
              </div>
           </div>
         </div>
@@ -731,7 +732,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-white">كيف تعمل نواة؟</h2>
-            <p className="text-emerald-100 text-lg">مسار رقمي واحد قابل للتتبع</p>
+            <p className="text-emerald-100 text-lg">تبدأ الرحلة بتسجيل دفعة من نوى التمر، ثم تُربط بالتحليل والأدلة والتجارب والأثر.</p>
           </div>
           
           <InteractiveTimeline />
@@ -743,7 +744,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
-            <p className="text-emerald-600/70 text-lg font-bold">منظومة واحدة بدل بيانات متفرقة</p>
+            <p className="text-emerald-600/70 text-lg font-bold">أدوات مترابطة لإدارة رحلة النوى</p>
           </div>
 
           <InteractiveFeatures />
@@ -757,7 +758,10 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
           <div className="text-center space-y-4 mb-10 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl font-black text-amber-400">الأثر</h2>
-            <p className="text-emerald-100 text-lg">من مخلف إلى مورد قابل للتتبع</p>
+            <p className="text-emerald-100 text-lg">
+               من التوثيق إلى الاستفادة<br/>
+               <span className="text-sm font-medium opacity-80 block mt-3 max-w-2xl mx-auto leading-relaxed">تبدأ نواة بتوثيق المورد، ثم تربط البيانات بالمعرفة والتجارب ومسارات الاستفادة، لتكوين سجل يمكن من خلاله متابعة الأثر المرتبط بكل دفعة.</span>
+            </p>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -765,7 +769,7 @@ export default function LandingPage() {
               { label: "البيانات", icon: Database },
               { label: "المعرفة", icon: BrainCircuit },
               { label: "التجربة", icon: TestTube2 },
-              { label: "إعادة الاستخدام", icon: Recycle },
+              { label: "الاستفادة", icon: Recycle },
               { label: "الأثر", icon: Globe },
             ].map((node, idx, arr) => (
               <div key={idx} className="flex flex-col md:flex-row items-center gap-4 w-full relative">
@@ -813,12 +817,15 @@ export default function LandingPage() {
       {/* 7. NATIONAL CONTEXT */}
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4 max-w-3xl text-center space-y-8">
-           <h2 className="text-2xl font-black text-emerald-950">السياق الوطني الموازي</h2>
+           <h2 className="text-2xl font-black text-emerald-950">لماذا يرتبط ذلك بالتحدي؟</h2>
+           <p className="text-slate-600 text-lg leading-relaxed font-medium">
+             يرتبط تحدي نواة بمسار الحد من الفقد والهدر الغذائي من خلال دعم الاستفادة من الموارد الثانوية المرتبطة بسلسلة التمور، بدل التعامل معها كمخلفات دون مسار واضح للتوثيق والاستفادة.
+           </p>
            <div className="bg-white p-8 md:p-12 rounded-3xl border border-slate-100 shadow-sm space-y-6">
              <div className="text-3xl sm:text-5xl md:text-6xl font-black text-rose-500 dir-ltr">4.066M</div>
              <div className="text-lg font-bold text-slate-700">طن / الهدر الغذائي السنوي العام</div>
              <p className="text-xs text-slate-400 bg-slate-50 p-4 rounded-xl">
-               هذه الأرقام تخص الهدر الغذائي عمومًا في المملكة وفق تقديرات رسمية، وليست نوى التمر تحديدًا. لكنها توضح أهمية تطوير حلول رقمية تدعم تعظيم الاستفادة من الموارد الثانوية كالنوى ضمن منظومة الاقتصاد الدائري.
+               ويعرض الرقم التالي سياق الهدر الغذائي العام في المملكة، وليس كمية نوى التمر تحديدًا.
              </p>
            </div>
         </div>
@@ -834,13 +841,14 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="text-4xl font-black text-emerald-950"
             >
-              عن نواة | لماذا نواة؟
+              لماذا نواة؟
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
               className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed font-medium"
             >
-              تسعى نواة إلى دعم تحويل نوى التمر من مورد ثانوي غير مستثمر بالكامل إلى مورد قابل للتتبع والدراسة والتثمين، من خلال ربط البيانات والذكاء الاصطناعي والأدلة والتجارب وقياس الأثر في منظومة رقمية واحدة.
+              لأن المشكلة ليست في وجود النوى فقط، بل في غياب منظومة رقمية تربط بياناتها ومصادرها وتجاربها في رحلة واحدة قابلة للتتبع.<br/>
+              <span className="text-emerald-600 font-bold">نواة تبني هذه الحلقة الرقمية.</span>
             </motion.p>
           </div>
 

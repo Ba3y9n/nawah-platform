@@ -206,8 +206,9 @@ export default function NewBatchPage() {
                 Auto NW-2026-xxxx
               </span>
             </h2>
-            <p className="text-xs text-emerald-700 mt-1">
-              سيتم توليد رقم الدفعة تلقائياً وحفظ البيانات فورياً في قاعدة البيانات الحقيقية
+            <p className="text-xs text-slate-600 mt-2 font-medium">
+              الدفعة هي كمية محددة من نوى التمر جُمعت من مصدر واحد أو في فترة محددة.<br/>
+              سجّل بياناتها الأساسية مرة واحدة، وستنشئ نواة لها رقمًا تعريفيًا خاصًا يمكنك من خلاله متابعة التحليل والاستخدامات والتجارب والأثر.
             </p>
           </div>
         </div>
@@ -221,6 +222,10 @@ export default function NewBatchPage() {
       )}
 
       {/* FORM */}
+      <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl text-xs font-bold leading-relaxed shadow-sm">
+        <span className="block mb-1 text-emerald-950 text-sm">ماذا تحتاج لتسجيل الدفعة؟</span>
+        <span className="text-emerald-800">المصدر، الكمية، نوع التمر، حالة النوى، بيانات التخزين، والصورة اختيارية وتفيد في التحليل البصري.</span>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* SECTION 1: SOURCE & LOCATION */}
@@ -524,7 +529,7 @@ export default function NewBatchPage() {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>حفظ الدفعة في قاعدة البيانات</span>
+                <span>حفظ الدفعة وبدء الرحلة</span>
               </>
             )}
           </button>
