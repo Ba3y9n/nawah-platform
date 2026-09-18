@@ -4,12 +4,20 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
-  Sparkles, CheckCircle2, TestTube2, AlertCircle, FileText, 
-  ArrowRight, Package, ShieldCheck, ChevronLeft
+  Sparkles, TestTube2, ArrowRight, ChevronLeft, Droplet, 
+  Flame, Leaf, Coffee, Beaker, CheckCircle2
 } from "lucide-react";
 import { REUSE_PATHWAYS } from "@/lib/store";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+
+const pathwayIcons: Record<number, any> = {
+  1: Flame,
+  2: Droplet,
+  3: Coffee,
+  4: Leaf,
+  5: Beaker
+};
 
 function PathwaysContent() {
   const searchParams = useSearchParams();
@@ -42,169 +50,164 @@ function PathwaysContent() {
 
   const selectedBatch = batches.find(b => b.id === selectedBatchId);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
-  };
-
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      className="space-y-8 max-w-6xl mx-auto" 
-      dir="rtl"
-    >
+    <div className="space-y-6 max-w-[1400px] mx-auto min-h-[80vh] flex flex-col" dir="rtl">
       
-      {/* TITLE BANNER */}
-      <motion.div variants={itemVariants} className="bg-white p-8 md:p-10 rounded-[2rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] border border-slate-100 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="absolute -left-20 -top-20 w-64 h-64 bg-[#F0FDF4] rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
+      {/* MINIMALIST HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <Sparkles className="w-6 h-6 text-emerald-500" />
+            مستكشف مسارات الاستفادة
+          </h2>
+          <p className="text-xs text-slate-500 mt-1 font-bold">
+            اختر مساراً لاستكشاف متطلباته وتوثيق تجاربك عليه
+          </p>
+        </div>
 
-        <div className="relative z-10">
-          <div>
-            {batchId && selectedBatch && (
-              <div className="flex items-center gap-2 mb-4">
-                <Link 
-                  href={`/pit-management/batches/${batchId}`}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-[#064E3B] bg-[#F0FDF4] px-4 py-2 rounded-full border border-[#86EFAC]/50 hover:bg-[#DCFCE7] transition-colors"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                  <span>الدفعة المحددة: {selectedBatch.batch_number}</span>
-                </Link>
-              </div>
-            )}
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#059669] block mb-2">مستكشف المسارات التحويلية</span>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-900">مسارات الاستفادة الحيوية والصناعية</h2>
-            <p className="text-sm text-slate-500 mt-2 font-medium max-w-xl leading-relaxed">
-              استكشف المسارات المرشحة والمحتملة لتوظيف نوى التمر بناءً على الفحص البصري، تمهيداً للاختبارات المخبرية.
-            </p>
+        {batchId && selectedBatch && (
+          <div className="bg-emerald-50 text-emerald-800 border border-emerald-100 px-4 py-2 rounded-2xl flex items-center gap-3 text-xs font-bold">
+            <span>للدفعة:</span>
+            <span className="font-black bg-emerald-200 px-2 py-0.5 rounded-lg dir-ltr">{selectedBatch.batch_number}</span>
           </div>
-        </div>
+        )}
+      </div>
 
-        <Link
-          href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
-          className="inline-flex items-center gap-2 bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_8px_16px_-6px_rgba(6,78,59,0.3)] shrink-0 relative z-10"
-        >
-          <TestTube2 className="w-5 h-5 text-emerald-300" />
-          <span>توثيق تجربة جديدة</span>
-        </Link>
-      </motion.div>
-
-      {/* CENTRAL PATHWAY EXPLORER INTERACTIVE FLOW */}
-      <motion.div variants={itemVariants} className="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] space-y-8 relative">
-        <div className="text-center space-y-2">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#94A3B8]">شبكة المسارات المحتملة</span>
-          <h3 className="text-xl font-black text-slate-900">اختر المسار التحويلي لاستكشاف متطلباته</h3>
-        </div>
-
-        {/* HORIZONTAL PATHWAY NODES */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-4">
+      {/* INTERACTIVE SPLIT LAYOUT */}
+      <div className="flex flex-col lg:flex-row gap-6 flex-1">
+        
+        {/* LEFT NAV (INTERACTIVE LIST) */}
+        <div className="w-full lg:w-1/3 flex flex-col gap-3">
           {REUSE_PATHWAYS.map((path) => {
             const isSelected = selectedPathway.id === path.id;
+            const Icon = pathwayIcons[path.id as keyof typeof pathwayIcons] || Sparkles;
+            
             return (
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
                 key={path.id}
+                whileHover={{ scale: 1.02, x: -5 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedPathway(path)}
-                className={`p-5 rounded-[1.5rem] border-2 text-right transition-all flex flex-col justify-between space-y-4 min-h-[140px] ${
+                className={`w-full text-right p-5 rounded-3xl border-2 transition-all flex items-center justify-between group overflow-hidden relative ${
                   isSelected
-                    ? "bg-[#F0FDF4] border-[#86EFAC] shadow-sm"
-                    : "bg-white border-slate-100 hover:border-emerald-200 hover:bg-slate-50 text-slate-600"
+                    ? "bg-emerald-950 border-emerald-900 shadow-lg text-white"
+                    : "bg-white border-slate-100 hover:border-emerald-200 text-slate-700 hover:bg-emerald-50/50"
                 }`}
               >
-                <div className="space-y-3">
-                  <span className={`text-[10px] px-3 py-1 rounded-full font-bold inline-block ${
-                    isSelected ? "bg-[#059669] text-white" : "bg-slate-100 text-slate-500"
+                {isSelected && (
+                  <motion.div 
+                    layoutId="active-bg"
+                    className="absolute inset-0 bg-emerald-900 opacity-50"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                
+                <div className="relative z-10 flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+                    isSelected ? "bg-emerald-800 text-amber-400" : "bg-slate-50 text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600"
                   }`}>
-                    استخدام محتمل
-                  </span>
-                  <h4 className={`text-sm font-black leading-snug ${isSelected ? "text-[#064E3B]" : "text-slate-700"}`}>
-                    {path.name}
-                  </h4>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className={`text-sm font-black ${isSelected ? "text-white" : "text-slate-800"}`}>
+                      {path.name}
+                    </h4>
+                    <span className={`text-[10px] font-bold mt-1 block ${isSelected ? "text-emerald-300" : "text-slate-400"}`}>
+                      انقر للتفاصيل
+                    </span>
+                  </div>
                 </div>
+                
+                {isSelected && (
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="relative z-10">
+                    <ChevronLeft className="w-5 h-5 text-emerald-400" />
+                  </motion.div>
+                )}
               </motion.button>
             );
           })}
         </div>
-      </motion.div>
 
-      {/* SELECTED PATHWAY EXPANDED DETAILS */}
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={selectedPathway.id}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -15 }}
-          transition={{ type: "spring", damping: 30 }}
-          className="bg-white border border-slate-100 rounded-[2rem] p-8 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] space-y-8"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-50 pb-6 gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="bg-amber-50 text-amber-800 border border-amber-100 text-[11px] font-bold px-4 py-1.5 rounded-full">
-                  المسار المحدد
-                </span>
-                <span className="text-[11px] font-bold text-slate-500 bg-slate-50 border border-slate-100 px-4 py-1.5 rounded-full">الموثوقية: {selectedPathway.evidence_level}</span>
-              </div>
-              <h3 className="text-2xl font-black text-slate-900">{selectedPathway.name}</h3>
-            </div>
-
-            <Link
-              href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : `/pit-management/experiments/new`}
-              className="inline-flex items-center gap-2 bg-[#F8FAFC] hover:bg-slate-100 text-slate-800 border border-slate-200 px-6 py-3 rounded-2xl text-xs font-bold transition-all shadow-sm shrink-0"
+        {/* RIGHT CONTENT (DYNAMIC INFO) */}
+        <div className="w-full lg:w-2/3">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={selectedPathway.id}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm h-full flex flex-col justify-between relative overflow-hidden"
             >
-              <TestTube2 className="w-4 h-4 text-emerald-600" />
-              <span>انتقال للمعمل المخبري</span>
-            </Link>
-          </div>
+              {/* Decorative BG */}
+              <div className="absolute -left-20 -top-20 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-60"></div>
+              
+              <div className="relative z-10 space-y-8">
+                {/* Header */}
+                <div className="flex items-start justify-between border-b border-slate-100 pb-6">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full mb-3">
+                      <CheckCircle2 className="w-3 h-3" />
+                      موثوقية المسار: {selectedPathway.evidence_level}
+                    </span>
+                    <h3 className="text-2xl font-black text-slate-900 leading-tight max-w-sm">
+                      {selectedPathway.name}
+                    </h3>
+                  </div>
+                  <div className="w-16 h-16 rounded-3xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-inner">
+                    <TestTube2 className="w-8 h-8" />
+                  </div>
+                </div>
 
-          <p className="text-sm text-slate-700 leading-relaxed bg-slate-50/50 p-6 rounded-2xl border border-slate-100 font-medium">
-            {selectedPathway.description}
-          </p>
+                {/* Minimalist Details Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Card 1 */}
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-emerald-200 transition-colors group">
+                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">الفكرة ببساطة</span>
+                    <p className="text-xs font-bold text-slate-700 leading-relaxed group-hover:text-emerald-950 transition-colors">
+                      {selectedPathway.description}
+                    </p>
+                  </div>
+                  
+                  {/* Card 2 */}
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-emerald-200 transition-colors group">
+                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">المتطلبات</span>
+                    <p className="text-xs font-bold text-slate-700 leading-relaxed group-hover:text-emerald-950 transition-colors">
+                      {selectedPathway.processing_requirements}
+                    </p>
+                  </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 space-y-3">
-              <h4 className="font-black text-emerald-950 text-base flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                متطلبات وتجهيز المعالجة
-              </h4>
-              <p className="text-slate-700 leading-relaxed font-medium text-sm">{selectedPathway.processing_requirements}</p>
-            </div>
+                  {/* Card 3 (Full width) */}
+                  <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100 md:col-span-2 flex items-center gap-4">
+                    <div className="bg-white p-3 rounded-xl shadow-sm shrink-0">
+                      <TestTube2 className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black text-emerald-600 uppercase block mb-1">الاختبارات اللازمة للتوثيق</span>
+                      <p className="text-xs font-bold text-emerald-950">
+                        {selectedPathway.required_tests}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <div className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 space-y-3">
-              <h4 className="font-black text-blue-950 text-base flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                الاختبارات المخبرية المطلوبة
-              </h4>
-              <p className="text-slate-700 leading-relaxed font-medium text-sm">{selectedPathway.required_tests}</p>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* NEXT STEP */}
-      <motion.div variants={itemVariants} className="bg-emerald-950 text-white p-8 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
-        <div>
-          <span className="text-[11px] text-amber-400 font-bold uppercase tracking-wider block mb-1">الخطوة التالية</span>
-          <h4 className="text-lg font-black text-white">تسجيل وتوثيق تجربة معملية لهذا المسار</h4>
+              {/* Action Button */}
+              <div className="relative z-10 mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                <Link
+                  href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
+                  className="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                >
+                  <span>بدء تجربة وتوثيق النتائج</span>
+                  <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
-
-        <Link
-          href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
-          className="inline-flex items-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-md shrink-0"
-        >
-          <span>متابعة الرحلة</span>
-          <ChevronLeft className="w-5 h-5" />
-        </Link>
-      </motion.div>
-
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -213,7 +216,7 @@ export default function PathwaysPage() {
     <Suspense fallback={
       <div className="text-center py-24 text-emerald-600 text-sm font-bold flex flex-col items-center justify-center gap-4">
         <Sparkles className="w-8 h-8 animate-spin" />
-        جاري تحميل مستكشف المسارات...
+        جاري تحميل الاستكشاف...
       </div>
     }>
       <PathwaysContent />
