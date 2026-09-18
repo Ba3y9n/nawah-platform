@@ -17,13 +17,13 @@ function CircularSystem() {
   const [radius, setRadius] = useState(85);
   
   const stages = [
-    { id: 0, title: "المصدر", desc: "توثيق مصانع التمور ومراكز التجميع.", icon: Map },
-    { id: 1, title: "الدفعة", desc: "تسجيل الكميات وإصدار معرف تتبع.", icon: Database },
-    { id: 2, title: "التحليل", desc: "فحص جودة النوى بالذكاء الاصطناعي.", icon: BrainCircuit },
-    { id: 3, title: "الاستخدامات", desc: "تحديد المسارات الصناعية المحتملة.", icon: Search },
-    { id: 4, title: "التجربة", desc: "توثيق عمليات المعالجة والمخرجات.", icon: TestTube2 },
-    { id: 5, title: "النتائج", desc: "ربط المخرجات بالدليل العلمي.", icon: BookOpen },
-    { id: 6, title: "الأثر", desc: "حساب العوائد البيئية والاقتصادية.", icon: Globe },
+    { id: 0, title: "المصدر", desc: "توثيق مصدر النوى، مثل مصانع التمور ومراكز التجميع والمصادر المسجلة.", icon: Map },
+    { id: 1, title: "الدفعة", desc: "تسجيل كمية محددة من النوى وإنشاء سجل رقمي ومعرف تتبع خاص بها.", icon: Database },
+    { id: 2, title: "التحليل", desc: "تحليل بصري تقديري لصور النوى باستخدام الذكاء الاصطناعي، دون اعتباره بديلًا عن الفحوصات المخبرية.", icon: BrainCircuit },
+    { id: 3, title: "الاستخدامات", desc: "استكشاف مسارات الاستفادة المحتملة استنادًا إلى البيانات والأدلة المتاحة.", icon: Search },
+    { id: 4, title: "التجربة", desc: "ربط الدفعة بالتجارب والفحوصات التي تنفذها الجهات المختصة وتوثيق نتائجها عند توفرها.", icon: TestTube2 },
+    { id: 5, title: "النتائج", desc: "تمييز النتائج المتحقق منها بالتجارب عن الاستخدامات التي ما تزال محتملة.", icon: BookOpen },
+    { id: 6, title: "الأثر", desc: "تتبع المؤشرات والأثر المرتبط بالدفعات، مع التمييز بين البيانات الفعلية والتقديرات الحسابية.", icon: Globe },
   ];
 
   useEffect(() => {
@@ -145,8 +145,8 @@ function InteractiveFeatures() {
   
   const features = [
     { 
-      num: "01", title: "موردو النوى", icon: Database,
-      desc: "توثيق الدفعات ومعلومات المصدر والكمية والحالة.", 
+      num: "01", title: "مصانع ومراكز تجميع التمور", icon: Database,
+      desc: "تسجيل مصادر النوى والكميات والدفعات وإنشاء سجل رقمي قابل للتتبع.", 
       visual: (
         <div className="flex flex-col gap-3 w-full max-w-[220px]">
           {[1,2,3].map(i => (
@@ -163,7 +163,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "02", title: "الباحثون والجامعات", icon: BrainCircuit,
-      desc: "الوصول إلى بيانات منظمة وربط التجارب والنتائج بالدفعات.", 
+      desc: "الوصول إلى بيانات منظمة وربط الدراسات والتجارب والنتائج بالدفعات.", 
       visual: (
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 flex items-center justify-center">
            <div className="absolute inset-0 border border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed" />
@@ -179,7 +179,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "03", title: "المختبرات والجهات المختصة", icon: TestTube2,
-      desc: "توثيق نتائج الفحوصات والتجارب وربطها بالسجل الرقمي للدفعة.", 
+      desc: "توثيق الفحوصات والتجارب ونتائجها وربطها بالسجل الرقمي للدفعة.", 
       visual: (
         <div className="flex gap-4 w-full max-w-[280px]">
            <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
@@ -203,8 +203,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "04", title: "الجهات الصناعية", icon: LayoutDashboard,
-      desc: "استكشاف الموارد ومسارات الاستفادة المحتملة وربطها بالبيانات والأدلة.", 
+      num: "04", title: "الشركات والجهات الصناعية", icon: LayoutDashboard,
+      desc: "استكشاف الموارد ومسارات الاستفادة المحتملة والتعرف على الدفعات والبيانات المرتبطة بها.", 
       visual: (
         <div className="flex items-end justify-center gap-4 h-40">
            <div className="w-12 h-full bg-white border border-slate-100 rounded-full p-2 flex flex-col justify-end relative overflow-hidden shadow-sm">
@@ -241,7 +241,7 @@ function InteractiveFeatures() {
     },
     { 
       num: "06", title: "تتبع المصدر", icon: QrCode,
-      desc: "معرفة مصدر الدفعة ومسارها.", 
+      desc: "معرفة مصدر الدفعة وبياناتها ومسارها الرقمي.", 
       visual: (
         <div className="w-full max-w-[220px] sm:max-w-[256px] grid grid-cols-2 gap-3 sm:gap-4">
            <div className="col-span-2 bg-emerald-500 rounded-3xl h-28 p-5 relative overflow-hidden shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
@@ -402,8 +402,8 @@ function InteractiveTimeline() {
     { num: "01", title: "تسجيل الدفعة", desc: "سجّل مصدر النوى والكمية والنوع والموقع والحالة، لتنشئ نواة سجلًا رقميًا للدفعة.", icon: Database },
     { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "يمكن إضافة صورة للدفعة للحصول على تحليل بصري تقديري للخصائص الظاهرة. هذا التحليل لا يغني عن الفحوصات المخبرية.", icon: BrainCircuit },
     { num: "03", title: "الاستخدامات المحتملة", desc: "تستعرض نواة مسارات استخدام محتملة للنوى بالاستناد إلى الأدلة والمصادر، مع الفصل بين الاستخدام المحتمل والنتيجة التي تم التحقق منها.", icon: Search },
-    { num: "04", title: "التجارب", desc: "تربط نواة الدفعة بالتجارب التي تنفذها الجامعات أو الباحثون أو المختبرات أو الجهات المختصة، وتوثق نتائجها عند توفرها.", icon: TestTube2 },
-    { num: "05", title: "الأدلة والنتائج", desc: "تربط نواة البيانات بالأبحاث والمصادر ذات الصلة، وتوضح ما تم التحقق منه بالتجربة وما يزال ضمن نطاق الاستخدام المحتمل.", icon: BookOpen },
+    { num: "04", title: "التجارب", desc: "تربط نواة الدفعة بالتجارب والفحوصات التي تنفذها الجامعات والباحثون والمختبرات والجهات المختصة، وتوثق نتائجها عند توفرها.", icon: TestTube2 },
+    { num: "05", title: "الأدلة والنتائج", desc: "تربط نواة بيانات الدفعة بالأبحاث والمصادر ذات الصلة، وتوضح ما تم التحقق منه بالتجربة وما يزال ضمن نطاق الاستخدام المحتمل.", icon: BookOpen },
     { num: "06", title: "الربط والتتبع", desc: "تعمل نواة كحلقة وصل رقمية بين موردي النوى والجهات المهتمة بها، مع الحفاظ على سجل الدفعة وبياناتها ومسارها.", icon: QrCode },
     { num: "07", title: "الأثر", desc: "تتبع نواة المؤشرات والنتائج المرتبطة بالدفعات، مع توضيح الفرق بين البيانات الفعلية والتقديرات الحسابية.", icon: LineChart },
   ];
@@ -579,7 +579,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium"
               >
-                <span className="font-bold">نواة | NAWAH</span> منصة رقمية لتوثيق نوى التمر وتتبعها، لتمكين الاستفادة منها عبر التحليل وربطها بالتجارب والأدلة، ضمن مسار الحد من الفقد والهدر الغذائي.
+                <span className="font-bold">نواة | NAWAH</span> منصة رقمية لتوثيق نوى التمر وتتبعها، وتمكين الاستفادة منها عبر تحليل بياناتها وربطها بالأدلة والتجارب والجهات المهتمة، ضمن مسار يدعم الحد من الفقد والهدر الغذائي.
               </motion.p>
 
               <motion.div 
@@ -713,7 +713,7 @@ export default function LandingPage() {
              </div>
              
              <div className="p-5 bg-slate-50 text-center border-t border-slate-100">
-                 <span className="text-xs text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">هذا الرقم هو تقدير حسابي نظري بناءً على نسبة 10% من إجمالي الإنتاج، وليس إحصائية رسمية، وهو ما يبرز الحاجة لمنصة توثق الأرقام الفعلية.</span>
+                 <span className="text-xs text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">هذا تقدير حسابي مبني على نسبة 10% من إنتاج التمور في المملكة لعام 2024، بهدف توضيح الحجم النظري المحتمل للمورد، ولا يمثل كمية رسمية لنوى التمر المتخلفة أو كمية تم قياسها أو جمعها فعليًا.</span>
              </div>
           </div>
         </div>
@@ -759,17 +759,17 @@ export default function LandingPage() {
           <div className="text-center space-y-4 mb-10 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl font-black text-amber-400">الأثر</h2>
             <p className="text-emerald-100 text-lg">
-               من التوثيق إلى الاستفادة<br/>
-               <span className="text-sm font-medium opacity-80 block mt-3 max-w-2xl mx-auto leading-relaxed">تبدأ نواة بتوثيق المورد، ثم تربط البيانات بالمعرفة والتجارب ومسارات الاستفادة، لتكوين سجل يمكن من خلاله متابعة الأثر المرتبط بكل دفعة.</span>
+               من التوثيق إلى الأثر<br/>
+               <span className="text-sm font-medium opacity-80 block mt-3 max-w-2xl mx-auto leading-relaxed">تبدأ نواة بتوثيق المورد، ثم تربط بياناته بالمعرفة والتجارب ومسارات الاستفادة، لتكوين سجل رقمي يمكن من خلاله متابعة النتائج والأثر المرتبط بكل دفعة.</span>
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {[
               { label: "البيانات", icon: Database },
-              { label: "المعرفة", icon: BrainCircuit },
+              { label: "الدليل", icon: BrainCircuit },
               { label: "التجربة", icon: TestTube2 },
-              { label: "الاستفادة", icon: Recycle },
+              { label: "النتيجة", icon: Recycle },
               { label: "الأثر", icon: Globe },
             ].map((node, idx, arr) => (
               <div key={idx} className="flex flex-col md:flex-row items-center gap-4 w-full relative">
