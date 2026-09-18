@@ -830,9 +830,62 @@ export default function LandingPage() {
            </div>
         </div>
       </section>
+      
+      {/* 7.5 VISION 2030 (National Context with MEWA Logo) */}
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute -left-32 -top-32 w-96 h-96 bg-emerald-50 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            
+            <div className="flex-1 space-y-8 relative z-10 text-center lg:text-right">
+              <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-full text-sm">
+                <Globe className="w-4 h-4" />
+                <span>السياق الوطني</span>
+              </div>
+              
+              <h2 className="text-3xl sm:text-5xl font-black text-emerald-950 leading-tight">
+                نواة في سياق <br/><span className="text-emerald-600">رؤية السعودية 2030</span>
+              </h2>
+              
+              <p className="text-lg text-slate-600 font-medium leading-relaxed">
+                تتقاطع نواة مع توجهات الرؤية في مجالات الاستدامة البيئية، والتحول الرقمي، واستثمار البيانات الوطنية، ودعم ممارسات الاقتصاد الدائري وتعظيم الاستفادة من الموارد المحلية، متماشية مع استراتيجيات وزارة البيئة والمياه والزراعة.
+              </p>
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, type: "spring" }}
+              className="relative w-full max-w-sm lg:w-[400px]"
+            >
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100 to-amber-50 rounded-3xl transform rotate-3 scale-105 z-0" />
+              <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-100 shadow-xl relative z-10 flex flex-col items-center justify-center gap-8">
+                <Image 
+                  src="/mewa-logo.png" 
+                  alt="وزارة البيئة والمياه والزراعة" 
+                  width={200} 
+                  height={200}
+                  className="w-48 h-auto object-contain"
+                />
+                <div className="h-px w-full bg-slate-100" />
+                <Image 
+                  src="/nawah-logo.png" 
+                  alt="نواة" 
+                  width={150} 
+                  height={60}
+                  className="w-32 h-auto object-contain opacity-80"
+                />
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+      </section>
 
       {/* 8. WHY NAWAH (Interactive Visual Flow) */}
-      <section id="why-nawah" className="py-24 sm:py-32 bg-white text-center relative overflow-hidden">
+      <section id="why-nawah" className="py-24 sm:py-32 bg-emerald-50 text-center relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.05)_0%,transparent_70%)] pointer-events-none" />
         
         <div className="container mx-auto px-4 max-w-5xl space-y-20 relative z-10">
@@ -918,14 +971,6 @@ export default function LandingPage() {
               <div>
                 <h3 className="text-lg font-black text-amber-400 mb-3">رسالتنا</h3>
                 <p className="text-emerald-50 text-sm leading-relaxed font-medium">تمكين الاستفادة من نوى التمر عبر توثيق بياناتها، وربطها بالتحليل والأدلة والتجارب والنتائج، وبناء حلقة وصل رقمية بين المورد والجهات المهتمة به.</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-amber-400 mb-3">الاقتصاد الدائري</h3>
-                <p className="text-emerald-50 text-sm leading-relaxed font-medium">تدعم نواة مفهوم الاقتصاد الدائري من خلال تعزيز الاستفادة من الموارد الثانوية وربط البيانات بمسارات إعادة الاستخدام والاستفادة.</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-amber-400 mb-3">رؤية السعودية 2030</h3>
-                <p className="text-emerald-50 text-sm leading-relaxed font-medium">تنسجم فكرة نواة مع توجهات رؤية السعودية 2030 في الاستدامة وتنمية الموارد ودعم الابتكار والتحول الرقمي.</p>
               </div>
             </div>
           </motion.div>
