@@ -26,7 +26,7 @@ export default function NewBatchPage() {
   const [quantity, setQuantity] = useState<number | "">(100);
   const [dateType, setDateType] = useState("خلاص");
   const [dateCollected, setDateCollected] = useState(new Date().toISOString().split('T')[0]);
-  const [cleaningStatus, setCleaningStatus] = useState<'مغسولة' | 'غير مغسولة' | 'مجففة ومفروزة'>("مغسولة");
+  const [cleaningStatus, setCleaningStatus] = useState<'مغسولة' | 'مجففة' | 'خام'>("مغسولة");
   const [dryingStatus, setDryingStatus] = useState<'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية'>("مجففة شمسياً");
   const [moisture, setMoisture] = useState<number | "">(12);
   const [storageMethod, setStorageMethod] = useState("أكياس خيش تهوية محكومة");
@@ -201,14 +201,13 @@ export default function NewBatchPage() {
           </Link>
           <div>
             <h2 className="text-xl font-black text-emerald-950 flex items-center gap-2">
-              تسجيل دفعة جديدة من نوى التمر
+              تسجيل دفعة جديدة
               <span className="text-[10px] bg-amber-400 text-emerald-950 font-bold px-2.5 py-0.5 rounded-full">
                 Auto NW-2026-xxxx
               </span>
             </h2>
             <p className="text-xs text-slate-600 mt-2 font-medium">
-              الدفعة هي كمية محددة من نوى التمر جُمعت من مصدر واحد أو في فترة محددة.<br/>
-              سجّل بياناتها الأساسية مرة واحدة، وستنشئ نواة لها رقمًا تعريفيًا خاصًا يمكنك من خلاله متابعة التحليل والاستخدامات والتجارب والأثر.
+              أنت الآن تقوم بإنشاء سجل رقمي لدفعة من نوى التمر. هذا السجل سيرافق الدفعة في رحلتها للتوثيق والتحليل والتجارب. لن يُطلب منك إرسال أي نوى لنا.
             </p>
           </div>
         </div>
@@ -262,7 +261,7 @@ export default function NewBatchPage() {
                 type="text"
                 required
                 disabled={isSubmitting}
-                placeholder="مثلاً: مصنع تمور المملكة - بريدة"
+                placeholder="مثال: مصنع كذا بالقصيم"
                 value={sourceName}
                 onChange={(e) => setSourceName(e.target.value)}
                 className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-3.5 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
@@ -316,7 +315,7 @@ export default function NewBatchPage() {
             
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-emerald-900">
-                الكمية بالكيلوجرام (KG) <span className="text-rose-500">*</span>
+                الكمية المقدرة (كجم أو طن) <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
@@ -361,16 +360,16 @@ export default function NewBatchPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-emerald-900">حالة التنظيف:</label>
+              <label className="text-xs font-bold text-emerald-900">حالة النوى:</label>
               <select
                 value={cleaningStatus}
                 disabled={isSubmitting}
                 onChange={(e) => setCleaningStatus(e.target.value as any)}
                 className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-3.5 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
               >
-                <option value="مغسولة">مغسولة وخالية من العوالق</option>
-                <option value="غير مغسولة">غير مغسولة (بقايا ثمرة)</option>
-                <option value="مجففة ومفروزة">مجففة ومفروزة آلیاً</option>
+                <option value="مغسولة">مغسولة</option>
+                <option value="مجففة">مجففة</option>
+                <option value="خام">خام</option>
               </select>
             </div>
 
@@ -529,7 +528,7 @@ export default function NewBatchPage() {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>حفظ الدفعة وبدء الرحلة</span>
+                <span>حفظ الدفعة وبدء الرحلة الرقمية</span>
               </>
             )}
           </button>

@@ -416,7 +416,7 @@ export const createBatch = async (input: {
   quantity: number;
   date_type: string;
   date_collected: string;
-  cleaning_status: 'مغسولة' | 'غير مغسولة' | 'مجففة ومفروزة';
+  cleaning_status: 'مغسولة' | 'مجففة' | 'خام';
   drying_status: 'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية';
   moisture?: number;
   storage_method: string;

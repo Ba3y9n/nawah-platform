@@ -62,7 +62,7 @@ export default function RootLayout({
                 <ul className="space-y-4">
                   <li><Link href="/#why-nawah" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">عن المنصة</Link></li>
                   <li><Link href="/#how-it-works" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">كيف تعمل نواة؟</Link></li>
-                  <li><Link href="/#features" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">مميزات نواة</Link></li>
+                  <li><Link href="/#features" className="text-sm text-emerald-100/60 hover:text-white transition-all font-bold hover:translate-x-[-4px] inline-block">من تستخدم نواة؟</Link></li>
                 </ul>
               </div>
 
@@ -87,11 +87,11 @@ export default function RootLayout({
             
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
               {[
-                { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+                { name: "بيان المطيري", link: "https://www.linkedin.com/in/bayan-almutairi-93a872333" },
                 { name: "آية السعدني", link: "https://www.linkedin.com/in/ayah-alsadany" },
-                { name: "هبه عبداللطيف", link: "https://www.linkedin.com/in/hibah-alharbi-ab0b2938a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
-                { name: "حنين القصير", link: "https://www.linkedin.com/in/haneen-al-qassir-b68aa4387?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
-                { name: "وفاء المصري", link: "https://www.linkedin.com/in/wafaa-undefined-975a7829a?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+                { name: "هبه عبداللطيف", link: "https://www.linkedin.com/in/hibah-alharbi-ab0b2938a" },
+                { name: "حنين القصير", link: "https://www.linkedin.com/in/haneen-al-qassir-b68aa4387" },
+                { name: "وفاء المصري", link: "https://www.linkedin.com/in/wafaa-undefined-975a7829a" },
                 { name: "د. نجوى الخطيب", link: null }
               ].map((m, i) => (
                 m.link ? (

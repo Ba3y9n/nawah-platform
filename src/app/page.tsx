@@ -145,8 +145,8 @@ function InteractiveFeatures() {
   
   const features = [
     { 
-      num: "01", title: "سجل رقمي للدفعات", icon: Database,
-      desc: "حفظ بيانات كل دفعة وربطها برحلتها.", 
+      num: "01", title: "موردو النوى", icon: Database,
+      desc: "توثيق الدفعات ومعلومات المصدر والكمية والحالة.", 
       visual: (
         <div className="flex flex-col gap-3 w-full max-w-[220px]">
           {[1,2,3].map(i => (
@@ -162,8 +162,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "02", title: "تحليل بصري بالذكاء الاصطناعي", icon: BrainCircuit,
-      desc: "قراءة أولية للمظهر والخصائص الظاهرة من الصورة.", 
+      num: "02", title: "الباحثون والجامعات", icon: BrainCircuit,
+      desc: "الوصول إلى بيانات منظمة وربط التجارب والنتائج بالدفعات.", 
       visual: (
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 flex items-center justify-center">
            <div className="absolute inset-0 border border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed" />
@@ -178,13 +178,13 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "03", title: "قاعدة أدلة علمية", icon: BookOpen,
-      desc: "الوصول إلى مصادر مرتبطة بمسارات الاستفادة.", 
+      num: "03", title: "المختبرات والجهات المختصة", icon: TestTube2,
+      desc: "توثيق نتائج الفحوصات والتجارب وربطها بالسجل الرقمي للدفعة.", 
       visual: (
         <div className="flex gap-4 w-full max-w-[280px]">
            <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center mb-6">
-                <BookOpen className="w-5 h-5 text-emerald-600" />
+                <TestTube2 className="w-5 h-5 text-emerald-600" />
               </div>
               <div className="h-2 bg-slate-100 rounded-full w-full" />
               <div className="h-2 bg-slate-100 rounded-full w-5/6" />
@@ -203,8 +203,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "04", title: "إدارة التجارب", icon: TestTube2,
-      desc: "توثيق التجارب والنتائج وربطها بالدفعة.", 
+      num: "04", title: "الجهات الصناعية", icon: LayoutDashboard,
+      desc: "استكشاف الموارد ومسارات الاستفادة المحتملة وربطها بالبيانات والأدلة.", 
       visual: (
         <div className="flex items-end justify-center gap-4 h-40">
            <div className="w-12 h-full bg-white border border-slate-100 rounded-full p-2 flex flex-col justify-end relative overflow-hidden shadow-sm">
@@ -222,8 +222,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "05", title: "خريطة ذكية", icon: Map,
-      desc: "استكشاف المصادر والمواقع المرتبطة بالمنظومة.", 
+      num: "05", title: "الجهات المعنية بالاستدامة", icon: Globe,
+      desc: "متابعة البيانات والمؤشرات والأثر المرتبط بالاستفادة من الموارد الثانوية.", 
       visual: (
         <div className="relative w-40 h-40 sm:w-56 sm:h-56 bg-slate-50 border border-slate-100 rounded-xl sm:rounded-[2rem] overflow-hidden flex items-center justify-center shadow-inner">
            <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#10b981_1px,transparent_1px),linear-gradient(to_bottom,#10b981_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]" />
@@ -240,8 +240,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "06", title: "لوحة متابعة", icon: LayoutDashboard,
-      desc: "متابعة الدفعات والتجارب والبيانات المرتبطة بها.", 
+      num: "06", title: "تتبع المصدر", icon: QrCode,
+      desc: "معرفة مصدر الدفعة ومسارها.", 
       visual: (
         <div className="w-full max-w-[220px] sm:max-w-[256px] grid grid-cols-2 gap-3 sm:gap-4">
            <div className="col-span-2 bg-emerald-500 rounded-3xl h-28 p-5 relative overflow-hidden shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
@@ -261,8 +261,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "07", title: "قياس الأثر", icon: LineChart,
-      desc: "تحويل البيانات المسجلة إلى مؤشرات أثر قابلة للتتبع.", 
+      num: "07", title: "قاعدة الأدلة", icon: BookOpen,
+      desc: "ربط الاستخدامات المحتملة بالمصادر والأبحاث ذات الصلة.", 
       visual: (
         <div className="w-full max-w-[220px] sm:max-w-[256px] h-40 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] p-4 sm:p-6 shadow-md flex flex-col justify-end relative">
            <div className="absolute top-6 right-6 h-2 w-16 bg-slate-100 rounded-full" />
@@ -279,8 +279,8 @@ function InteractiveFeatures() {
       )
     },
     { 
-      num: "08", title: "التتبع", icon: QrCode,
-      desc: "الحفاظ على ارتباط الدفعة بمراحل رحلتها.", 
+      num: "08", title: "توثيق النتائج", icon: LineChart,
+      desc: "تمييز النتائج التي تم التحقق منها عن الاستخدامات المحتملة.", 
       visual: (
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 bg-white border border-slate-100 rounded-xl sm:rounded-[2rem] flex items-center justify-center shadow-lg">
            <div className="absolute inset-5 border-2 border-emerald-500/20 rounded-2xl" />
@@ -399,13 +399,13 @@ function InteractiveFeatures() {
 function InteractiveTimeline() {
   const [activeStep, setActiveStep] = useState(0);
   const steps = [
-    { num: "01", title: "تسجيل الدفعة", desc: "أدخل مصدر النوى، الكمية، نوع التمر، الموقع، حالة النوى وبيانات التخزين، ثم تُنشئ نواة سجلًا رقميًا للدفعة.", icon: Database },
-    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "أضف صورة للدفعة للحصول على تحليل بصري تقديري للمظهر والخصائص الظاهرة. التحليل البصري لا يستبدل الفحوصات المخبرية.", icon: BrainCircuit },
-    { num: "03", title: "الاستخدامات المحتملة", desc: "تستعرض نواة مسارات استخدام محتملة للنوى، مع الفصل بين الاستخدام المحتمل والنتيجة التي تم التحقق منها بالتجربة.", icon: Search },
-    { num: "04", title: "التجارب", desc: "سجّل التجارب المرتبطة بالدفعة وما تم استخدامه منها والنتائج والملاحظات.", icon: TestTube2 },
-    { num: "05", title: "الأدلة والمصادر", desc: "اربط مسارات الاستفادة بالأبحاث والمصادر العلمية ذات الصلة.", icon: BookOpen },
-    { num: "06", title: "الخريطة الذكية", desc: "استكشف المصادر والمنشآت والمواقع المرتبطة بمنظومة التمور وفق حالة التوثيق والمصدر.", icon: Map },
-    { num: "07", title: "قياس الأثر", desc: "تتبع الكميات والنتائج المرتبطة بالدفعة، مع توضيح الفرق بين البيانات الفعلية والتقديرات الحسابية.", icon: LineChart },
+    { num: "01", title: "تسجيل الدفعة", desc: "سجّل مصدر النوى والكمية والنوع والموقع والحالة، لتنشئ نواة سجلًا رقميًا للدفعة.", icon: Database },
+    { num: "02", title: "التحليل بالذكاء الاصطناعي", desc: "يمكن إضافة صورة للدفعة للحصول على تحليل بصري تقديري للخصائص الظاهرة. هذا التحليل لا يغني عن الفحوصات المخبرية.", icon: BrainCircuit },
+    { num: "03", title: "الاستخدامات المحتملة", desc: "تستعرض نواة مسارات استخدام محتملة للنوى بالاستناد إلى الأدلة والمصادر، مع الفصل بين الاستخدام المحتمل والنتيجة التي تم التحقق منها.", icon: Search },
+    { num: "04", title: "التجارب", desc: "تربط نواة الدفعة بالتجارب التي تنفذها الجامعات أو الباحثون أو المختبرات أو الجهات المختصة، وتوثق نتائجها عند توفرها.", icon: TestTube2 },
+    { num: "05", title: "الأدلة والنتائج", desc: "تربط نواة البيانات بالأبحاث والمصادر ذات الصلة، وتوضح ما تم التحقق منه بالتجربة وما يزال ضمن نطاق الاستخدام المحتمل.", icon: BookOpen },
+    { num: "06", title: "الربط والتتبع", desc: "تعمل نواة كحلقة وصل رقمية بين موردي النوى والجهات المهتمة بها، مع الحفاظ على سجل الدفعة وبياناتها ومسارها.", icon: QrCode },
+    { num: "07", title: "الأثر", desc: "تتبع نواة المؤشرات والنتائج المرتبطة بالدفعات، مع توضيح الفرق بين البيانات الفعلية والتقديرات الحسابية.", icon: LineChart },
   ];
 
   return (
@@ -577,9 +577,9 @@ export default function LandingPage() {
 
               <motion.p 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0"
+                className="text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium"
               >
-                <span className="font-bold">نواة | NAWAH</span> منصة رقمية لتوثيق نوى التمر وتتبعها، وربط بياناتها بالتحليل بالذكاء الاصطناعي والأدلة العلمية والتجارب وقياس الأثر؛ لدعم الاستفادة من الموارد الثانوية في قطاع التمور.
+                <span className="font-bold">نواة | NAWAH</span> منصة رقمية لتوثيق نوى التمر وتتبعها، لتمكين الاستفادة منها عبر التحليل وربطها بالتجارب والأدلة، ضمن مسار الحد من الفقد والهدر الغذائي.
               </motion.p>
 
               <motion.div 
@@ -618,8 +618,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="text-center space-y-4 mb-16 relative z-10">
-            <h2 className="text-3xl font-black text-white">المشكلة</h2>
-            <p className="text-emerald-100 text-lg">موارد موجودة، لكن بياناتها ومسارات الاستفادة منها متفرقة.</p>
+            <h2 className="text-3xl font-black text-white">الفجوة التي تعالجها نواة</h2>
+            <p className="text-emerald-100 text-lg max-w-2xl mx-auto">المشكلة ليست في قلة النوى، بل في أنها تُعد موردًا ثانويًا مهدرًا يفتقر إلى بيانات دقيقة وموثقة، مما يصعب على الباحثين والمصانع الوصول إليه واستغلاله.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12">
@@ -713,7 +713,7 @@ export default function LandingPage() {
              </div>
              
              <div className="p-5 bg-slate-50 text-center border-t border-slate-100">
-                 <span className="text-xs text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">هذا تقدير حسابي وليس إحصائية رسمية لكمية النوى المتخلفة فعليًا.</span>
+                 <span className="text-xs text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto block">هذا الرقم هو تقدير حسابي نظري بناءً على نسبة 10% من إجمالي الإنتاج، وليس إحصائية رسمية، وهو ما يبرز الحاجة لمنصة توثق الأرقام الفعلية.</span>
              </div>
           </div>
         </div>
@@ -743,8 +743,8 @@ export default function LandingPage() {
       <section id="features" className="py-14 sm:py-24 bg-emerald-50/50 border-t border-emerald-100/50 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-black text-emerald-950">مميزات نواة</h2>
-            <p className="text-emerald-600/70 text-lg font-bold">أدوات مترابطة لإدارة رحلة النوى</p>
+            <h2 className="text-3xl font-black text-emerald-950">من تستخدم نواة؟</h2>
+            <p className="text-emerald-600/70 text-lg font-bold">أطراف المنظومة المستفيدة من الرحلة الرقمية</p>
           </div>
 
           <InteractiveFeatures />
@@ -847,8 +847,8 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
               className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed font-medium"
             >
-              لأن المشكلة ليست في وجود النوى فقط، بل في غياب منظومة رقمية تربط بياناتها ومصادرها وتجاربها في رحلة واحدة قابلة للتتبع.<br/>
-              <span className="text-emerald-600 font-bold">نواة تبني هذه الحلقة الرقمية.</span>
+              القيمة ليست في تسجيل النوى فقط، بل في ربط الدفعة بمصدرها وبياناتها وتحليلها وأدلتها وتجاربها ونتائجها في سجل رقمي واحد.<br/>
+              <span className="text-emerald-600 font-bold">بهذا تنتقل نواة من مجرد تسجيل المورد إلى بناء مسار رقمي يساعد على فهمه وتتبع الاستفادة منه.</span>
             </motion.p>
           </div>
 
@@ -906,18 +906,27 @@ export default function LandingPage() {
               ))}
             </div>
             
-            <p className="text-sm text-emerald-100/60 font-medium max-w-xl mx-auto mb-10 relative z-10">
+            <p className="text-sm text-emerald-100/60 font-medium max-w-xl mx-auto mb-6 relative z-10">
               تعتمد نواة على سجلات رقمية مترابطة لتتبع الدفعات وربطها بالتحليل والتجارب والأدلة وقياس الأثر لضمان الشفافية والموثوقية.
             </p>
 
-            <div className="relative z-10 flex justify-center">
-              <Link 
-                href="/about" 
-                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-emerald-600/30 group/btn"
-              >
-                <span>تعرّف بالتفصيل على رؤية ورسالة ومبادئ نواة</span>
-                <ChevronLeft className="w-4 h-4 text-emerald-200 group-hover/btn:-translate-x-1 transition-transform" />
-              </Link>
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-8 text-right mt-12 pt-10 border-t border-white/10">
+              <div>
+                <h3 className="text-lg font-black text-amber-400 mb-3">رؤيتنا</h3>
+                <p className="text-emerald-50 text-sm leading-relaxed font-medium">أن تصبح نوى التمر موردًا ثانويًا قابلًا للتتبع والدراسة والاستفادة، من خلال منظومة رقمية تربط البيانات بالأدلة والتجارب والجهات المهتمة.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-amber-400 mb-3">رسالتنا</h3>
+                <p className="text-emerald-50 text-sm leading-relaxed font-medium">تمكين الاستفادة من نوى التمر عبر توثيق بياناتها، وربطها بالتحليل والأدلة والتجارب والنتائج، وبناء حلقة وصل رقمية بين المورد والجهات المهتمة به.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-amber-400 mb-3">الاقتصاد الدائري</h3>
+                <p className="text-emerald-50 text-sm leading-relaxed font-medium">تدعم نواة مفهوم الاقتصاد الدائري من خلال تعزيز الاستفادة من الموارد الثانوية وربط البيانات بمسارات إعادة الاستخدام والاستفادة.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-amber-400 mb-3">رؤية السعودية 2030</h3>
+                <p className="text-emerald-50 text-sm leading-relaxed font-medium">تنسجم فكرة نواة مع توجهات رؤية السعودية 2030 في الاستدامة وتنمية الموارد ودعم الابتكار والتحول الرقمي.</p>
+              </div>
             </div>
           </motion.div>
         </div>
