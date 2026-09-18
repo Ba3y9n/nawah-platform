@@ -64,9 +64,9 @@ export default function ExperimentsListPage() {
             <TestTube2 className="w-4 h-4" />
             <span>سجل المختبر الرقمي</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black">تجارب تحويل وتدوير النوى الموثقة</h2>
+          <h2 className="text-2xl md:text-3xl font-black">السجل الرقمي للتجارب</h2>
           <p className="text-sm text-emerald-100/80 mt-2 font-medium max-w-xl leading-relaxed">
-            سجل التجارب المعملية والميدانية المربوطة بدفعات النوى لتوثيق نتائج الاختبارات ومستويات الجودة. تمتلك <strong className="text-white">{experiments.length}</strong> تجربة.
+            سجل التجارب المعملية والميدانية المربوطة بدفعات النوى لتوثيق النتائج. (نواة منصة رقمية ولا تستلم النوى فعلياً ولا تفحص مخبرياً إلا إذا نُفذت التجارب بواسطة جهات مختصة وموثقة).
           </p>
         </div>
 

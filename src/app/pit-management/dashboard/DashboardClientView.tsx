@@ -48,7 +48,7 @@ export default function DashboardClientView({
             أهلاً بك، {userName}
           </h1>
           <p className="text-sm text-slate-500 mt-3 max-w-xl font-medium leading-relaxed">
-            تابع رحلة نوى التمر بأسلوب تفاعلي، من لحظة الاستلام المباشر وحتى التحليل البصري بالذكاء الاصطناعي وقياس الأثر البيئي.
+            تابع الرحلة الرقمية لدفعات نوى التمر المسجلة، بدءاً من بيانات المصدر ووصولاً إلى التحليل والأدلة والتجارب وقياس الأثر.
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function DashboardClientView({
             className="flex items-center justify-center gap-2 bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-[0_8px_16px_-6px_rgba(6,78,59,0.3)] shrink-0"
           >
             <PlusCircle className="w-5 h-5 text-emerald-300" />
-            <span>تسجيل مسار جديد</span>
+            <span>تسجيل دفعة جديدة</span>
           </Link>
         </motion.div>
       </motion.div>
@@ -82,7 +82,7 @@ export default function DashboardClientView({
           <div className="pt-2 md:pt-0 md:pr-8 group cursor-default">
             <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider group-hover:text-amber-500 transition-colors">تم تحليلها بصرياً</span>
             <span className="text-3xl sm:text-4xl font-black text-slate-800 mt-2 block">{analyzedCount}</span>
-            <span className="text-[10px] text-slate-400 mt-2 block font-medium">فحص الذكاء الاصطناعي</span>
+            <span className="text-[10px] text-slate-400 mt-2 block font-medium">تحليل بصري تقديري</span>
           </div>
 
           <div className="pt-2 md:pt-0 md:pr-8 group cursor-default">

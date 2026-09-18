@@ -15,10 +15,10 @@ export default function PitManagementLayout({
   const journeySteps = [
     { step: "01", href: "/pit-management/dashboard", label: "نظرة عامة", status: "مباشر" },
     { step: "02", href: "/pit-management/batches", label: "دفعات النوى", status: "السجل" },
-    { step: "03", href: "/pit-management/scanner", label: "التحليل البصري", status: "ذكاء اصطناعي" },
+    { step: "03", href: "/pit-management/scanner", label: "التحليل", status: "بصري" },
     { step: "04", href: "/pit-management/pathways", label: "الاستخدامات", status: "مسارات" },
     { step: "05", href: "/pit-management/experiments", label: "التجارب", status: "اختبارات" },
-    { step: "06", href: "/pit-management/impact", label: "قياس الأثر", status: "عوائد" }
+    { step: "06", href: "/pit-management/impact", label: "الأثر", status: "مؤشرات" }
   ];
 
   return (
@@ -59,7 +59,9 @@ export default function PitManagementLayout({
                 <span className="text-[10px] font-black tracking-widest uppercase text-[#059669] block mb-2">مركز التحكم والرحلة</span>
                 <h2 className="text-2xl font-black text-slate-900">إدارة النوى</h2>
                 <p className="text-xs text-slate-500 mt-2 font-medium leading-relaxed">
-                  منظومة رقمية متكاملة لربط شحنات نوى التمر بالبيانات والتحليل والتجارب وقياس الأثر.
+                  أنشئ سجلًا رقميًا لدفعة من نوى التمر، وأضف بيانات مصدرها وكميتها وحالتها. يساعدك السجل على توثيق الدفعة ومتابعة ما يرتبط بها من تحليل وأدلة وتجارب ونتائج.
+                  <br/><br/>
+                  <span className="font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">التسجيل يتم رقميًا ولا يعني إرسال النوى أو تسليمها لنواة.</span>
                 </p>
               </div>
 

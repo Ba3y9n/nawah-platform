@@ -132,10 +132,13 @@ export default function BatchDetailsPage({
               <div className="flex items-center gap-3">
                 <span className="text-2xl md:text-3xl font-black text-white dir-ltr">{batch.batch_number}</span>
                 <span className="px-3 py-1 rounded-full text-xs bg-emerald-800 text-emerald-200 font-bold">
-                  {batch.status || 'رحلة نشطة'}
+                  {batch.status || 'مسجلة رقمياً'}
                 </span>
               </div>
               <p className="text-xs text-emerald-200/80 mt-1 font-medium">
+                تم إنشاء سجل رقمي للدفعة داخل نواة. يمكنك الآن متابعة بياناتها وما يرتبط بها من تحليل وأدلة وتجارب ونتائج عند توفرها.
+              </p>
+              <p className="text-[10px] text-amber-300 font-bold mt-1">
                 {batch.source_name} — {batch.quantity} كجم ({batch.date_type}) • تاريخ الجمع: {batch.date_collected}
               </p>
             </div>

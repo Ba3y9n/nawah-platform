@@ -79,12 +79,12 @@ export default function BatchesListPage() {
             transition={{ delay: 0.2 }}
             className="text-[10px] font-black uppercase tracking-widest text-emerald-300 block mb-2"
           >
-            سجل الدفعات الإلكتروني
+            السجلات الرقمية للدفعات
           </motion.span>
-          <h2 className="text-2xl md:text-3xl font-black text-white">دفعات نوى التمر المسجلة</h2>
+          <h2 className="text-2xl md:text-3xl font-black text-white">دفعات النوى المسجلة</h2>
           <p className="text-xs text-emerald-100/70 mt-2 font-medium max-w-lg leading-relaxed">
-            تتبع الرحلة الرقمية لكل شحنة بدءاً من المصدر وصولاً إلى التحليل والتجارب المخبرية.
-            الآن تمتلك <strong className="text-white">{batches.length}</strong> رحلة نشطة في النظام.
+            تابع السجلات الرقمية لدفعات نوى التمر المسجلة، بدءاً من بيانات المصدر ووصولاً إلى التحليل والأدلة والتجارب.
+            يوجد حالياً <strong className="text-white">{batches.length}</strong> سجل رقمي في النظام.
           </p>
         </div>
 
@@ -148,9 +148,9 @@ export default function BatchesListPage() {
             <Package className="w-10 h-10 text-emerald-600" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-black text-emerald-950">لا توجد دفعات مطابقة</h3>
-            <p className="text-sm text-slate-500 max-w-md mx-auto font-medium">
-              لم نعثر على أي سجلات. ابدأ رحلة جديدة لتسجيل بياناتك.
+            <h3 className="text-xl font-black text-slate-900">لا توجد سجلات مسجلة بعد</h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+              ابدأ الآن بإنشاء أول سجل رقمي لدفعة من نوى التمر لمتابعة بياناتها وما يرتبط بها من تحليل وأدلة وتجارب ونتائج.
             </p>
           </div>
           <Link
