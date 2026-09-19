@@ -285,7 +285,7 @@ export default function Navbar() {
 
         {/* MOBILE SLIDE-OUT MENU */}
         {isOpen && (
-          <div className="xl:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-6 mt-3 space-y-4">
+          <div className="xl:hidden absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-2xl px-4 py-6 space-y-4 max-h-[calc(100vh-70px)] overflow-y-auto">
             
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
               <p className="text-sm font-bold text-emerald-900 mb-3 flex items-center gap-2">

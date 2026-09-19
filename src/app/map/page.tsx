@@ -149,14 +149,14 @@ export default function SmartMapPage() {
       </motion.div>
 
       {/* MAIN MAP AREA & SIDE PANEL GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative min-h-[700px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative lg:min-h-[700px] flex-1">
         
         {/* HERO MAP CONTAINER */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="lg:col-span-8 bg-white border border-slate-200/80 rounded-[2.5rem] p-3 shadow-xl shadow-slate-200/50 relative overflow-hidden h-[700px]"
+          className="lg:col-span-8 bg-white border border-slate-200/80 rounded-[2.5rem] p-3 shadow-xl shadow-slate-200/50 relative overflow-hidden h-[450px] lg:h-[700px] order-1 lg:order-2"
         >
           <div className="absolute top-6 left-6 z-20 flex flex-col gap-2 pointer-events-none">
              <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
@@ -177,7 +177,7 @@ export default function SmartMapPage() {
         </motion.div>
 
         {/* DETAIL SIDE PANEL / LIST */}
-        <div className="lg:col-span-4 h-[700px] flex flex-col">
+        <div className="lg:col-span-4 h-[500px] lg:h-[700px] flex flex-col order-2 lg:order-1">
           
           {selectedSource ? (
             /* SELECTED SOURCE DETAIL PANEL */
