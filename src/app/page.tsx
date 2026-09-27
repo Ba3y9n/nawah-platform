@@ -75,17 +75,12 @@ function CircularSystem() {
   useEffect(() => {
     const updateRadius = () => {
       if (typeof window !== "undefined") {
-        if (window.innerWidth >= 1536)
-          setRadius(280); // 2XL
-        else if (window.innerWidth >= 1280)
-          setRadius(250); // XL
-        else if (window.innerWidth >= 1024)
-          setRadius(200); // LG
-        else if (window.innerWidth >= 768)
-          setRadius(180); // MD
-        else if (window.innerWidth >= 640)
-          setRadius(140); // SM
-        else setRadius(85); // Mobile
+        if (window.innerWidth >= 1536) setRadius(200);
+        else if (window.innerWidth >= 1280) setRadius(180);
+        else if (window.innerWidth >= 1024) setRadius(150);
+        else if (window.innerWidth >= 768) setRadius(130);
+        else if (window.innerWidth >= 640) setRadius(110);
+        else setRadius(80);
       }
     };
     updateRadius();
@@ -100,104 +95,107 @@ function CircularSystem() {
   }, [stages.length]);
 
   return (
-    <div className="relative w-full max-w-[260px] sm:max-w-md lg:max-w-2xl xl:max-w-3xl mx-auto aspect-square flex items-center justify-center mt-8 lg:mt-0 transition-all duration-500">
-      {/* Central Node */}
-      <div className="relative z-20 w-20 h-20 sm:w-28 sm:h-28 lg:w-44 lg:h-44 xl:w-56 xl:h-56 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-1 sm:gap-2 ring-4 sm:ring-8 ring-emerald-50/50 xl:ring-[12px]">
-        <span className="font-black text-emerald-950 text-sm sm:text-lg lg:text-3xl xl:text-4xl tracking-tighter">
-          نواة
-        </span>
-        <span className="text-emerald-600/60 font-bold text-[7px] sm:text-[9px] lg:text-xs xl:text-sm tracking-widest uppercase">
-          NAWAH
-        </span>
+    <div className="flex flex-col items-center justify-center w-full gap-6 lg:gap-8 my-auto">
+      {/* Circular System Graphic */}
+      <div className="relative w-full max-w-[260px] sm:max-w-sm lg:max-w-md xl:max-w-lg aspect-square flex items-center justify-center transition-all duration-500">
+        {/* Central Node */}
+        <div className="relative z-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 xl:w-36 xl:h-36 rounded-full bg-white shadow-2xl flex items-center justify-center border border-slate-100 flex-col gap-0.5 sm:gap-1 ring-4 sm:ring-8 ring-emerald-50/50 xl:ring-[10px]">
+          <span className="font-black text-emerald-950 text-sm sm:text-base lg:text-2xl xl:text-3xl tracking-tighter">
+            نواة
+          </span>
+          <span className="text-emerald-600/60 font-bold text-[7px] sm:text-[9px] lg:text-[10px] xl:text-xs tracking-widest uppercase">
+            NAWAH
+          </span>
+        </div>
+
+        {/* Rings & Connecting Lines */}
+        <div className="absolute inset-0 rounded-full border-2 border-slate-100 border-dashed animate-[spin_120s_linear_infinite] opacity-30" />
+        <div className="absolute inset-6 sm:inset-10 lg:inset-12 rounded-full border-2 border-emerald-50/50" />
+        <div className="absolute inset-12 sm:inset-18 lg:inset-20 rounded-full border border-slate-50" />
+
+        {/* Nodes */}
+        {stages.map((stage, index) => {
+          const angle = (index / stages.length) * 2 * Math.PI - Math.PI / 2;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          const isActive = activeIndex === index;
+
+          return (
+            <motion.button
+              key={stage.id}
+              className="absolute z-30"
+              style={{ x, y }}
+              onClick={() => setActiveIndex(index)}
+              animate={{
+                scale: isActive ? 1.25 : 1,
+                z: isActive ? 50 : 0,
+              }}
+              whileHover={{ scale: 1.15 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <div
+                className={`relative flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 lg:w-16 lg:h-16 rounded-full transition-all duration-500 ${
+                  isActive
+                    ? "bg-emerald-600 text-white shadow-2xl shadow-emerald-600/40 ring-4 sm:ring-8 ring-emerald-100"
+                    : "bg-white text-slate-400 hover:text-emerald-500 border border-slate-100 shadow-xl hover:shadow-2xl"
+                }`}
+              >
+                <stage.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-7 lg:h-7" />
+
+                {isActive && (
+                  <motion.div
+                    layoutId="activeGlow"
+                    className="absolute -inset-4 rounded-full bg-emerald-400 opacity-20 blur-2xl"
+                    transition={{ duration: 0.5 }}
+                  />
+                )}
+              </div>
+              {/* Stage Title Label */}
+              <div
+                className={`absolute top-full mt-1.5 sm:mt-2 left-1/2 -translate-x-1/2 text-center w-[70px] sm:w-[90px] lg:w-[120px] transition-all duration-300 ${
+                  isActive
+                    ? "text-emerald-950 opacity-100 font-black scale-105"
+                    : "text-slate-500 opacity-60 lg:opacity-100 font-bold"
+                }`}
+              >
+                <span className="text-[8px] sm:text-[10px] lg:text-xs leading-tight block drop-shadow-sm">
+                  {stage.title}
+                </span>
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
 
-      {/* Rings & Connecting Lines */}
-      <div className="absolute inset-0 rounded-full border-2 border-slate-100 border-dashed animate-[spin_120s_linear_infinite] opacity-30" />
-      <div className="absolute inset-8 sm:inset-12 lg:inset-16 xl:inset-20 rounded-full border-2 border-emerald-50/50" />
-      <div className="absolute inset-16 sm:inset-24 lg:inset-32 xl:inset-40 rounded-full border border-slate-50" />
-
       {/* Active Stage Data Display */}
-      <div className="absolute top-[105%] sm:top-full mt-6 sm:mt-12 lg:mt-20 xl:mt-24 text-center w-full max-w-xs sm:max-w-md lg:max-w-xl px-2 sm:px-4">
+      <div className="w-full max-w-xs sm:max-w-md lg:max-w-lg text-center px-2 sm:px-4 z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIndex}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            className="bg-white/80 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-10 shadow-2xl shadow-emerald-950/10 border border-white"
+            className="bg-white/90 backdrop-blur-md rounded-[2rem] p-5 sm:p-6 lg:p-7 shadow-xl shadow-emerald-950/5 border border-slate-100"
           >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="p-3 sm:p-4 bg-emerald-600 rounded-2xl text-white shadow-lg shadow-emerald-600/20">
+            <div className="flex items-center justify-center gap-3 mb-2.5">
+              <div className="p-2.5 sm:p-3 bg-emerald-600 rounded-xl text-white shadow-md shadow-emerald-600/20">
                 {(() => {
                   const Icon = stages[activeIndex].icon;
                   return (
-                    <Icon className="w-5 h-5 sm:w-7 sm:h-7 lg:w-9 lg:h-9" />
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   );
                 })()}
               </div>
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
+              <h3 className="text-lg sm:text-xl font-black text-emerald-950">
                 {stages[activeIndex].title}
               </h3>
             </div>
-            <p className="text-sm lg:text-xl text-slate-600 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm lg:text-base text-slate-600 leading-relaxed font-medium">
               {stages[activeIndex].desc}
             </p>
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Nodes */}
-      {stages.map((stage, index) => {
-        const angle = (index / stages.length) * 2 * Math.PI - Math.PI / 2;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        const isActive = activeIndex === index;
-
-        return (
-          <motion.button
-            key={stage.id}
-            className="absolute z-30"
-            style={{ x, y }}
-            onClick={() => setActiveIndex(index)}
-            animate={{
-              scale: isActive ? 1.25 : 1,
-              z: isActive ? 50 : 0,
-            }}
-            whileHover={{ scale: 1.15 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <div
-              className={`relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full transition-all duration-500 ${
-                isActive
-                  ? "bg-emerald-600 text-white shadow-2xl shadow-emerald-600/40 ring-4 sm:ring-8 ring-emerald-100"
-                  : "bg-white text-slate-400 hover:text-emerald-500 border border-slate-100 shadow-xl hover:shadow-2xl"
-              }`}
-            >
-              <stage.icon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-8 lg:h-8 xl:w-10 xl:h-10" />
-
-              {isActive && (
-                <motion.div
-                  layoutId="activeGlow"
-                  className="absolute -inset-4 rounded-full bg-emerald-400 opacity-20 blur-2xl"
-                  transition={{ duration: 0.5 }}
-                />
-              )}
-            </div>
-            {/* Stage Title Label */}
-            <div
-              className={`absolute top-full mt-2 sm:mt-4 left-1/2 -translate-x-1/2 text-center w-[80px] sm:w-[120px] lg:w-[180px] transition-all duration-300 ${
-                isActive
-                  ? "text-emerald-950 opacity-100 font-black scale-110"
-                  : "text-slate-500 opacity-60 lg:opacity-100 font-bold"
-              }`}
-            >
-              <span className="text-[8px] sm:text-xs lg:text-base xl:text-lg leading-tight block drop-shadow-sm">
-                {stage.title}
-              </span>
-            </div>
-          </motion.button>
-        );
-      })}
     </div>
   );
 }
@@ -741,7 +739,7 @@ export default function LandingPage() {
       dir="rtl"
     >
       {/* 1. PRODUCT HERO */}
-      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center py-12 lg:py-0 bg-slate-50">
+      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center py-16 lg:py-20 bg-slate-50">
         {/* --- Premium Tech Background --- */}
         {/* 1. Ambient Glows */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-[120px] -translate-y-1/4 translate-x-1/4 pointer-events-none" />
@@ -809,7 +807,7 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            <div className="lg:w-1/2 w-full h-[550px] sm:h-[600px] lg:h-[700px] xl:h-[800px] relative flex items-start lg:items-center justify-center mt-8 lg:mt-0">
+            <div className="lg:w-1/2 w-full flex items-center justify-center mt-6 lg:mt-0">
               <CircularSystem />
             </div>
           </div>
