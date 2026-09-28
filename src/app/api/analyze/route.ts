@@ -3,18 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 
 function getGeminiClient(): GoogleGenerativeAI | null {
-  let key = (process.env.GEMINI_API_KEY || "").replace(/\0/g, "").trim();
-  if (!key && typeof window === "undefined") {
-    try {
-      if (fs.existsSync(".env")) {
-        const content = fs.readFileSync(".env", "utf-16le");
-        const match = content.match(/GEMINI_API_KEY=(.*)/);
-        if (match) key = match[1].replace(/\0/g, "").trim();
-      }
-    } catch (e) {
-      // Ignore fallback read errors
-    }
-  }
+  const key = (process.env.GEMINI_API_KEY || "").trim();
   return key ? new GoogleGenerativeAI(key) : null;
 }
 
@@ -42,8 +31,8 @@ export async function POST(req: NextRequest) {
           },
         ];
 
-        // Use gemini-3.6-flash model as required
-        const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+        // Use gemini-2.5-flash model
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
           You are the official Computer Vision AI Assessor for 'نواة | NAWAH' - Saudi Arabia's Date Pit Upcycling Platform.

@@ -163,6 +163,19 @@ export default function Navbar() {
                 <span>الأدلة والمصادر</span>
               </Link>
 
+              {/* 5. مساعد نواة */}
+              <Link 
+                href="/assistant" 
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  pathname === "/assistant" 
+                    ? "bg-emerald-50 text-emerald-800" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-emerald-800"
+                }`}
+              >
+                <Bot className="w-4 h-4 text-emerald-600" />
+                <span>مساعد نواة</span>
+              </Link>
+
               {/* 5. إدارة النوى (DROPDOWN MENU) */}
               <div 
                 className="relative"
