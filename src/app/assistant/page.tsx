@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bot, Send, User, Sparkles, RefreshCw, 
   Leaf, AlertCircle, Database, MapPin, 
-  Flame, Coffee, Droplets, Trash2, ArrowLeft, CheckCircle2
+  Flame, Coffee, Droplets, Trash2, ArrowLeft, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 
@@ -33,14 +34,14 @@ function renderFormattedText(text: string, isUser: boolean) {
     // Headers (### or ##)
     if (trimmed.startsWith("### ")) {
       return (
-        <h4 key={lineIdx} className={`font-black text-sm mt-3 mb-1.5 ${isUser ? "text-white" : "text-emerald-950"}`}>
+        <h4 key={lineIdx} className={`font-black text-sm mt-3 mb-1.5 ${isUser ? "text-white" : "text-emerald-400"}`}>
           {trimmed.replace(/^###\s+/, "")}
         </h4>
       );
     }
     if (trimmed.startsWith("## ")) {
       return (
-        <h3 key={lineIdx} className={`font-black text-base mt-4 mb-2 ${isUser ? "text-white" : "text-emerald-950 border-b border-slate-200 pb-1"}`}>
+        <h3 key={lineIdx} className={`font-black text-base mt-4 mb-2 ${isUser ? "text-white" : "text-emerald-400 border-b border-white/10 pb-1"}`}>
           {trimmed.replace(/^##\s+/, "")}
         </h3>
       );
@@ -57,7 +58,7 @@ function renderFormattedText(text: string, isUser: boolean) {
     const content = parts.map((part, pIdx) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <strong key={pIdx} className={`font-black ${isUser ? "text-white" : "text-emerald-950"}`}>
+          <strong key={pIdx} className={`font-black ${isUser ? "text-white" : "text-emerald-300"}`}>
             {part.slice(2, -2)}
           </strong>
         );
@@ -68,7 +69,7 @@ function renderFormattedText(text: string, isUser: boolean) {
     if (isBullet) {
       return (
         <div key={lineIdx} className="flex items-start gap-2 pr-2 my-1">
-          <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${isUser ? "bg-white" : "bg-emerald-600"}`}></span>
+          <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${isUser ? "bg-white" : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"}`}></span>
           <span className="flex-1">{content}</span>
         </div>
       );
@@ -172,178 +173,221 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-b from-slate-50 via-emerald-50/20 to-slate-50 py-8 px-4 sm:px-6" dir="rtl">
-      <div className="container mx-auto max-w-5xl space-y-6">
-        
-        {/* HEADER CARD */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex items-center justify-center font-black shadow-md shadow-emerald-700/20">
-              <Bot className="w-8 h-8" />
+    <div className="relative min-h-screen bg-black text-white overflow-hidden flex flex-col font-sans" dir="rtl">
+      
+      {/* Background Cinematic Effects */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-900/30 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-900/20 blur-[150px] rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,1)_80%)]" />
+        {/* Animated Grid Overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+      </div>
+
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <ArrowRight size={20} className="text-gray-400 hover:text-white" />
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <Bot size={20} className="text-emerald-400" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  مساعد نواة الذكي
-                </h1>
-                <span className="text-[11px] bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-bold border border-emerald-300">
-                  AI Assistant
-                </span>
-                <span className="flex items-center gap-1 text-[11px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  متصل ومتاح
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                مستشارك الفني الذكي في إدارة وتدوير نوى التمر، مسارات الاستفادة الصناعية، واللوائح البيئية
+              <h1 className="text-sm sm:text-base font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-l from-white to-gray-400">
+                مساعد نواة الذكي
+              </h1>
+              <p className="text-[10px] sm:text-xs text-emerald-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_5px_rgba(16,185,129,0.8)]" />
+                متصل ومتاح
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 self-end md:self-center">
-            <button
-              onClick={handleClearChat}
-              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-rose-600 px-3 py-2 rounded-xl hover:bg-rose-50 border border-slate-200 transition-colors"
-              title="بدء محادثة جديدة"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>محادثة جديدة</span>
-            </button>
-            <Link
-              href="/pit-management/dashboard"
-              className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3 py-2 rounded-xl border border-emerald-200 transition-colors"
-            >
-              <span>لوحة التحكم</span>
-              <ArrowLeft className="w-3.5 h-3.5" />
-            </Link>
-          </div>
         </div>
 
-        {/* QUICK SUGGESTIONS BADGES */}
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            أسئلة مقترحة للبدء السريع:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {QUICK_PROMPTS.map((prompt, idx) => {
-              const Icon = prompt.icon;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleSend(prompt.text)}
-                  disabled={loading}
-                  className="flex items-center gap-2.5 text-right p-3 rounded-2xl bg-white hover:bg-emerald-50/70 border border-slate-200 hover:border-emerald-300 text-xs font-bold text-slate-700 hover:text-emerald-900 transition-all shadow-xs disabled:opacity-50"
-                >
-                  <div className="w-7 h-7 rounded-xl bg-slate-100 group-hover:bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <span className="truncate">{prompt.text}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <button
+          onClick={handleClearChat}
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-500 px-3 py-2 rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all"
+          title="محادثة جديدة"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">محادثة جديدة</span>
+        </button>
+      </header>
 
-        {/* CHAT MESSAGES CONTAINER */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm h-[560px] flex flex-col justify-between overflow-hidden">
+      {/* Main Chat Area */}
+      <main className="relative z-10 flex-1 overflow-y-auto px-4 py-8 scrollbar-hide">
+        <div className="max-w-4xl mx-auto flex flex-col gap-6">
           
-          {/* MESSAGES LIST */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex items-start gap-3 text-xs sm:text-sm ${
-                  m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
-                }`}
+          <AnimatePresence>
+            {messages.length === 1 && messages[0].id.includes("welcome") ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="flex flex-col items-center justify-center h-[60vh] text-center"
               >
-                {/* AVATAR */}
-                <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 font-bold shadow-xs ${
-                  m.sender === 'user' 
-                    ? 'bg-emerald-700 text-white' 
-                    : 'bg-emerald-100 text-emerald-900 border border-emerald-200'
-                }`}>
-                  {m.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-5 h-5" />}
-                </div>
-
-                {/* MESSAGE BUBBLE */}
-                <div className={`p-4 rounded-3xl max-w-[85%] sm:max-w-[78%] leading-relaxed ${
-                  m.sender === 'user'
-                    ? 'bg-emerald-700 text-white rounded-tr-xs shadow-xs font-medium'
-                    : 'bg-slate-50 text-slate-800 rounded-tl-xs border border-slate-200/90 shadow-xs'
-                }`}>
-                  <div className="prose prose-sm max-w-none text-inherit space-y-2 leading-relaxed">
-                    {renderFormattedText(m.text, m.sender === 'user')}
-                  </div>
-                  <div className={`text-[10px] mt-2 font-mono ${
-                    m.sender === 'user' ? 'text-emerald-200 text-left' : 'text-slate-400 text-right'
-                  }`}>
-                    {m.timestamp}
+                {/* Cinematic Glowing Orb */}
+                <div className="relative mb-8 group">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-[-20px] rounded-full border border-emerald-500/30 border-dashed opacity-50"
+                  />
+                  <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full group-hover:bg-emerald-500/40 transition-all duration-700" />
+                  <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-b from-gray-900 to-black border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+                    <Sparkles className="w-10 h-10 text-emerald-400" />
                   </div>
                 </div>
-              </div>
-            ))}
+                
+                <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">
+                  مرحباً بك في نواة
+                </h2>
+                <p className="text-gray-400 max-w-lg mb-10 text-sm leading-relaxed">
+                  أنا مساعدك الذكي المدمج 🌴🤖 يمكنك سؤالي عن تسجيل الدفعات، مسارات الاستفادة الصناعية، الخريطة الذكية، أو سجل الأثر البيئي.
+                </p>
 
-            {loading && (
-              <div className="flex items-center gap-3 text-xs text-emerald-800 bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200/80 w-max animate-pulse">
-                <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
-                <span>مساعد نواة يقوم بتحليل الاستفسار وتجهيز الإجابة المعتمدة...</span>
-              </div>
-            )}
-
-            {errorMsg && (
-              <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-xs flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{errorMsg}</span>
+                {/* Quick Prompts Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-3xl">
+                  {QUICK_PROMPTS.map((prompt, idx) => {
+                    const Icon = prompt.icon;
+                    return (
+                      <motion.button
+                        key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 + idx * 0.1 }}
+                        onClick={() => handleSend(prompt.text)}
+                        className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-emerald-900/20 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all duration-300 text-right group"
+                      >
+                        <div className="p-2.5 rounded-xl bg-black/50 border border-white/5 text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
+                          <Icon size={18} />
+                        </div>
+                        <span className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors">
+                          {prompt.text}
+                        </span>
+                      </motion.button>
+                    )
+                  })}
                 </div>
-                <button
-                  onClick={() => {
-                    const lastUser = [...messages].reverse().find(m => m.sender === 'user');
-                    if (lastUser) handleSend(lastUser.text);
-                  }}
-                  className="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors flex items-center gap-1"
+              </motion.div>
+            ) : (
+              messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className={`flex items-start gap-4 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  إعادة المحاولة
-                </button>
-              </div>
+                  {/* Avatar */}
+                  <div className={`shrink-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border ${
+                    msg.sender === 'user' 
+                      ? 'bg-gray-800/80 border-gray-700 text-gray-300' 
+                      : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25)]'
+                  }`}>
+                    {msg.sender === 'user' ? <User size={20} /> : <Bot size={22} />}
+                  </div>
+
+                  {/* Message Bubble */}
+                  <div className={`relative max-w-[85%] sm:max-w-[80%] px-5 py-4 rounded-2xl text-sm leading-relaxed ${
+                    msg.sender === 'user'
+                      ? 'bg-gradient-to-bl from-gray-800 to-gray-900 border border-gray-700 text-gray-100 rounded-tr-sm shadow-lg'
+                      : 'bg-gradient-to-br from-emerald-950/30 to-black border border-emerald-900/60 text-gray-300 rounded-tl-sm backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
+                  }`}>
+                    <div className="prose prose-invert prose-sm max-w-none">
+                      {renderFormattedText(msg.text, msg.sender === 'user')}
+                    </div>
+                    <div className={`text-[10px] mt-3 font-mono opacity-50 ${
+                      msg.sender === 'user' ? 'text-left' : 'text-right'
+                    }`}>
+                      {msg.timestamp}
+                    </div>
+                  </div>
+                </motion.div>
+              ))
             )}
+          </AnimatePresence>
 
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* INPUT FORM */}
-          <div className="p-4 bg-slate-50/70 border-t border-slate-100">
-            <form 
-              onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-              className="flex items-center gap-2"
+          {/* Typing Indicator */}
+          {loading && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-start gap-4"
             >
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                disabled={loading}
-                placeholder="اسأل مساعد نواة عن الدفعات، الفاحص الذكي، مسارات الفحم والزيوت، أو أثر الكربون..."
-                className="flex-1 bg-white border border-slate-200 rounded-2xl px-5 py-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 disabled:opacity-50 transition-all shadow-xs"
-              />
+              <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
+                <Bot size={22} />
+              </div>
+              <div className="px-6 py-5 rounded-2xl rounded-tl-sm bg-gradient-to-br from-emerald-950/30 to-black border border-emerald-900/60 backdrop-blur-md flex items-center gap-3">
+                <Sparkles className="w-4 h-4 text-emerald-500 animate-spin" />
+                <span className="text-emerald-400/80 text-xs font-medium">مساعد نواة يقوم بتحليل الاستفسار...</span>
+              </div>
+            </motion.div>
+          )}
 
+          {/* Error Message */}
+          {errorMsg && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center justify-between gap-3 bg-rose-950/30 border border-rose-900/50 text-rose-400 p-4 rounded-2xl text-xs backdrop-blur-sm mx-auto max-w-2xl w-full"
+            >
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
               <button
-                type="submit"
-                disabled={loading || !input.trim()}
-                className="bg-emerald-700 hover:bg-emerald-800 text-white p-3.5 sm:px-6 sm:py-3.5 rounded-2xl font-bold transition-all shadow-sm shadow-emerald-700/20 disabled:opacity-50 flex items-center gap-2 shrink-0 cursor-pointer"
+                onClick={() => {
+                  const lastUser = [...messages].reverse().find(m => m.sender === 'user');
+                  if (lastUser) handleSend(lastUser.text);
+                }}
+                className="bg-rose-900/50 hover:bg-rose-800/80 text-rose-200 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors flex items-center gap-1.5"
               >
-                <span className="hidden sm:inline text-xs font-bold">إرسال</span>
-                <Send className="w-4 h-4 rtl:rotate-180" />
+                <RefreshCw className="w-3.5 h-3.5" />
+                إعادة المحاولة
               </button>
-            </form>
-            <p className="text-[10px] text-slate-400 text-center mt-2">
-              مدعوم بالذكاء الاصطناعي لمنصة نواة الوطنية • متوافق مع مستهدفات الاستدامة والاقتصاد الدائري
-            </p>
-          </div>
+            </motion.div>
+          )}
 
+          <div ref={messagesEndRef} />
         </div>
+      </main>
 
+      {/* Input Area (Floating Cinematic) */}
+      <div className="relative z-10 px-4 pb-6 pt-4 bg-gradient-to-t from-black via-black/95 to-transparent">
+        <div className="max-w-4xl mx-auto relative group">
+          {/* Animated Glow Border on Focus */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/40 to-emerald-500/0 rounded-2xl blur-md opacity-0 group-focus-within:opacity-100 transition duration-500 pointer-events-none" />
+          
+          <form 
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+            className="relative flex items-center bg-gray-900/80 border border-gray-700/80 hover:border-gray-600 focus-within:border-emerald-500/50 rounded-2xl px-2 py-2 backdrop-blur-xl transition-all shadow-2xl"
+          >
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={loading}
+              placeholder="اسأل مساعد نواة عن الدفعات، الفاحص الذكي، مسارات الفحم والزيوت، أو الأثر الكربوني..."
+              className="flex-1 bg-transparent border-none outline-none text-white px-4 py-2 text-sm sm:text-base placeholder:text-gray-500 disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] disabled:shadow-none"
+            >
+              <Send size={20} className="rtl:rotate-180" />
+            </button>
+          </form>
+          <div className="text-center mt-3">
+            <span className="text-[10px] text-gray-600 font-medium tracking-wide">
+              مدعوم بالذكاء الاصطناعي لمنصة نواة الوطنية • قد يرتكب الذكاء الاصطناعي أخطاء، يرجى التحقق
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
