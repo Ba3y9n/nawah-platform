@@ -172,8 +172,8 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-b from-slate-50 via-emerald-50/20 to-slate-50 py-8 px-4 sm:px-6" dir="rtl">
-      <div className="container mx-auto max-w-5xl space-y-6">
+    <div className="h-[calc(100vh-80px)] overflow-hidden bg-gradient-to-b from-slate-50 via-emerald-50/20 to-slate-50 py-4 px-4 sm:px-6 flex flex-col" dir="rtl">
+      <div className="container mx-auto max-w-5xl flex-1 flex flex-col space-y-4 overflow-hidden">
         
         {/* HEADER CARD */}
         <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -246,7 +246,7 @@ export default function AssistantPage() {
         </div>
 
         {/* CHAT MESSAGES CONTAINER */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm h-[560px] flex flex-col justify-between overflow-hidden">
+        <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm flex-1 flex flex-col justify-between overflow-hidden min-h-0">
           
           {/* MESSAGES LIST */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
