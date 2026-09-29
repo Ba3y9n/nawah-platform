@@ -161,13 +161,13 @@ function NewExperimentForm() {
           </Link>
           <div>
             <h2 className="text-xl font-black text-emerald-950 flex items-center gap-2">
-              تسجيل تجربة جديدة على دفعة النوى
+              توثيق تجربة على دفعة النوى
               <span className="text-[10px] bg-amber-400 text-emerald-950 font-bold px-2.5 py-0.5 rounded-full">
                 Auto EXP-2026-xxxx
               </span>
             </h2>
-            <p className="text-xs text-emerald-700">
-              يرتبط الكود والمؤشرات تلقائياً بالدفعة المختارة وقاعدة البيانات الحقيقية
+            <p className="text-xs text-emerald-700 font-medium">
+              توفر نواة طبقة رقمية لتوثيق التجارب التي تجريها الجهات المختصة والباحثون وربط نتائجها بالدفعة.
             </p>
           </div>
         </div>
@@ -354,7 +354,7 @@ function NewExperimentForm() {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>حفظ التجربة في قاعدة البيانات</span>
+                <span>حفظ التجربة والنتائج</span>
               </>
             )}
           </button>

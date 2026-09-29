@@ -101,11 +101,11 @@ export default function ImpactPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-emerald-300 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-700 mb-4 backdrop-blur-sm">
             <Globe className="w-4 h-4" />
-            <span>لوحة المؤشرات البيئية</span>
+            <span>لوحة المؤشرات والتقديرات البيئية</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black">شاشة قياس الأثر البيئي والاقتصادي التراكمي</h2>
+          <h2 className="text-2xl md:text-3xl font-black">شاشة تقدير الأثر البيئي والاقتصادي</h2>
           <p className="text-sm text-emerald-100/80 mt-2 font-medium max-w-xl leading-relaxed">
-            مؤشرات رقمية محتسبة بناءً على تسلسل رحلة الدفعات، والكميات المسجلة، والتجارب الموثقة في المنظومة.
+            مؤشرات رقمية وتقديرات حسابية مبنية على تسلسل رحلة الدفعات، والكميات المسجلة، والتجارب الموثقة في المنظومة.
           </p>
         </div>
 
@@ -115,7 +115,7 @@ export default function ImpactPage() {
             className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0"
           >
             <PlusCircle className="w-5 h-5" />
-            <span>تسجيل دفعة لزيادة الأثر</span>
+            <span>تسجيل دفعة جديدة</span>
           </Link>
         </motion.div>
       </motion.div>
@@ -124,15 +124,15 @@ export default function ImpactPage() {
       <motion.div variants={itemVariants} className="space-y-4">
         <div className="flex items-center gap-3 text-sm font-black text-emerald-950">
           <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
-          <span>بيانات المنظومة الفعلية الموثقة (Actual Data):</span>
+          <span>بيانات المنظومة الفعلية الموثقة:</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { title: "الكمية الكلية المسجلة", val: `${summary.total_registered_kg.toLocaleString()} كجم`, sub: "دفعات موثقة برمز NW", icon: Package, color: "text-emerald-600", bg: "bg-emerald-50" },
+            { title: "الكمية الكلية المسجلة", val: `${summary.total_registered_kg.toLocaleString()} كجم`, sub: "دفعات مسجلة برمز NW", icon: Package, color: "text-emerald-600", bg: "bg-emerald-50" },
             { title: "الدفعات المسجلة", val: summary.total_batches_count, sub: "سجلات مصادر موثقة", icon: Database, color: "text-blue-600", bg: "bg-blue-50" },
-            { title: "التجارب الموثقة", val: summary.total_experiments_count, sub: "اختبارات معملية وتطبيقية", icon: TestTube2, color: "text-amber-600", bg: "bg-amber-50" },
-            { title: "الكمية الموظفة", val: `${summary.total_reused_kg.toLocaleString()} كجم`, sub: "مستخدمة في التجارب", icon: Activity, color: "text-rose-600", bg: "bg-rose-50" }
+            { title: "التجارب الموثقة", val: summary.total_experiments_count, sub: "تجارب مسجلة من جهات مختصة", icon: TestTube2, color: "text-amber-600", bg: "bg-amber-50" },
+            { title: "الكمية الموظفة بالتجارب", val: `${summary.total_reused_kg.toLocaleString()} كجم`, sub: "مستخدمة في التجارب الموثقة", icon: Activity, color: "text-rose-600", bg: "bg-rose-50" }
           ].map((stat, i) => (
             <motion.div 
               key={i}
@@ -158,13 +158,13 @@ export default function ImpactPage() {
       <motion.div variants={itemVariants} className="space-y-4 pt-4">
         <div className="flex items-center gap-3 text-sm font-black text-amber-900">
           <span className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_10px_#f59e0b]"></span>
-          <span>التقديرات الحسابية لتأثير المنظومة البيئي (Model Calculations):</span>
+          <span>التقديرات الحسابية النظرية للأثر البيئي:</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-white to-amber-50/50 border border-amber-200 p-8 rounded-3xl shadow-sm space-y-4 relative overflow-hidden group">
             <div className="flex justify-between items-start">
-              <span className="bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full border border-amber-300 text-xs font-bold shadow-sm">التحويل النظري للمدافن</span>
+              <span className="bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full border border-amber-300 text-xs font-bold shadow-sm">تقدير نظري للتحويل عن المدافن</span>
               <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Leaf className="w-5 h-5 text-amber-600" />
               </div>
@@ -173,7 +173,7 @@ export default function ImpactPage() {
               {loading ? <Loader2 className="w-8 h-8 animate-spin" /> : `${summary.landfill_diverted_ton} طن`}
             </div>
             <p className="text-sm text-slate-600 font-medium leading-relaxed">
-              تحويل مباشر: <strong className="text-slate-900">{summary.total_registered_kg.toLocaleString()} كجم</strong> = <strong className="text-slate-900">{summary.landfill_diverted_ton} طن متري</strong> من النفايات العضوية المحولة عن المدافن البلديّة.
+              تحويل تقديري: <strong className="text-slate-900">{summary.total_registered_kg.toLocaleString()} كجم</strong> = <strong className="text-slate-900">{summary.landfill_diverted_ton} طن متري</strong> تقدير حسابي للمخلفات العضوية المحولة عند الاستفادة منها.
             </p>
           </motion.div>
 
@@ -198,11 +198,12 @@ export default function ImpactPage() {
       <motion.div variants={itemVariants} className="bg-amber-50/80 border border-amber-200 p-6 rounded-3xl text-sm text-amber-950 space-y-3 shadow-sm">
         <div className="flex items-center gap-2 font-black text-amber-900">
           <ShieldAlert className="w-6 h-6 text-amber-600 flex-shrink-0" />
-          <span>إيضاح المنهجية وحدود النموذج:</span>
+          <span>إيضاح المنهجية وحدود النموذج الحسابي:</span>
         </div>
         <div className="space-y-2 leading-relaxed font-medium text-amber-900/90 pr-8">
-          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري مستخدم في هذا النموذج لتوضيح العائد البيئي التخميني فقط.</p>
-          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">دراسات تقييم دورة الحياة (LCA):</strong> الحسابات النهائية الصارمة تتطلب إجراء التقييم المعملي المخصص لكل مسار تحويلي (كالتفحيم الحراري أو الاستخلاص).</p>
+          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">نوى التمر:</strong> مورد ثانوي مرتبط بسلسلة قيمة التمور، ويمكن أن توجد فرص متعددة لدراسته والاستفادة منه.</p>
+          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">المعامل المستعمل (0.65 طن CO2e / طن):</strong> هو معامل تقديري استرشادي مستخدم في هذا النموذج لتوضيح العائد البيئي التخميني فقط وليس إحصائية قطعية.</p>
+          <p><span className="w-1.5 h-1.5 inline-block bg-amber-500 rounded-full ml-2"></span><strong className="text-amber-950">دراسات تقييم دورة الحياة (LCA):</strong> الحسابات النهائية الصارمة تتطلب إجراء التقييم المعملي المخصص لكل مسار تحويلي.</p>
         </div>
       </motion.div>
 

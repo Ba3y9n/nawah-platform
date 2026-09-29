@@ -58,16 +58,16 @@ function PathwaysContent() {
         <div>
           <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-emerald-500" />
-            مستكشف مسارات الاستفادة
+            مستكشف مسارات الاستفادة المحتملة
           </h2>
-          <p className="text-xs text-slate-500 mt-1 font-bold">
-            اختر مساراً لاستكشاف متطلباته وتوثيق تجاربك عليه
+          <p className="text-xs text-slate-500 mt-1 font-medium leading-relaxed max-w-2xl">
+            تفرق نواة بين مسار الاستفادة المحتمل وبين النتيجة المثبتة؛ فالاستخدام المحتمل يمثل مسارًا تدعمه الأدلة والدراسات العلمية المتاحة ويمكن اختباره وتوثيقه بواسطة الجهات المختصة.
           </p>
         </div>
 
         {batchId && selectedBatch && (
-          <div className="bg-emerald-50 text-emerald-800 border border-emerald-100 px-4 py-2 rounded-2xl flex items-center gap-3 text-xs font-bold">
-            <span>للدفعة:</span>
+          <div className="bg-emerald-50 text-emerald-800 border border-emerald-100 px-4 py-2 rounded-2xl flex items-center gap-3 text-xs font-bold shrink-0">
+            <span>الدفعة المحددة:</span>
             <span className="font-black bg-emerald-200 px-2 py-0.5 rounded-lg dir-ltr">{selectedBatch.batch_number}</span>
           </div>
         )}
@@ -149,7 +149,7 @@ function PathwaysContent() {
                   <div>
                     <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full mb-3">
                       <CheckCircle2 className="w-3 h-3" />
-                      موثوقية المسار: {selectedPathway.evidence_level}
+                      مستوى الأدلة الداعمة: {selectedPathway.evidence_level}
                     </span>
                     <h3 className="text-2xl font-black text-slate-900 leading-tight max-w-sm">
                       {selectedPathway.name}
@@ -164,7 +164,7 @@ function PathwaysContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Card 1 */}
                   <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-emerald-200 transition-colors group">
-                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">الفكرة ببساطة</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">الفكرة العلمية ومسار الاستفادة</span>
                     <p className="text-xs font-bold text-slate-700 leading-relaxed group-hover:text-emerald-950 transition-colors">
                       {selectedPathway.description}
                     </p>
@@ -172,7 +172,7 @@ function PathwaysContent() {
                   
                   {/* Card 2 */}
                   <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-emerald-200 transition-colors group">
-                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">المتطلبات</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase block mb-2">متطلبات المعالجة والتحويل</span>
                     <p className="text-xs font-bold text-slate-700 leading-relaxed group-hover:text-emerald-950 transition-colors">
                       {selectedPathway.processing_requirements}
                     </p>
@@ -184,7 +184,7 @@ function PathwaysContent() {
                       <TestTube2 className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-black text-emerald-600 uppercase block mb-1">الاختبارات اللازمة للتوثيق</span>
+                      <span className="text-[10px] font-black text-emerald-600 uppercase block mb-1">الاختبارات اللازمة للتحقق من النتيجة</span>
                       <p className="text-xs font-bold text-emerald-950">
                         {selectedPathway.required_tests}
                       </p>
@@ -199,7 +199,7 @@ function PathwaysContent() {
                   href={batchId ? `/pit-management/experiments/new?batch_id=${batchId}` : "/pit-management/experiments/new"}
                   className="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                 >
-                  <span>بدء تجربة وتوثيق النتائج</span>
+                  <span>توثيق تجربة على هذا المسار</span>
                   <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </Link>
               </div>

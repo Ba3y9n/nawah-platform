@@ -79,12 +79,11 @@ export default function BatchesListPage() {
             transition={{ delay: 0.2 }}
             className="text-[10px] font-black uppercase tracking-widest text-emerald-300 block mb-2"
           >
-            السجلات الرقمية للدفعات
+            إدارة رقمية للدفعات
           </motion.span>
           <h2 className="text-2xl md:text-3xl font-black text-white">دفعات النوى المسجلة</h2>
           <p className="text-xs text-emerald-100/70 mt-2 font-medium max-w-lg leading-relaxed">
-            تابع السجلات الرقمية لدفعات نوى التمر المسجلة، بدءاً من بيانات المصدر ووصولاً إلى التحليل والأدلة والتجارب.
-            يوجد حالياً <strong className="text-white">{batches.length}</strong> سجل رقمي في النظام.
+            تابع السجلات الرقمية لدفعات نوى التمر المسجلة، بدءاً من بيانات المصدر ووصولاً إلى التحليل والاستخدامات والأدلة والتجارب. التسجيل يتم رقميًا داخل نواة ولا يعني استلام المادة فعليًا.
           </p>
         </div>
 
@@ -136,7 +135,7 @@ export default function BatchesListPage() {
       {loading ? (
         <div className="text-center py-24 bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-200">
           <Loader2 className="w-8 h-8 animate-spin text-emerald-600 mx-auto mb-4" />
-          <p className="text-sm text-slate-500 font-medium">جاري استحضار الرحلات المسجلة...</p>
+          <p className="text-sm text-slate-500 font-medium">جاري استحضار الدفعات المسجلة...</p>
         </div>
       ) : filteredBatches.length === 0 ? (
         <motion.div 
@@ -148,9 +147,9 @@ export default function BatchesListPage() {
             <Package className="w-10 h-10 text-emerald-600" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-black text-slate-900">لا توجد سجلات مسجلة بعد</h3>
+            <h3 className="text-xl font-black text-slate-900">لا توجد دفعات مسجلة بعد</h3>
             <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
-              ابدأ الآن بإنشاء أول سجل رقمي لدفعة من نوى التمر لمتابعة بياناتها وما يرتبط بها من تحليل وأدلة وتجارب ونتائج.
+              ابدأ بتسجيل أول دفعة من نوى التمر لإنشاء سجل رقمي لها ومتابعة بياناتها داخل نواة.
             </p>
           </div>
           <Link
@@ -158,7 +157,7 @@ export default function BatchesListPage() {
             className="inline-flex items-center gap-2 bg-emerald-700 text-white font-bold px-8 py-3 rounded-2xl hover:bg-emerald-800 transition-all shadow-md"
           >
             <PlusCircle className="w-5 h-5 text-emerald-300" />
-            تسجيل أول دفعة
+            <span>تسجيل أول دفعة</span>
           </Link>
         </motion.div>
       ) : (
@@ -262,14 +261,14 @@ export default function BatchesListPage() {
                         <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                           
                           <div className="space-y-1">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">معلومات الاستلام</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">معلومات المصدر والموقع</span>
                             <div className="bg-white border border-slate-200 p-3 rounded-xl text-xs space-y-2">
                               <div className="flex justify-between">
-                                <span className="text-slate-500">المنطقة/المدينة:</span>
-                                <span className="font-bold text-slate-800">{b.region} - {b.city}</span>
+                                <span className="text-slate-500">المنطقة / المدينة:</span>
+                                <span className="font-bold text-slate-800">{b.region_name || b.region || 'القصيم'} - {b.city_name || b.city || 'بريدة'}</span>
                               </div>
                               <div className="flex justify-between">
-                                <span className="text-slate-500">حالة التنظيف:</span>
+                                <span className="text-slate-500">حالة النوى:</span>
                                 <span className="font-bold text-emerald-700">{b.cleaning_status}</span>
                               </div>
                             </div>
@@ -282,31 +281,31 @@ export default function BatchesListPage() {
                                 <div className="space-y-2">
                                   <div className="flex items-center gap-2 text-emerald-700 font-bold">
                                     <CheckCircle2 className="w-4 h-4" />
-                                    <span>تم إنجاز الفحص</span>
+                                    <span>تم التحليل البصري الأولي</span>
                                   </div>
-                                  <p className="text-[10px] text-slate-500 line-clamp-2">درجة الثقة: {b.image_analysis[0]?.confidence || '--'}%</p>
+                                  <p className="text-[10px] text-slate-500 line-clamp-2">تحليل بصري للصورة لا يُعد بديلاً عن الفحص المخبري.</p>
                                 </div>
                               ) : (
                                 <Link href={`/pit-management/scanner?batch_id=${b.id}`} className="text-emerald-600 hover:text-emerald-800 font-bold flex items-center gap-1">
-                                  <Scan className="w-4 h-4" /> إجراء فحص جديد
+                                  <Scan className="w-4 h-4" /> إجراء فحص بصري
                                 </Link>
                               )}
                             </div>
                           </div>
 
                           <div className="space-y-1">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">التجارب المعملية</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">التجارب الموثقة</span>
                             <div className="bg-white border border-slate-200 p-3 rounded-xl text-xs h-full flex flex-col justify-center">
                               {hasExperiments ? (
                                 <div className="space-y-2">
                                   <div className="flex items-center gap-2 text-amber-600 font-bold">
                                     <Activity className="w-4 h-4" />
-                                    <span>{b.experiments.length} تجارب مسجلة</span>
+                                    <span>{b.experiments.length} تجارب موثقة من جهات مختصة</span>
                                   </div>
                                 </div>
                               ) : (
                                 <Link href={`/pit-management/experiments/new?batch_id=${b.id}`} className="text-slate-500 hover:text-slate-800 font-bold flex items-center gap-1">
-                                  <FileText className="w-4 h-4" /> تسجيل مسار مخبري
+                                  <FileText className="w-4 h-4" /> توثيق تجربة جديدة
                                 </Link>
                               )}
                             </div>

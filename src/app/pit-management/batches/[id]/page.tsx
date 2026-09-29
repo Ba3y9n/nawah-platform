@@ -132,31 +132,31 @@ export default function BatchDetailsPage({
               <div className="flex items-center gap-3">
                 <span className="text-2xl md:text-3xl font-black text-white dir-ltr">{batch.batch_number}</span>
                 <span className="px-3 py-1 rounded-full text-xs bg-emerald-800 text-emerald-200 font-bold">
-                  {batch.status || 'مسجلة رقمياً'}
+                  {batch.status || 'سجل رقمي منشأ'}
                 </span>
               </div>
               <p className="text-xs text-emerald-200/80 mt-1 font-medium">
-                تم إنشاء سجل رقمي للدفعة داخل نواة. يمكنك الآن متابعة بياناتها وما يرتبط بها من تحليل وأدلة وتجارب ونتائج عند توفرها.
+                تم إنشاء سجل رقمي للدفعة، ويمكنك متابعة بياناتها ومراحلها داخل نواة.
               </p>
               <p className="text-[10px] text-amber-300 font-bold mt-1">
-                {batch.source_name} — {batch.quantity} كجم ({batch.date_type}) • تاريخ الجمع: {batch.date_collected}
+                المصدر: {batch.source_name} • الكمية: {batch.quantity} كجم ({batch.date_type}) • تاريخ الجمع: {batch.date_collected || 'غير محدد'}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <Link href={`/pit-management/scanner?batch_id=${batch.id}`} className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-2xl text-xs transition-colors border border-white/10">
-              فحص بصري
+              تحليل بصري
             </Link>
             <Link href={`/pit-management/experiments/new?batch_id=${batch.id}`} className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-2xl text-xs transition-all shadow-md">
-              إجراء تجربة
+              توثيق تجربة
             </Link>
           </div>
         </div>
 
         {/* NUCLEUS PROCESS LINE (INTERACTIVE NAV) */}
         <div className="space-y-3">
-          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">اختر المرحلة لاستعراض تفاصيلها (Nucleus Process Line):</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">تسلسل المراحل وسجل الدفعة:</span>
           
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {stagesNav.map((st) => (
@@ -190,12 +190,15 @@ export default function BatchDetailsPage({
           <div className="space-y-4 animate-in fade-in">
             <h3 className="text-base font-black text-emerald-950 border-b border-slate-100 pb-3">01 مواصفات وسجل الدفعة (Batch Record)</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الكمية</span><span className="text-lg font-black text-emerald-950">{Number(batch.quantity).toLocaleString()} كجم</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الصنف</span><span className="text-xs font-bold text-slate-800">{batch.date_type}</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">التنظيف</span><span className="text-xs font-bold text-slate-800">{batch.cleaning_status}</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الكمية المسجلة</span><span className="text-lg font-black text-emerald-950">{Number(batch.quantity).toLocaleString()} كجم</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">نوع التمر</span><span className="text-xs font-bold text-slate-800">{batch.date_type}</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">حالة النوى</span><span className="text-xs font-bold text-slate-800">{batch.cleaning_status}</span></div>
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">التجفيف</span><span className="text-xs font-bold text-slate-800">{batch.drying_status}</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الرطوبة</span><span className="text-xs font-bold text-emerald-700">{batch.moisture ? `${batch.moisture}%` : 'تقديرية'}</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">التخزين</span><span className="text-xs font-bold text-slate-800">{batch.storage_method || 'أكياس تهوية'}</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الرطوبة التقديرية</span><span className="text-xs font-bold text-emerald-700">{batch.moisture ? `${batch.moisture}%` : 'غير محددة'}</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">طريقة التخزين</span><span className="text-xs font-bold text-slate-800">{batch.storage_method || 'أكياس تهوية'}</span></div>
+            </div>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 font-medium">
+              <span>الموقع المسجل: <strong>{batch.region_name || batch.region || 'القصيم'} - {batch.city_name || batch.city || 'بريدة'}</strong> • المصدر: <strong>{batch.source_name}</strong></span>
             </div>
           </div>
         )}
@@ -203,17 +206,20 @@ export default function BatchDetailsPage({
         {/* TAB 2: VISUAL ANALYSIS */}
         {activeStepTab === 2 && (
           <div className="space-y-4 animate-in fade-in text-xs">
-            <h3 className="text-base font-black text-emerald-950 border-b border-slate-100 pb-3">02 نتيجة التحليل البصري بالذكاء الاصطناعي</h3>
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-emerald-950">02 التحليل البصري المدعوم بالذكاء الاصطناعي</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5 font-medium">التحليل المدعوم بالذكاء الاصطناعي هو تحليل بصري أولي للصورة، ولا يُعد بديلًا عن التحليل المخبري أو الاختبارات المتخصصة.</p>
+            </div>
             {analysis ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 font-bold block mb-1">الملاحظات السطحية:</span><p className="text-slate-800 font-medium">{analysis.visual_features}</p></div>
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 font-bold block mb-1">مؤشر النقاء:</span><p className="text-slate-800 font-medium">{analysis.visible_impurities}</p></div>
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 font-bold block mb-1">الخصائص السطحية:</span><p className="text-slate-800 font-medium">{analysis.visual_features}</p></div>
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 font-bold block mb-1">الشوائب الظاهرة:</span><p className="text-slate-800 font-medium">{analysis.visible_impurities}</p></div>
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 font-bold block mb-1">التجانس البصري:</span><p className="text-slate-800 font-medium">{analysis.visual_homogeneity}</p></div>
               </div>
             ) : (
               <div className="bg-slate-50 p-6 rounded-2xl text-center space-y-3">
-                <p className="text-slate-600 font-medium">لم يتم تسجيل فحص بصري لهذه الدفعة بعد.</p>
-                <Link href={`/pit-management/scanner?batch_id=${batch.id}`} className="inline-block bg-emerald-950 text-white font-bold px-4 py-2 rounded-xl text-xs">بدء الفحص البصري الآن</Link>
+                <p className="text-slate-600 font-medium">لم يتم تسجيل تحليل بصري لهذه الدفعة بعد.</p>
+                <Link href={`/pit-management/scanner?batch_id=${batch.id}`} className="inline-block bg-emerald-950 text-white font-bold px-4 py-2 rounded-xl text-xs">بدء التحليل البصري الأولي</Link>
               </div>
             )}
           </div>
@@ -222,11 +228,14 @@ export default function BatchDetailsPage({
         {/* TAB 3: POTENTIAL PATHWAYS */}
         {activeStepTab === 3 && (
           <div className="space-y-4 animate-in fade-in">
-            <h3 className="text-base font-black text-emerald-950 border-b border-slate-100 pb-3">03 مسارات الاستفادة المحتملة (Potential Uses)</h3>
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-emerald-950">03 مسارات الاستفادة المحتملة</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5 font-medium">تفرق نواة بين مسار الاستفادة المحتمل وبين النتيجة التي تم التحقق منها. الاستخدام المحتمل يمثل مسارًا تدعمه الأدلة والدراسات ويمكن دراسته أو اختباره.</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               {REUSE_PATHWAYS.slice(0, 3).map((path) => (
                 <div key={path.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
-                  <span className="text-[10px] bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-full font-bold">مسار محتمل</span>
+                  <span className="text-[10px] bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-full font-bold">مسار محتمل للدراسة</span>
                   <h4 className="font-bold text-emerald-950">{path.name}</h4>
                   <p className="text-slate-600 font-medium line-clamp-2">{path.description}</p>
                 </div>
@@ -238,7 +247,10 @@ export default function BatchDetailsPage({
         {/* TAB 4: EXPERIMENTS */}
         {activeStepTab === 4 && (
           <div className="space-y-4 animate-in fade-in text-xs">
-            <h3 className="text-base font-black text-emerald-950 border-b border-slate-100 pb-3">04 سجل التجارب الموثقة ({experiments.length})</h3>
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-emerald-950">04 سجل التجارب الموثقة ({experiments.length})</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5 font-medium">نواة ليست مختبرًا؛ يمكن للباحثين والجامعات والمختبرات والجهات المختصة إجراء التجارب، بينما توفر نواة طبقة رقمية لتوثيق التجربة وربط نتائجها بالدفعة.</p>
+            </div>
             {experiments.length === 0 ? (
               <div className="bg-slate-50 p-6 rounded-2xl text-center space-y-3">
                 <p className="text-slate-600 font-medium">لا توجد تجارب موثقة لهذه الدفعة بعد.</p>
@@ -250,7 +262,7 @@ export default function BatchDetailsPage({
                   <div key={e.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
                     <span className="font-black text-emerald-950 dir-ltr block">{e.experiment_number}</span>
                     <p className="font-bold text-slate-800">{e.objective}</p>
-                    <p className="text-slate-600 font-medium">النتيجة: {e.result}</p>
+                    <p className="text-slate-600 font-medium">النتيجة المثبتة: {e.result}</p>
                   </div>
                 ))}
               </div>
@@ -261,11 +273,14 @@ export default function BatchDetailsPage({
         {/* TAB 5: IMPACT & EVIDENCE */}
         {activeStepTab === 5 && (
           <div className="space-y-4 animate-in fade-in text-xs">
-            <h3 className="text-base font-black text-emerald-950 border-b border-slate-100 pb-3">05 الأثر البيئي والمصادر الموثقة</h3>
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-emerald-950">05 مؤشرات الأثر والتقديرات الحسابية</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5 font-medium">عرض مؤشرات الأثر أو التقديرات الحسابية المتاحة بناءً على بيانات الدفعة.</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">كمية فعلية</span><span className="text-lg font-black text-emerald-950">{Number(batch.quantity).toLocaleString()} كجم</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">تقدير محول</span><span className="text-lg font-black text-emerald-950">{batchDivertedTon} طن</span></div>
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">انبعاثات متجنبة</span><span className="text-lg font-black text-emerald-700">{batchCo2Ton} طن CO2e</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الكمية المسجلة</span><span className="text-lg font-black text-emerald-950">{Number(batch.quantity).toLocaleString()} كجم</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">الوزن بالطن</span><span className="text-lg font-black text-emerald-950">{batchDivertedTon} طن</span></div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span className="text-slate-400 block text-[10px] font-bold">تقدير حسابي للانبعاثات</span><span className="text-lg font-black text-emerald-700">{batchCo2Ton} طن CO2e</span></div>
             </div>
           </div>
         )}

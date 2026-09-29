@@ -154,11 +154,11 @@ function ScannerContent() {
           <div className="text-white">
             <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-emerald-300 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-700 mb-4 backdrop-blur-sm">
               <Sparkles className="w-4 h-4" />
-              <span>محرك الذكاء الاصطناعي للفحص البصري</span>
+              <span>تحليل بصري أولي مدعوم بالذكاء الاصطناعي</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-black">نظام التحليل البصري التقديري</h2>
+            <h2 className="text-2xl md:text-3xl font-black">نظام التحليل البصري الأولي</h2>
             <p className="text-sm text-emerald-200/80 mt-2 max-w-xl leading-relaxed">
-              استخرج المؤشرات المرئية، حدد الشوائب والتجانس البصري لشحنة النواة عبر رفع صورة عالية الدقة.
+              قراءة الخصائص الظاهرة في الصورة، وتحديد الشوائب والتجانس البصري لمساعدة المستخدم في استكشاف المسارات المحتملة.
             </p>
           </div>
 
@@ -181,7 +181,7 @@ function ScannerContent() {
         <ShieldAlert className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed font-medium">
           <strong className="block mb-1 text-amber-800">تنبيه هام (Disclaimers):</strong>
-          هذا فحص بصري تقديري للمظهر السطحي والشوائب الظاهرة فقط عبر نماذج الرؤية الحاسوبية، ولا يغني عن الفحوصات المعملية المعتمدة للرطوبة والتركيب الكيميائي والسلامة الميكروبية.
+          التحليل المدعوم بالذكاء الاصطناعي هو تحليل بصري أولي للصورة، ولا يُعد بديلًا عن التحليل المخبري أو الاختبارات المتخصصة للرطوبة والتركيب الكيميائي والسلامة الميكروبية.
         </p>
       </motion.div>
 
@@ -339,19 +339,19 @@ function ScannerContent() {
                 <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                 </div>
-                <span>التقرير البصري الذكي</span>
+                <span>التقرير البصري الأولي</span>
               </div>
               <span className="bg-slate-900 text-emerald-400 px-5 py-2 rounded-full text-sm font-bold shadow-inner">
-                درجة الثقة: {analysisResult.confidence || 92}%
+                درجة المطابقة البصرية: {analysisResult.confidence || 92}%
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { title: "الخصائص السطحية", text: analysisResult.visual_features },
-                { title: "الشوائب المكتشفة", text: analysisResult.visible_impurities },
+                { title: "الخصائص السطحية الظاهرة", text: analysisResult.visual_features },
+                { title: "الشوائب الظاهرة", text: analysisResult.visible_impurities },
                 { title: "التجانس البصري", text: analysisResult.visual_homogeneity },
-                { title: "مؤشر الرطوبة", text: analysisResult.moisture_note },
+                { title: "مؤشر الرطوبة التقديري", text: analysisResult.moisture_note },
               ].map((item, idx) => (
                 <motion.div 
                   initial={{ opacity: 0, x: 20 }}
@@ -373,11 +373,12 @@ function ScannerContent() {
               className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
               <div>
-                <span className="text-emerald-600 font-bold block text-xs uppercase mb-1">المسار التحويلي المقترح للدفعة</span>
+                <span className="text-emerald-600 font-bold block text-xs uppercase mb-1">المسار التحويلي المحتمل للدراسة</span>
                 <span className="text-emerald-950 font-black text-lg">{analysisResult.recommended_pathway}</span>
+                <p className="text-[11px] text-slate-500 font-medium mt-1">الاستخدام المحتمل يمثل مسارًا تدعمه الأدلة ويمكن دراسته أو اختباره، ويختلف عن النتيجة التي تم التحقق منها تجريبيًا.</p>
               </div>
               {selectedBatchId && savedSuccess && (
-                <span className="bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 text-sm shadow-sm">
+                <span className="bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 text-sm shadow-sm shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-emerald-200" />
                   تم الحفظ في السجل
                 </span>

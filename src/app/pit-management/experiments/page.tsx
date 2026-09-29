@@ -62,11 +62,11 @@ export default function ExperimentsListPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 bg-emerald-900/80 text-amber-400 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-700 mb-4 backdrop-blur-sm">
             <TestTube2 className="w-4 h-4" />
-            <span>سجل المختبر الرقمي</span>
+            <span>توثيق التجارب والنتائج</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black">السجل الرقمي للتجارب</h2>
           <p className="text-sm text-emerald-100/80 mt-2 font-medium max-w-xl leading-relaxed">
-            سجل التجارب المعملية والميدانية المربوطة بدفعات النوى لتوثيق النتائج. (نواة منصة رقمية ولا تستلم النوى فعلياً ولا تفحص مخبرياً إلا إذا نُفذت التجارب بواسطة جهات مختصة وموثقة).
+            نواة ليست مختبرًا ولا تدعي إجراء التجارب العلمية بنفسها. يمكن للباحثين والجامعات والمختبرات والجهات المختصة إجراء التجارب، بينما توفر نواة طبقة رقمية لتوثيق التجربة وربط نتائجها بالدفعة.
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function ExperimentsListPage() {
             className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold px-6 py-4 rounded-2xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0"
           >
             <PlusCircle className="w-5 h-5" />
-            <span>تسجيل تجربة جديدة</span>
+            <span>توثيق تجربة جديدة</span>
           </Link>
         </motion.div>
       </motion.div>
@@ -85,7 +85,7 @@ export default function ExperimentsListPage() {
       {loading ? (
         <div className="text-center py-24 bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-200">
           <Loader2 className="w-8 h-8 animate-spin text-emerald-600 mx-auto mb-4" />
-          <p className="text-sm text-slate-500 font-medium">جاري استحضار سجلات المختبر...</p>
+          <p className="text-sm text-slate-500 font-medium">جاري استحضار سجلات التجارب...</p>
         </div>
       ) : experiments.length === 0 ? (
         <motion.div 
@@ -99,7 +99,7 @@ export default function ExperimentsListPage() {
           <div className="space-y-2">
             <h3 className="text-lg font-black text-emerald-950">لم يتم تسجيل أي تجارب بعد</h3>
             <p className="text-sm text-slate-500 max-w-md mx-auto font-medium">
-              وثّق أول اختبار معملي أو عملية تحويل لدفعة نوى لتسجيل مخرجات الجودة والنتائج.
+              وثّق نتائج تجربة أو اختبار أجرته جهة مختصة لربط المخرجات والنتائج بالدفعة.
             </p>
           </div>
           <Link
@@ -107,7 +107,7 @@ export default function ExperimentsListPage() {
             className="inline-flex items-center gap-2 bg-emerald-700 text-white font-bold px-8 py-3 rounded-2xl hover:bg-emerald-800 transition-all shadow-md"
           >
             <PlusCircle className="w-5 h-5 text-emerald-300" />
-            توثيق أول تجربة
+            <span>توثيق أول تجربة</span>
           </Link>
         </motion.div>
       ) : (

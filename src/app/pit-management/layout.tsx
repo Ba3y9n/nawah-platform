@@ -56,14 +56,15 @@ export default function PitManagementLayout({
             {/* BRAND HEADER */}
             <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] space-y-5">
               <div>
-                <span className="text-[10px] font-black tracking-widest uppercase text-[#059669] block mb-2">مركز التحكم والرحلة</span>
+                <span className="text-[10px] font-black tracking-widest uppercase text-[#059669] block mb-2">إدارة رقمية للدفعات</span>
                 <h2 className="text-2xl font-black text-slate-900">إدارة النوى</h2>
-                <p className="text-xs text-slate-500 mt-2 font-medium leading-relaxed">
-                  نواة هي <strong>حلقة وصل رقمية</strong> بين المصانع والمختبرات والشركات.<br/>
-                  أنشئ سجلاً إلكترونياً لدفعة النوى الخاصة بك لتوثيقها وعرضها للمستفيدين.
-                  <br/><br/>
-                  <span className="font-bold text-amber-700 bg-amber-100 px-2.5 py-1.5 rounded-lg border border-amber-200 block text-center">لا نقوم باستلام أو تخزين النوى فعلياً. المنصة للتوثيق والربط فقط.</span>
+                <p className="text-xs text-slate-600 mt-2 font-medium leading-relaxed">
+                  وثّق دفعات نوى التمر رقميًا، وتابع بياناتها ومسارات الاستفادة منها من المصدر إلى النتائج.
                 </p>
+                <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600 space-y-1.5 leading-relaxed font-medium">
+                  <p className="font-bold text-slate-800">التسجيل يتم رقميًا داخل نواة، ولا يعني إرسال النوى أو تسليمها للمنصة.</p>
+                  <p className="text-slate-500">نواة لا تستلم النوى فعليًا؛ بل تنشئ لكل دفعة سجلًا رقميًا يربط بيانات المصدر بالتحليل والاستخدامات المحتملة والأدلة والتجارب والنتائج.</p>
+                </div>
               </div>
 
               <Link

@@ -201,10 +201,10 @@ export default function NewBatchPage() {
           </Link>
           <div>
             <h2 className="text-xl font-black text-emerald-950 flex items-center gap-2">
-              تسجيل دفعة جديدة
+              تسجيل الدفعة
             </h2>
             <p className="text-xs text-slate-600 mt-2 font-medium">
-              أدخل المعلومات الأساسية عن الدفعة لإنشاء سجل رقمي لها في نواة.
+              أدخل المعلومات الأساسية المتوفرة عن الدفعة. لا تحتاج إلى إرسال النوى فعليًا إلى نواة.
             </p>
           </div>
         </div>
@@ -217,25 +217,36 @@ export default function NewBatchPage() {
         </div>
       )}
 
-      {/* FORM */}
-      <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl text-xs leading-relaxed shadow-sm">
-        <span className="block mb-1 text-emerald-950 text-sm font-bold">ما المقصود بالدفعة؟</span>
-        <span className="text-emerald-800 font-medium block">الدفعة هي كمية محددة من نوى التمر جُمعت من مصدر معين أو خلال فترة محددة.</span>
-        <div className="text-emerald-900 mt-2 bg-emerald-100/50 p-2 rounded-lg font-medium inline-block">
-          مثال:<br/>
-          500 كجم من نوى تمر سكري<br/>
-          المصدر: مصنع تمور<br/>
-          الموقع: بريدة
+      {/* DEFINITION OF BATCH */}
+      <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl text-xs leading-relaxed shadow-sm space-y-2">
+        <span className="block text-emerald-950 text-sm font-bold">ما المقصود بالدفعة؟</span>
+        <p className="text-emerald-900 font-medium">
+          الدفعة هي كمية محددة من نوى التمر جُمعت من مصدر معين أو خلال فترة محددة، ويمكن توثيق معلوماتها ومتابعة مراحلها رقميًا داخل نواة.
+        </p>
+        <div className="text-emerald-950 bg-emerald-100/60 p-3 rounded-xl font-medium border border-emerald-200/50 space-y-0.5">
+          <span className="font-bold block">مثال:</span>
+          <span>10 كجم من نوى تمر سكري • المصدر: مزرعة • الموقع: بريدة • الحالة: مجففة</span>
         </div>
+        <p className="text-[11px] text-emerald-800 font-semibold">
+          ملاحظة: يمكن تسجيل أكثر من دفعة، ولكل دفعة بياناتها ومسارها الخاص.
+        </p>
       </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* SECTION 1: SOURCE & LOCATION */}
         <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl space-y-4">
-          <div className="border-b border-emerald-100 pb-3 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-amber-500" />
-            <h3 className="text-sm font-bold text-emerald-950">بيانات الدفعة</h3>
+          <div className="border-b border-emerald-100 pb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-amber-500" />
+              <h3 className="text-sm font-bold text-emerald-950">ما البيانات المطلوبة؟</h3>
+            </div>
+            <span className="text-[10px] text-slate-500 font-medium">التسجيل رقمي فقط</span>
           </div>
+
+          <p className="text-xs text-slate-600 font-medium">
+            أدخل المعلومات الأساسية المتوفرة عن الدفعة لإنشاء سجل رقمي يوثق المصدر والكمية والحالة.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
@@ -258,13 +269,13 @@ export default function NewBatchPage() {
 
             <div className="space-y-1.5 md:col-span-2">
               <label className="text-xs font-bold text-emerald-900">
-                مصدر النوى (اسم المصنع أو المزرعة أو مركز التجميع) <span className="text-rose-500">*</span>
+                مصدر النوى (من أين جاءت هذه الدفعة؟ مثال: مزرعة، مصنع تمور، مركز جمع) <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 disabled={isSubmitting}
-                placeholder="مثال: مصنع تمور كذا"
+                placeholder="مثال: مزرعة نخيل في القصيم، أو مصنع تمور..."
                 value={sourceName}
                 onChange={(e) => setSourceName(e.target.value)}
                 className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-3.5 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
@@ -272,7 +283,7 @@ export default function NewBatchPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-emerald-900">المنطقة:</label>
+              <label className="text-xs font-bold text-emerald-900">المنطقة (الموقع الجغرافي):</label>
               <select
                 value={selectedRegionId}
                 disabled={isSubmitting}
@@ -291,7 +302,7 @@ export default function NewBatchPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-emerald-900">المدينة:</label>
+              <label className="text-xs font-bold text-emerald-900">المدينة / المحافظة:</label>
               <select
                 value={selectedCityId}
                 disabled={isSubmitting}
@@ -306,7 +317,7 @@ export default function NewBatchPage() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-emerald-900">
-                الكمية (بالكيلوجرام) <span className="text-rose-500">*</span>
+                الكمية (كم تبلغ كمية النوى؟ أدخل الوزن المتاح لديك بالكيلوجرام) <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
@@ -322,7 +333,7 @@ export default function NewBatchPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-emerald-900">نوع التمر:</label>
+              <label className="text-xs font-bold text-emerald-900">نوع التمر (إن كان معروفاً):</label>
               <select
                 value={dateType}
                 disabled={isSubmitting}
@@ -340,7 +351,7 @@ export default function NewBatchPage() {
             </div>
 
             <div className="space-y-1.5 md:col-span-2">
-              <label className="text-xs font-bold text-emerald-900">تاريخ التجميع (التاريخ أو الفترة التقريبية):</label>
+              <label className="text-xs font-bold text-emerald-900">تاريخ التجميع أو الفترة التقريبية:</label>
               <input
                 type="date"
                 disabled={isSubmitting}
@@ -357,13 +368,13 @@ export default function NewBatchPage() {
         <div className="bg-white border border-emerald-200 rounded-3xl p-6 shadow-xl space-y-4">
           <div className="border-b border-emerald-100 pb-3 flex items-center gap-2">
             <Package className="w-5 h-5 text-amber-500" />
-            <h3 className="text-sm font-bold text-emerald-950">حالة النوى</h3>
+            <h3 className="text-sm font-bold text-emerald-950">حالة النوى عند التسجيل</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-emerald-900">حالة النوى:</label>
+              <label className="text-xs font-bold text-emerald-900">حالة النوى (بحسب ما تعرفه):</label>
               <select
                 value={cleaningStatus}
                 disabled={isSubmitting}
@@ -412,13 +423,13 @@ export default function NewBatchPage() {
                 disabled={isSubmitting}
                 value={storageMethod}
                 onChange={(e) => setStorageMethod(e.target.value)}
-                placeholder="مثلاً: أكياس خيش تهوية محكومة"
+                placeholder="مثلاً: أكياس خيش تهوية محكمة"
                 className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-3.5 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
               />
             </div>
 
             <div className="space-y-1.5 md:col-span-2">
-              <label className="text-xs font-bold text-emerald-900">ملاحظات إضافية (اختياري):</label>
+              <label className="text-xs font-bold text-emerald-900">ملاحظات إضافية عن الدفعة (اختياري):</label>
               <input
                 type="text"
                 disabled={isSubmitting}
@@ -439,12 +450,12 @@ export default function NewBatchPage() {
               <Camera className="w-5 h-5 text-amber-500" />
               <h3 className="text-sm font-bold text-emerald-950">الصورة والتحليل البصري</h3>
             </div>
-            <span className="text-[10px] text-emerald-600">اختياري</span>
+            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded">اختياري</span>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            يمكنك إضافة صورة واضحة للدفعة للحصول على تحليل بصري تقديري باستخدام الذكاء الاصطناعي.<br/>
-            التحليل البصري يساعد على قراءة الخصائص الظاهرة في الصورة، ولا يُعد فحصًا مخبريًا أو حكمًا نهائيًا على جودة النوى.
-          </p>
+          <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl text-xs text-slate-600 space-y-1 leading-relaxed">
+            <p className="font-bold text-slate-800">يمكنك إضافة صورة للدفعة عند توفرها للمساعدة في التحليل البصري الأولي.</p>
+            <p className="text-slate-500">التحليل المدعوم بالذكاء الاصطناعي هو تحليل بصري أولي للصورة، ولا يُعد بديلًا عن التحليل المخبري أو الاختبارات المتخصصة.</p>
+          </div>
 
           <input
             type="file"
@@ -471,7 +482,7 @@ export default function NewBatchPage() {
                 className="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 py-3 rounded-2xl font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
               >
                 <Camera className="w-4 h-4 text-amber-500" />
-                📷 فتح الكاميرا والتقاط صورة
+                <span>التقاط صورة عبر الكاميرا</span>
               </button>
 
               <button
@@ -481,7 +492,7 @@ export default function NewBatchPage() {
                 className="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-emerald-200 text-emerald-900 py-3 rounded-2xl font-bold text-xs transition-colors shadow-sm disabled:opacity-50"
               >
                 <Upload className="w-4 h-4 text-emerald-600" />
-                🖼️ رفع صورة من الجهاز
+                <span>رفع صورة من الجهاز</span>
               </button>
             </div>
 
@@ -511,10 +522,21 @@ export default function NewBatchPage() {
           </div>
         </div>
 
-        <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl text-xs leading-relaxed shadow-sm">
-          <span className="block mb-1 text-emerald-950 text-sm font-bold">ماذا يحدث بعد الحفظ؟</span>
-          <span className="text-emerald-800 block mb-2 font-medium">بعد تسجيل الدفعة، يتم حفظ بياناتها في سجل رقمي داخل نواة. ويمكن ربط السجل بالتحليل البصري والأدلة والاستخدامات المحتملة والتجارب والنتائج عند توفرها.</span>
-          <span className="inline-block bg-amber-50 text-amber-700 font-bold px-2 py-1 rounded">التسجيل لا يعني إرسال النوى إلى نواة.</span>
+        {/* WHAT HAPPENS AFTER REGISTRATION */}
+        <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl text-xs leading-relaxed shadow-sm space-y-2">
+          <span className="block text-emerald-950 text-sm font-bold">ماذا يحدث بعد التسجيل؟</span>
+          <p className="text-emerald-900 font-medium">
+            بعد حفظ البيانات، تنشئ نواة سجلًا رقميًا للدفعة، ويمكن متابعة مراحلها وربط المعلومات بها داخل المنصة:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px] text-emerald-950 font-medium">
+            <div className="bg-white/80 p-2 rounded-lg border border-emerald-100">01 — تسجيل الدفعة (حفظ بيانات المصدر والكمية)</div>
+            <div className="bg-white/80 p-2 rounded-lg border border-emerald-100">02 — التحليل البصري (تحليل بصري أولي للصورة)</div>
+            <div className="bg-white/80 p-2 rounded-lg border border-emerald-100">03 — الاستخدامات المحتملة (استكشاف مسارات الاستفادة)</div>
+            <div className="bg-white/80 p-2 rounded-lg border border-emerald-100">04 — الأدلة والتجارب (ربط المراجع وتوثيق النتائج)</div>
+          </div>
+          <span className="inline-block font-bold text-amber-800 bg-amber-100/70 border border-amber-200/60 px-3 py-1 rounded-lg mt-2 text-[11px]">
+            التسجيل يتم رقميًا داخل نواة، ولا يعني إرسال النوى أو تسليمها للمنصة.
+          </span>
         </div>
 
         {/* SUBMIT BUTTON */}
@@ -534,12 +556,12 @@ export default function NewBatchPage() {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>جاري الحفظ والرفع...</span>
+                <span>جاري تسجيل الدفعة...</span>
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>حفظ الدفعة وبدء الرحلة الرقمية</span>
+                <span>تسجيل الدفعة</span>
               </>
             )}
           </button>
