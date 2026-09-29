@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { 
   Bot, Send, User, Sparkles, RefreshCw, 
   Leaf, AlertCircle, Database, MapPin, 
-  Flame, Coffee, Droplets, Trash2, ArrowLeft, ArrowUpRight
+  Flame, Coffee, Droplets, Trash2, ArrowLeft, ArrowUpRight,
+  Factory
 } from "lucide-react";
 import Link from "next/link";
 
@@ -16,31 +17,61 @@ interface Message {
   timestamp: string;
 }
 
-const QUICK_PROMPTS = [
-  { icon: Database, text: "كيف أسجل دفعة نوى جديدة في المنصة؟" },
-  { icon: Flame, text: "ما هي مواصفات مسار الفحم المنشط من نوى التمر؟" },
-  { icon: Droplets, text: "كيف يتم استخلاص زيت نوى التمر ومجالات استخدامه؟" },
-  { icon: Coffee, text: "ما هي شروط إنتاج بديل القهوة الخالي من الكافيين؟" },
-  { icon: Sparkles, text: "كيف يعمل الفاحص البصري الذكي للنوى؟" },
-  { icon: Leaf, text: "كيف تحسب منصة نواة تقليل انبعاثات الكربون والأثر البيئي؟" }
+const TOPICS = [
+  {
+    id: 'registration',
+    label: 'تسجيل الدفعات',
+    icon: Database,
+    questions: [
+      "كيف أسجل دفعة نوى جديدة في المنصة؟",
+      "ما هي شروط مطابقة الدفعات لمعايير الجودة؟"
+    ]
+  },
+  {
+    id: 'industrial',
+    label: 'الاستفادة الصناعية',
+    icon: Factory,
+    questions: [
+      "ما هي مواصفات مسار الفحم المنشط من نوى التمر؟",
+      "ما هي شروط إنتاج بديل القهوة الخالي من الكافيين؟"
+    ]
+  },
+  {
+    id: 'oil',
+    label: 'زيت النوى',
+    icon: Droplets,
+    questions: [
+      "كيف يتم استخلاص زيت نوى التمر ومجالات استخدامه؟",
+      "ما هي الفوائد الصناعية لزيت النوى؟"
+    ]
+  },
+  {
+    id: 'environment',
+    label: 'الأثر البيئي',
+    icon: Leaf,
+    questions: [
+      "كيف تحسب منصة نواة تقليل انبعاثات الكربون؟",
+      "كيف يعمل الفاحص البصري الذكي للنوى؟"
+    ]
+  }
 ];
 
-function renderFormattedText(text: string, isUser: boolean) {
+function renderFormattedText(text: string) {
   const lines = text.split("\n");
   return lines.map((line, lineIdx) => {
     let trimmed = line.trim();
-    if (!trimmed) return <div key={lineIdx} className="h-2" />;
+    if (!trimmed) return <div key={lineIdx} className="h-1.5" />;
 
     if (trimmed.startsWith("### ")) {
       return (
-        <h4 key={lineIdx} className={`font-black text-sm mt-3 mb-1.5 ${isUser ? "text-white" : "text-emerald-950"}`}>
+        <h4 key={lineIdx} className="font-bold text-sm mt-3 mb-1 text-slate-900">
           {trimmed.replace(/^###\s+/, "")}
         </h4>
       );
     }
     if (trimmed.startsWith("## ")) {
       return (
-        <h3 key={lineIdx} className={`font-black text-base mt-4 mb-2 ${isUser ? "text-white" : "text-emerald-950 border-b border-slate-100 pb-1"}`}>
+        <h3 key={lineIdx} className="font-bold text-base mt-4 mb-2 text-slate-900">
           {trimmed.replace(/^##\s+/, "")}
         </h3>
       );
@@ -55,7 +86,7 @@ function renderFormattedText(text: string, isUser: boolean) {
     const content = parts.map((part, pIdx) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <strong key={pIdx} className={`font-black ${isUser ? "text-white" : "text-emerald-800"}`}>
+          <strong key={pIdx} className="font-bold text-slate-900">
             {part.slice(2, -2)}
           </strong>
         );
@@ -65,15 +96,15 @@ function renderFormattedText(text: string, isUser: boolean) {
 
     if (isBullet) {
       return (
-        <div key={lineIdx} className="flex items-start gap-2 pr-2 my-1">
-          <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${isUser ? "bg-white" : "bg-emerald-500"}`}></span>
+        <div key={lineIdx} className="flex items-start gap-2 pr-1 my-1">
+          <span className="w-1 h-1 rounded-full bg-slate-400 mt-2 shrink-0"></span>
           <span className="flex-1">{content}</span>
         </div>
       );
     }
 
     return (
-      <p key={lineIdx} className="my-1">
+      <p key={lineIdx} className="my-0.5">
         {content}
       </p>
     );
@@ -85,7 +116,7 @@ export default function AssistantPage() {
     {
       id: "welcome-1",
       sender: 'assistant',
-      text: 'مرحباً بك! أنا مساعد نواة الذكي، المستشار المباشر لمنظومة (نواة | NAWAH) لتتبع وإعادة تدوير نوى التمر وتطبيقات الاقتصاد الدائري بالمملكة العربية السعودية.\n\nكيف يمكنني إرشادك اليوم في تسجيل الدفعات، مسارات الاستفادة الصناعية (الفحم، الزيوت، القهوة)، أو استعراض الخريطة الذكية وسجل الأثر؟',
+      text: 'مرحباً، كيف يمكنني مساعدتك اليوم؟',
       timestamp: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -93,7 +124,12 @@ export default function AssistantPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   
+  const [activeTopicId, setActiveTopicId] = useState<string>(TOPICS[0].id);
+  const prefersReducedMotion = useReducedMotion();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const activeTopic = TOPICS.find(t => t.id === activeTopicId) || TOPICS[0];
+  const isChatEmpty = messages.length === 1 && messages[0].id.includes("welcome");
 
   const scrollToBottom = () => {
     if (scrollContainerRef.current) {
@@ -169,242 +205,263 @@ export default function AssistantPage() {
       {
         id: "welcome-reset",
         sender: 'assistant',
-        text: 'أهلاً بك مجدداً في مساعد نواة الذكي! جاهز للإجابة عن أي استفسار حول نوى التمر وتطبيقات المنصة.',
+        text: 'مرحباً، كيف يمكنني مساعدتك اليوم؟',
         timestamp: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
       }
     ]);
+    setActiveTopicId(TOPICS[0].id);
   };
 
-  const isChatEmpty = messages.length === 1 && messages[0].id.includes("welcome");
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-slate-50/50 py-10 px-4 sm:px-6 flex flex-col items-center" dir="rtl">
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-white font-sans text-slate-800" dir="rtl">
       
-      {/* BEAUTIFUL FLOATING CARD LAYOUT */}
-      <div className="w-full max-w-5xl bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden flex flex-col h-[750px] max-h-[85vh]">
-        
-        {/* HEADER INSIDE THE CARD */}
-        <header className="flex items-center justify-between px-6 sm:px-8 py-5 bg-white border-b border-slate-100 shrink-0 z-30">
-          <div className="flex items-center gap-4">
-            <div className="relative w-12 h-12">
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-2xl border border-dashed border-emerald-300 opacity-50"
-              />
-              <div className="absolute inset-1 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex items-center justify-center font-black shadow-md">
-                <Bot className="w-6 h-6" />
-              </div>
-            </div>
-            <div>
-              <h1 className="font-black text-slate-900 text-lg">مساعد نواة الذكي</h1>
-              <p className="text-[11px] text-emerald-600 flex items-center gap-1.5 font-bold mt-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                متصل ومتاح
-              </p>
-            </div>
+      {/* HEADER: Clean, minimalistic */}
+      <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 bg-white/80 backdrop-blur-md z-30">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <Bot size={16} />
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleClearChat}
-              className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-rose-600 px-4 py-2.5 rounded-xl hover:bg-rose-50 transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">محادثة جديدة</span>
-            </button>
-            <Link
-              href="/pit-management/dashboard"
-              className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-4 py-2.5 rounded-xl border border-emerald-200 transition-colors group"
-            >
-              <span>لوحة التحكم</span>
-              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            </Link>
+          <div>
+            <h1 className="font-bold text-slate-900 text-sm">مساعد نواة الذكي</h1>
           </div>
-        </header>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleClearChat}
+            className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">محادثة جديدة</span>
+          </button>
+          <Link
+            href="/pit-management/dashboard"
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg transition-colors"
+          >
+            <span>لوحة التحكم</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </header>
 
-        {/* MAIN SCROLLABLE AREA INSIDE THE CARD */}
-        <main 
-          ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto scroll-smooth bg-slate-50/30 p-6 sm:p-10 relative z-10"
-        >
-          <AnimatePresence mode="wait">
-            {isChatEmpty ? (
-              <motion.div 
-                key="empty-state"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                className="flex flex-col items-center text-center pt-8 pb-12 w-full max-w-2xl mx-auto"
-              >
-                {/* LARGE INTERACTIVE ANIMATED RING (Light Theme) */}
-                <div className="relative flex items-center justify-center w-28 h-28 mb-8">
+      {/* MAIN CONTENT AREA */}
+      <main 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto scroll-smooth w-full relative"
+      >
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-32 min-h-full flex flex-col">
+          
+          {isChatEmpty ? (
+            /* EMPTY STATE: INTERACTIVE KNOWLEDGE ORBIT */
+            <div className="flex flex-col items-center w-full mt-4 sm:mt-10">
+              
+              {/* ORBIT COMPONENT */}
+              <div className="relative w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] mb-12 flex items-center justify-center">
+                
+                {/* Track */}
+                <div className="absolute inset-8 sm:inset-12 border border-slate-100 rounded-full" />
+                
+                {/* Orbiting Particle */}
+                {!prefersReducedMotion && (
                   <motion.div 
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-[-10px] rounded-full border-2 border-emerald-300 border-dashed opacity-60"
-                  />
-                  <motion.div 
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-0 rounded-full bg-emerald-100 blur-xl opacity-60"
-                  />
-                  <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex items-center justify-center shadow-2xl shadow-emerald-700/30">
-                    <Sparkles className="w-10 h-10" />
-                  </div>
-                </div>
-
-                <h2 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">
-                  كيف يمكنني مساعدتك اليوم؟
-                </h2>
-                <p className="text-slate-500 mb-10 text-sm leading-relaxed font-medium">
-                  أنا المستشار المباشر لمنظومة نواة. اسألني عن تسجيل الدفعات، مسارات الاستفادة الصناعية، الخريطة الذكية، أو سجل الأثر البيئي.
-                </p>
-
-                {/* INTERACTIVE QUICK PROMPTS GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                  {QUICK_PROMPTS.map((prompt, idx) => {
-                    const Icon = prompt.icon;
-                    return (
-                      <motion.button
-                        key={idx}
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 + idx * 0.05 }}
-                        onClick={() => handleSend(prompt.text)}
-                        className="group relative flex items-center justify-between text-right p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100/50 transition-all duration-300 overflow-hidden"
-                      >
-                        <div className="flex items-center gap-3 z-10">
-                          <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 transition-colors">
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-700 group-hover:text-emerald-900 transition-colors">
-                            {prompt.text}
-                          </span>
-                        </div>
-                        {/* Interactive Arrow */}
-                        <div className="z-10 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-emerald-600 shrink-0">
-                          <ArrowUpRight className="w-5 h-5 rtl:-scale-x-100" />
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="chat-list"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col gap-6 w-full max-w-3xl mx-auto"
-              >
-                {messages.map((m) => (
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    key={m.id}
-                    className={`flex items-start gap-4 ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-8 sm:inset-12 rounded-full pointer-events-none"
                   >
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 font-bold shadow-sm border ${
-                      m.sender === 'user' 
-                        ? 'bg-emerald-700 text-white border-emerald-800' 
-                        : 'bg-white text-emerald-700 border-emerald-200'
-                    }`}>
-                      {m.sender === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-6 h-6" />}
-                    </div>
+                    <div className="absolute top-[-3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  </motion.div>
+                )}
 
-                    <div className={`p-5 rounded-3xl max-w-[85%] sm:max-w-[80%] leading-relaxed ${
+                {/* Central Hub */}
+                <div className="relative z-10 flex flex-col items-center justify-center bg-white rounded-full w-28 h-28 sm:w-32 sm:h-32 border border-slate-100 shadow-sm">
+                  <Bot className="w-8 h-8 text-emerald-600 mb-2" strokeWidth={1.5} />
+                  <span className="text-[11px] font-bold text-slate-700">مساعد نواة</span>
+                  <span className="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-emerald-500"></span>
+                    متصل الآن
+                  </span>
+                </div>
+
+                {/* Orbit Nodes */}
+                {TOPICS.map((topic, index) => {
+                  const angle = (index * 90) - 90; 
+                  const isActive = activeTopicId === topic.id;
+                  
+                  return (
+                    <div 
+                      key={topic.id}
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ transform: `rotate(${angle}deg)` }}
+                    >
+                      <div className="absolute top-8 sm:top-12 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+                        <button 
+                          onClick={() => setActiveTopicId(topic.id)}
+                          onMouseEnter={() => setActiveTopicId(topic.id)}
+                          className="group relative flex flex-col items-center justify-center transition-transform duration-300 focus:outline-none"
+                          style={{ transform: `rotate(${-angle}deg)` }}
+                          aria-label={topic.label}
+                        >
+                          {/* Node Icon */}
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                            isActive 
+                              ? 'bg-emerald-50 border border-emerald-200 text-emerald-600 shadow-sm scale-110' 
+                              : 'bg-white border border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600 shadow-sm'
+                          }`}>
+                            <topic.icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+                          </div>
+                          
+                          {/* Node Label (positioned absolutely to always be readable) */}
+                          <div className={`absolute whitespace-nowrap transition-all duration-300 ${
+                            isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1 pointer-events-none'
+                          } ${
+                            angle === 90 ? 'top-full mt-2' : 
+                            angle === -90 ? 'bottom-full mb-2' :
+                            angle === 0 ? 'top-full mt-2' : 'top-full mt-2'
+                          }`}>
+                            <span className="text-[11px] font-bold text-slate-700 bg-white/90 backdrop-blur px-2 py-0.5 rounded-md border border-slate-100 shadow-sm">
+                              {topic.label}
+                            </span>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Dynamic Suggested Questions */}
+              <div className="w-full max-w-lg mx-auto">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTopicId}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex flex-col gap-2"
+                  >
+                    {activeTopic.questions.map((q, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => handleSend(q)}
+                        className="group flex items-center justify-between text-right p-3.5 sm:p-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-transparent focus:outline-none focus:border-slate-300"
+                      >
+                        <span className="text-sm text-slate-700 font-medium transition-colors group-hover:text-slate-900">{q}</span>
+                        <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" strokeWidth={1.5} />
+                      </button>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+            </div>
+          ) : (
+            /* ACTIVE CHAT LIST */
+            <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto pt-4">
+              {messages.map((m) => (
+                <div
+                  key={m.id}
+                  className={`flex items-start gap-4 ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                >
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${
+                    m.sender === 'user' 
+                      ? 'bg-slate-50 border-slate-200 text-slate-500' 
+                      : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                  }`}>
+                    {m.sender === 'user' ? <User className="w-4 h-4" strokeWidth={1.5} /> : <Bot className="w-4 h-4" strokeWidth={1.5} />}
+                  </div>
+
+                  <div className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%]`}>
+                    <div className={`px-5 py-3.5 text-sm leading-relaxed rounded-2xl ${
                       m.sender === 'user'
-                        ? 'bg-emerald-700 text-white rounded-tr-sm shadow-md font-medium'
-                        : 'bg-white text-slate-800 rounded-tl-sm border border-slate-200 shadow-sm'
+                        ? 'bg-slate-100 text-slate-900 rounded-tr-sm'
+                        : 'bg-transparent text-slate-800'
                     }`}>
                       <div className="prose prose-sm max-w-none text-inherit">
                         {renderFormattedText(m.text, m.sender === 'user')}
                       </div>
-                      <div className={`text-[10px] mt-3 font-mono opacity-60 ${
-                        m.sender === 'user' ? 'text-left text-emerald-100' : 'text-right text-slate-500'
-                      }`}>
-                        {m.timestamp}
-                      </div>
                     </div>
-                  </motion.div>
-                ))}
+                  </div>
+                </div>
+              ))}
 
-                {loading && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-start gap-4"
+              {loading && (
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <Bot className="w-4 h-4" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-3.5">
+                    <span className="flex gap-1">
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium">جاري إعداد الإجابة...</span>
+                  </div>
+                </div>
+              )}
+
+              {errorMsg && (
+                <div className="flex items-center justify-between gap-3 bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-xl text-xs">
+                  <div className="flex items-center gap-2 font-medium">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const lastUser = [...messages].reverse().find(m => m.sender === 'user');
+                      if (lastUser) handleSend(lastUser.text);
+                    }}
+                    className="text-rose-700 font-bold px-2 py-1 rounded hover:bg-rose-100 transition-colors flex items-center gap-1"
                   >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white border border-emerald-200 text-emerald-600 shadow-sm flex items-center justify-center shrink-0">
-                      <Bot className="w-6 h-6" />
-                    </div>
-                    <div className="px-5 py-4 rounded-3xl rounded-tl-sm bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-                      <Sparkles className="w-4 h-4 text-emerald-500 animate-spin" />
-                      <span className="text-slate-600 text-sm font-medium">يقوم المساعد بتحليل البيانات...</span>
-                    </div>
-                  </motion.div>
-                )}
+                    <RefreshCw className="w-3 h-3" />
+                    إعادة المحاولة
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
 
-                {errorMsg && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center justify-between gap-3 bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-xs"
-                  >
-                    <div className="flex items-center gap-2 font-bold">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                      <span>{errorMsg}</span>
-                    </div>
-                    <button
-                      onClick={() => {
-                        const lastUser = [...messages].reverse().find(m => m.sender === 'user');
-                        if (lastUser) handleSend(lastUser.text);
-                      }}
-                      className="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors flex items-center gap-1.5"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      إعادة المحاولة
-                    </button>
-                  </motion.div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </main>
-
-        {/* INPUT FORM AT BOTTOM OF CARD */}
-        <div className="p-6 bg-white border-t border-slate-100 shrink-0 z-20">
+      {/* MESSAGE INPUT COMPOSER */}
+      <footer className="w-full bg-white border-t border-slate-100 shrink-0 z-20">
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-4">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-            className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl p-2 focus-within:bg-white focus-within:border-emerald-400 focus-within:ring-4 ring-emerald-500/10 transition-all max-w-3xl mx-auto w-full"
+            className="flex items-end gap-3 bg-white border border-slate-200 focus-within:border-emerald-500 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.1)] rounded-2xl p-2 transition-all"
           >
-            <input
-              type="text"
+            <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               disabled={loading}
-              placeholder="اسأل مساعد نواة عن الخريطة الذكية، مسارات الاستفادة، أو سجل الأثر..."
-              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-4 py-2 text-sm font-medium placeholder:text-slate-400 disabled:opacity-50"
+              placeholder="اكتب سؤالك حول منظومة نواة..."
+              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-3 py-2.5 text-sm resize-none max-h-32 min-h-[44px] placeholder:text-slate-400 disabled:opacity-50"
+              rows={1}
             />
-
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="group bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shrink-0 transition-all shadow-md shadow-emerald-600/20 disabled:shadow-none overflow-hidden relative"
+              className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-300 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
             >
-              <span className="hidden sm:inline text-sm z-10 relative">إرسال</span>
-              <Send className="w-4 h-4 rtl:rotate-180 z-10 relative group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
+              <Send className="w-4 h-4 rtl:-translate-x-0.5" strokeWidth={2} />
             </button>
           </form>
-          <p className="text-[10px] text-slate-400 text-center mt-3 font-bold">
-            مساعد نواة الذكي • قد يقدم الذكاء الاصطناعي معلومات غير دقيقة أحياناً
-          </p>
+          <div className="flex justify-center mt-3">
+            <p className="text-[10px] text-slate-400 font-medium">
+              يستخدم مساعد نواة تقنيات الذكاء الاصطناعي وقد يحتاج للتحقق من بعض المعلومات الدقيقة.
+            </p>
+          </div>
         </div>
+      </footer>
 
-      </div>
     </div>
   );
 }
