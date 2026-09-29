@@ -301,70 +301,107 @@ export default function AssistantWorkspace() {
         {/* Workspace Main (Messages) */}
         <main ref={scrollContainerRef} className="flex-1 overflow-y-auto scroll-smooth p-4 sm:p-8">
           {isChatEmpty ? (
-            <div className="flex flex-col items-center justify-center h-full text-center max-w-2xl mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-stone-50 border border-stone-200 text-emerald-700 flex items-center justify-center mb-6 shadow-sm">
-                <Sparkles size={28} strokeWidth={1.5} />
-              </div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="flex flex-col items-center justify-center h-full text-center max-w-2xl mx-auto"
+            >
+              <motion.div 
+                animate={{ y: [0, -8, 0] }} 
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="w-16 h-16 rounded-3xl bg-stone-50 border border-stone-200 text-emerald-600 flex items-center justify-center mb-6 shadow-sm relative"
+              >
+                <div className="absolute inset-0 bg-emerald-100 rounded-3xl blur-xl opacity-50"></div>
+                <Sparkles size={28} strokeWidth={1.5} className="relative z-10" />
+              </motion.div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-3 tracking-tight">كيف يمكنني مساعدتك؟</h2>
               <p className="text-sm text-slate-500 mb-10 font-medium">اختر أحد الإجراءات السريعة أدناه أو اكتب سؤالك مباشرة للبدء في الاستكشاف.</p>
               
-              {/* Horizontal Quick Actions */}
-              <div className="flex flex-row flex-wrap justify-center gap-2 sm:gap-3">
+              {/* Horizontal Quick Actions with Stagger */}
+              <motion.div 
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1 }
+                  }
+                }}
+                className="flex flex-row flex-wrap justify-center gap-2 sm:gap-3"
+              >
                 {QUICK_ACTIONS.map((action, idx) => (
-                  <button
+                  <motion.button
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0 }
+                    }}
                     key={idx}
                     onClick={() => handleSend(action.prompt)}
-                    className="px-4 py-2 bg-white hover:bg-emerald-50 border border-stone-200 hover:border-emerald-300 rounded-lg text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-800 transition-colors shadow-sm"
+                    className="px-5 py-2.5 bg-white hover:bg-emerald-50 border border-stone-200 hover:border-emerald-300 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-800 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
                   >
                     {action.label}
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ) : (
             <div className="max-w-3xl mx-auto flex flex-col gap-6 sm:gap-8">
-              {messages.map((m) => (
-                <div key={m.id} className={`flex items-start gap-4 ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
-                    m.sender === 'user' ? 'bg-stone-50 border-stone-200 text-slate-500' : 'bg-emerald-50 border-emerald-100 text-emerald-700'
-                  }`}>
-                    {m.sender === 'user' ? <User size={16} strokeWidth={2} /> : <Bot size={16} strokeWidth={2} />}
-                  </div>
-                  <div className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%] sm:max-w-[80%]`}>
-                    <div className={`px-4 sm:px-5 py-3 sm:py-4 rounded-2xl ${
-                      m.sender === 'user'
-                        ? 'bg-white border border-stone-200 text-slate-800 shadow-sm'
-                        : 'bg-transparent text-slate-800'
+              <AnimatePresence initial={false}>
+                {messages.map((m) => (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    key={m.id} 
+                    className={`flex items-start gap-4 ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                  >
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                      m.sender === 'user' ? 'bg-stone-50 border-stone-200 text-slate-500' : 'bg-emerald-50 border-emerald-100 text-emerald-700'
                     }`}>
-                      <div className="w-full break-words">
-                        {renderFormattedText(m.text)}
+                      {m.sender === 'user' ? <User size={18} strokeWidth={2} /> : <Bot size={18} strokeWidth={2} />}
+                    </div>
+                    <div className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%] sm:max-w-[80%]`}>
+                      <div className={`px-4 sm:px-6 py-3 sm:py-5 rounded-2xl ${
+                        m.sender === 'user'
+                          ? 'bg-white border border-stone-200 text-slate-800 shadow-sm'
+                          : 'bg-transparent text-slate-800'
+                      }`}>
+                        <div className="w-full break-words">
+                          {renderFormattedText(m.text)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
 
               {loading && (
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Bot size={16} strokeWidth={2} />
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-start gap-4"
+                >
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Bot size={18} strokeWidth={2} />
                   </div>
                   <div className="flex items-center gap-1.5 px-3 py-4">
-                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-2 h-2 bg-emerald-400 rounded-full" />
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-2 h-2 bg-emerald-400 rounded-full" />
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-2 h-2 bg-emerald-400 rounded-full" />
                   </div>
-                </div>
+                </motion.div>
               )}
             </div>
           )}
         </main>
 
         {/* Workspace Footer (Input) */}
-        <footer className="p-4 sm:p-6 shrink-0 border-t border-stone-100 bg-white">
+        <footer className="p-4 sm:p-6 shrink-0 border-t border-stone-100 bg-white z-10">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-            className="max-w-3xl mx-auto flex items-end gap-3 bg-stone-50 border border-stone-200 focus-within:bg-white focus-within:border-emerald-500 focus-within:shadow-[0_0_0_3px_rgba(16,185,129,0.1)] rounded-xl p-2 transition-all"
+            className="max-w-3xl mx-auto flex items-end gap-3 bg-stone-50 border border-stone-200 focus-within:bg-white focus-within:border-emerald-500 focus-within:shadow-[0_8px_30px_rgb(16,185,129,0.12)] rounded-2xl p-2 transition-all duration-300"
           >
             <textarea
               value={input}
@@ -372,15 +409,15 @@ export default function AssistantWorkspace() {
               onKeyDown={handleKeyDown}
               disabled={loading}
               placeholder="اكتب سؤالك عن بيانات نوى التمر..."
-              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-3 py-2.5 text-sm resize-none max-h-32 min-h-[44px] placeholder:text-slate-400 disabled:opacity-50"
+              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-4 py-3 text-sm resize-none max-h-32 min-h-[48px] placeholder:text-slate-400 disabled:opacity-50"
               rows={1}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="bg-slate-900 hover:bg-emerald-700 disabled:bg-stone-200 disabled:text-stone-400 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors focus:outline-none"
+              className="bg-slate-900 hover:bg-emerald-600 disabled:bg-stone-200 disabled:text-stone-400 text-white w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all focus:outline-none hover:shadow-lg hover:shadow-emerald-600/20"
             >
-              <Send className="w-4 h-4 rtl:-translate-x-0.5" strokeWidth={2} />
+              <Send className="w-5 h-5 rtl:-translate-x-0.5" strokeWidth={2} />
             </button>
           </form>
         </footer>
@@ -394,22 +431,34 @@ export default function AssistantWorkspace() {
         
         {/* Miniature Interactive Circular Flow Widget */}
         <div className="relative w-48 h-48 mx-auto mb-8 flex items-center justify-center">
+          
+          {/* Rotating Dashed Track */}
+          <motion.svg 
+            animate={{ rotate: -360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-2 pointer-events-none origin-center" 
+            viewBox="-60 -60 120 120"
+          >
+            <circle cx="0" cy="0" r="50" fill="none" stroke="#d6d3d1" strokeWidth="1" strokeDasharray="4 4" />
+          </motion.svg>
+          
+          {/* Static Arrows */}
           <svg className="absolute inset-2 pointer-events-none" viewBox="-60 -60 120 120">
-            <circle cx="0" cy="0" r="50" fill="none" stroke="#e7e5e4" strokeWidth="1" strokeDasharray="3 3" />
             {[-60, 0, 60, 120, 180, 240].map((angle, i) => {
               const rad = (angle * Math.PI) / 180;
               const x = 50 * Math.cos(rad);
               const y = 50 * Math.sin(rad);
               return (
-                <g key={i} transform={`translate(${x}, ${y}) rotate(${angle + 90})`} opacity="0.4">
+                <g key={i} transform={`translate(${x}, ${y}) rotate(${angle + 90})`} opacity="0.6">
                   <path d="M-3,3 L0,0 L3,3" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
               );
             })}
           </svg>
           
-          <div className="w-10 h-10 bg-white border border-stone-200 rounded-full flex items-center justify-center z-10 shadow-sm">
-             <Bot className="text-emerald-700 w-5 h-5" strokeWidth={1.5} />
+          <div className="w-12 h-12 bg-white border border-stone-200 rounded-full flex items-center justify-center z-10 shadow-sm relative">
+             <div className="absolute inset-0 bg-emerald-50 rounded-full animate-pulse opacity-50"></div>
+             <Bot className="text-emerald-700 w-6 h-6 relative z-10" strokeWidth={1.5} />
           </div>
 
           {SCIENTIFIC_FLOW.map((node, i) => {
@@ -418,11 +467,19 @@ export default function AssistantWorkspace() {
             return (
               <div key={node.id} className="absolute inset-2 pointer-events-none" style={{ transform: `rotate(${angle}deg)` }}>
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+                  
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeNodeGlow"
+                      className="absolute inset-0 bg-emerald-400 rounded-full blur-md opacity-40"
+                    />
+                  )}
+                  
                   <button 
                     onClick={() => setActiveNodeId(node.id)}
                     title={node.label}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                      isActive ? 'bg-emerald-600 text-white shadow-md scale-110' : 'bg-white text-slate-400 border border-stone-200 hover:border-emerald-300 hover:text-emerald-600'
+                    className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      isActive ? 'bg-emerald-600 text-white shadow-md scale-125' : 'bg-white text-slate-400 border border-stone-200 hover:border-emerald-300 hover:text-emerald-600 hover:scale-110'
                     }`} 
                     style={{ transform: `rotate(${-angle}deg)` }}
                   >
@@ -438,38 +495,41 @@ export default function AssistantWorkspace() {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeNodeId}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.15 }}
-            className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col gap-4"
+            initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+            transition={{ duration: 0.2 }}
+            className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm flex flex-col gap-4 relative overflow-hidden"
           >
-            <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+            {/* Subtle corner accent */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-emerald-50 to-transparent opacity-50 rounded-tr-2xl pointer-events-none"></div>
+
+            <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm relative z-10">
               <activeNode.icon size={16} strokeWidth={2} /> {activeNode.label}
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            <p className="text-xs text-slate-600 leading-relaxed font-medium relative z-10">
               {activeNode.desc}
             </p>
             
             {/* Dynamic Data Chips connected to the context */}
-            <div className="flex flex-col gap-2 mt-2">
-              <div className="flex justify-between items-center bg-stone-50 px-3 py-2.5 rounded-lg border border-stone-100 text-[10px] font-bold">
+            <div className="flex flex-col gap-2 mt-2 relative z-10">
+              <div className="flex justify-between items-center bg-stone-50 hover:bg-stone-100 transition-colors px-3 py-2.5 rounded-xl border border-stone-100 text-[10px] font-bold">
                 <span className="text-slate-600">الدفعات المرتبطة</span>
-                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded">3 دفعات</span>
+                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded-md">3 دفعات</span>
               </div>
-              <div className="flex justify-between items-center bg-stone-50 px-3 py-2.5 rounded-lg border border-stone-100 text-[10px] font-bold">
+              <div className="flex justify-between items-center bg-stone-50 hover:bg-stone-100 transition-colors px-3 py-2.5 rounded-xl border border-stone-100 text-[10px] font-bold">
                 <span className="text-slate-600">الأدلة المتوفرة</span>
-                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded">7 أدلة</span>
+                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded-md">7 أدلة</span>
               </div>
-              <div className="flex justify-between items-center bg-stone-50 px-3 py-2.5 rounded-lg border border-stone-100 text-[10px] font-bold">
+              <div className="flex justify-between items-center bg-stone-50 hover:bg-stone-100 transition-colors px-3 py-2.5 rounded-xl border border-stone-100 text-[10px] font-bold">
                 <span className="text-slate-600">مسارات الاستخدام</span>
-                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded">4 مسارات</span>
+                <span className="text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded-md">4 مسارات</span>
               </div>
             </div>
             
             <button 
               onClick={() => handleSend(activeNode.prompt)}
-              className="mt-2 text-[11px] font-bold text-white bg-slate-900 hover:bg-emerald-700 px-4 py-2.5 rounded-lg transition-colors w-full"
+              className="mt-3 text-[11px] font-bold text-white bg-slate-900 hover:bg-emerald-600 px-4 py-3 rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-600/20 w-full relative z-10"
             >
               اسأل المساعد
             </button>
