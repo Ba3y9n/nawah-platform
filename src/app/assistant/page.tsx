@@ -220,7 +220,7 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col bg-white font-sans text-slate-800" dir="rtl">
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 font-sans text-slate-800" dir="rtl">
       
       {/* HEADER: Clean, minimalistic */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 bg-white/80 backdrop-blur-md z-30">
@@ -253,9 +253,33 @@ export default function AssistantPage() {
       {/* MAIN CONTENT AREA */}
       <main 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto scroll-smooth w-full relative"
+        className="flex-1 overflow-y-auto scroll-smooth w-full relative bg-slate-50/30"
       >
-        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-32 min-h-full flex flex-col">
+        {/* INTERACTIVE ANIMATED BACKGROUND BLOBS */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.4, 0.6, 0.4],
+              x: [0, 30, 0],
+              y: [0, 40, 0]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-emerald-200/40 blur-[100px]"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+              x: [0, -40, 0],
+              y: [0, -30, 0]
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute -bottom-[10%] -left-[10%] w-[70%] h-[70%] rounded-full bg-teal-100/50 blur-[120px]"
+          />
+        </div>
+
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-32 min-h-full flex flex-col relative z-10">
           
           {isChatEmpty ? (
             /* EMPTY STATE: INTERACTIVE KNOWLEDGE ORBIT */
