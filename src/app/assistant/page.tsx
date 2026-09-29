@@ -3,10 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { 
-  Bot, Send, User, Sparkles, RefreshCw, 
-  Leaf, AlertCircle, Database, MapPin, 
-  Flame, Coffee, Droplets, Trash2, ArrowLeft, ArrowUpRight,
-  Factory
+  Bot, Send, User, RefreshCw, 
+  Database, LineChart, FlaskConical, BookOpen, 
+  Leaf, ChevronRight, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 
@@ -17,71 +16,119 @@ interface Message {
   timestamp: string;
 }
 
-const TOPICS = [
+const SCIENTIFIC_FLOW = [
   {
-    id: 'registration',
-    label: 'تسجيل الدفعات',
+    id: 'data',
+    label: 'البيانات',
     icon: Database,
-    questions: [
-      "كيف أسجل دفعة نوى جديدة في المنصة؟",
-      "ما هي شروط مطابقة الدفعات لمعايير الجودة؟"
-    ]
+    desc: 'معلومات الدفعات والمطابقة',
+    prompt: 'كيف أسجل دفعة نوى جديدة وأطابقها مع معايير الجودة؟'
   },
   {
-    id: 'industrial',
-    label: 'الاستفادة الصناعية',
-    icon: Factory,
-    questions: [
-      "ما هي مواصفات مسار الفحم المنشط من نوى التمر؟",
-      "ما هي شروط إنتاج بديل القهوة الخالي من الكافيين؟"
-    ]
+    id: 'analyze',
+    label: 'التحليل',
+    icon: LineChart,
+    desc: 'تحليل الخصائص الحيوية',
+    prompt: 'حلل الخصائص الحيوية لنوى التمر وما هي المؤشرات الأساسية؟'
   },
   {
-    id: 'oil',
-    label: 'زيت النوى',
-    icon: Droplets,
-    questions: [
-      "كيف يتم استخلاص زيت نوى التمر ومجالات استخدامه؟",
-      "ما هي الفوائد الصناعية لزيت النوى؟"
-    ]
+    id: 'application',
+    label: 'الاستخدامات',
+    icon: FlaskConical,
+    desc: 'مسارات الاستفادة الصناعية',
+    prompt: 'ما هي مسارات الاستفادة الصناعية المتاحة لزيت وفحم نوى التمر؟'
   },
   {
-    id: 'environment',
-    label: 'الأثر البيئي',
+    id: 'evidence',
+    label: 'الأدلة',
+    icon: BookOpen,
+    desc: 'الأبحاث والدراسات العلمية',
+    prompt: 'ابحث في الأدلة والدراسات العلمية الموثقة حول نوى التمر.'
+  },
+  {
+    id: 'impact',
+    label: 'الأثر',
     icon: Leaf,
-    questions: [
-      "كيف تحسب منصة نواة تقليل انبعاثات الكربون؟",
-      "كيف يعمل الفاحص البصري الذكي للنوى؟"
-    ]
+    desc: 'تقييم الأثر البيئي والاقتصادي',
+    prompt: 'كيف نقيم الأثر البيئي وتقليل الانبعاثات عند إعادة تدوير النوى؟'
   }
+];
+
+const QUICK_ACTIONS = [
+  { label: 'تحليل دفعة', prompt: 'أريد تحليل بيانات دفعة نوى تم تسجيلها مؤخراً.' },
+  { label: 'استكشاف الاستخدامات', prompt: 'ما هي أفضل الاستخدامات الصناعية للكميات الكبيرة من النوى؟' },
+  { label: 'البحث في الأدلة', prompt: 'هل توجد دراسات تدعم استخدام نوى التمر كبديل للقهوة؟' },
+  { label: 'التجارب والاختبارات', prompt: 'كيف تتم اختبارات الجودة على الفحم المنشط من نوى التمر؟' }
 ];
 
 function renderFormattedText(text: string) {
   const lines = text.split("\n");
-  return lines.map((line, lineIdx) => {
+  let inList = false;
+
+  const elements: React.ReactNode[] = [];
+
+  lines.forEach((line, lineIdx) => {
     let trimmed = line.trim();
-    if (!trimmed) return <div key={lineIdx} className="h-1.5" />;
+    if (!trimmed) {
+      elements.push(<div key={`br-${lineIdx}`} className="h-2" />);
+      return;
+    }
 
     if (trimmed.startsWith("### ")) {
-      return (
-        <h4 key={lineIdx} className="font-bold text-sm mt-3 mb-1 text-slate-900">
+      elements.push(
+        <h4 key={lineIdx} className="font-bold text-sm mt-4 mb-2 text-slate-800 border-b border-slate-100 pb-1 inline-block">
           {trimmed.replace(/^###\s+/, "")}
         </h4>
       );
+      return;
     }
     if (trimmed.startsWith("## ")) {
-      return (
-        <h3 key={lineIdx} className="font-bold text-base mt-4 mb-2 text-slate-900">
+      elements.push(
+        <h3 key={lineIdx} className="font-bold text-base mt-5 mb-3 text-emerald-900 border-b border-emerald-100 pb-1.5">
           {trimmed.replace(/^##\s+/, "")}
         </h3>
       );
+      return;
     }
 
     const isBullet = trimmed.startsWith("* ") || trimmed.startsWith("- ") || trimmed.startsWith("• ");
     if (isBullet) {
       trimmed = trimmed.replace(/^[\*\-•]\s+/, "");
+      
+      const parts = trimmed.split(/(\*\*.*?\*\*)/g);
+      const content = parts.map((part, pIdx) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return (
+            <strong key={pIdx} className="font-bold text-slate-900">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        return part;
+      });
+
+      // Special scientific styling if bullet contains a colon ":" (e.g. "درجة الارتباط: مرتفعة")
+      if (trimmed.includes(":") && !trimmed.includes("http")) {
+        const [key, ...valueParts] = trimmed.split(":");
+        const val = valueParts.join(":");
+        elements.push(
+          <div key={lineIdx} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 my-2 p-3 bg-stone-50/50 rounded-lg border border-stone-100/50">
+            <span className="font-bold text-emerald-800 text-xs sm:text-sm">{key.replace(/\*\*/g, '')}:</span>
+            <span className="text-slate-600 text-sm">{val.replace(/\*\*/g, '')}</span>
+          </div>
+        );
+      } else {
+        elements.push(
+          <div key={lineIdx} className="flex items-start gap-2.5 my-1.5 pr-1">
+            <span className="w-1.5 h-1.5 rounded-sm bg-emerald-500/40 mt-2 shrink-0"></span>
+            <span className="flex-1 text-slate-700 leading-relaxed text-sm">{content}</span>
+          </div>
+        );
+      }
+      return;
     }
 
+    // Normal paragraph
     const parts = trimmed.split(/(\*\*.*?\*\*)/g);
     const content = parts.map((part, pIdx) => {
       if (part.startsWith("**") && part.endsWith("**")) {
@@ -94,42 +141,28 @@ function renderFormattedText(text: string) {
       return part;
     });
 
-    if (isBullet) {
-      return (
-        <div key={lineIdx} className="flex items-start gap-2 pr-1 my-1">
-          <span className="w-1 h-1 rounded-full bg-slate-400 mt-2 shrink-0"></span>
-          <span className="flex-1">{content}</span>
-        </div>
-      );
-    }
-
-    return (
-      <p key={lineIdx} className="my-0.5">
+    elements.push(
+      <p key={lineIdx} className="my-1.5 text-slate-700 leading-relaxed text-sm">
         {content}
       </p>
     );
   });
+
+  return elements;
 }
 
 export default function AssistantPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome-1",
-      sender: 'assistant',
-      text: 'مرحباً، كيف يمكنني مساعدتك اليوم؟',
-      timestamp: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   
-  const [activeTopicId, setActiveTopicId] = useState<string>(TOPICS[0].id);
+  const [activeNodeId, setActiveNodeId] = useState<string>(SCIENTIFIC_FLOW[0].id);
   const prefersReducedMotion = useReducedMotion();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const activeTopic = TOPICS.find(t => t.id === activeTopicId) || TOPICS[0];
-  const isChatEmpty = messages.length === 1 && messages[0].id.includes("welcome");
+  const activeNode = SCIENTIFIC_FLOW.find(t => t.id === activeNodeId) || SCIENTIFIC_FLOW[0];
+  const isChatEmpty = messages.length === 0;
 
   const scrollToBottom = () => {
     if (scrollContainerRef.current) {
@@ -194,22 +227,15 @@ export default function AssistantPage() {
       setMessages(prev => [...prev, assistantReply]);
     } catch (err: any) {
       console.error(err);
-      setErrorMsg("تعذر التواصل مع المساعد حالياً، يرجى إعادة المحاولة.");
+      setErrorMsg("تعذر الاتصال بخوادم الذكاء الاصطناعي حالياً، يرجى إعادة المحاولة.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleClearChat = () => {
-    setMessages([
-      {
-        id: "welcome-reset",
-        sender: 'assistant',
-        text: 'مرحباً، كيف يمكنني مساعدتك اليوم؟',
-        timestamp: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
-      }
-    ]);
-    setActiveTopicId(TOPICS[0].id);
+    setMessages([]);
+    setActiveNodeId(SCIENTIFIC_FLOW[0].id);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -220,136 +246,148 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 font-sans text-slate-800" dir="rtl">
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-white font-sans text-slate-800" dir="rtl">
       
-      {/* HEADER: Clean, minimalistic */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 bg-white/80 backdrop-blur-md z-30">
+      {/* HEADER: Premium & Scientific */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-stone-100 shrink-0 bg-white z-30 gap-4 sm:gap-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
-            <Bot size={16} />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700 border border-emerald-100/50">
+            <Bot size={20} strokeWidth={1.5} />
           </div>
-          <div>
-            <h1 className="font-bold text-slate-900 text-sm">مساعد نواة الذكي</h1>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-slate-900 text-sm">مساعد نواة <span className="text-emerald-700 font-black">AI</span></h1>
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-[9px] font-bold text-emerald-700 border border-emerald-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                متصل
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-500 font-medium mt-0.5 hidden sm:block">
+              مساعد ذكي لفهم بيانات نوى التمر واستكشاف مسارات الاستفادة منها.
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleClearChat}
-            className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">محادثة جديدة</span>
-          </button>
-          <Link
-            href="/pit-management/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg transition-colors"
-          >
-            <span>لوحة التحكم</span>
-            <ArrowLeft className="w-3.5 h-3.5" />
-          </Link>
+        
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          {!isChatEmpty && (
+            <button
+              onClick={handleClearChat}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-stone-50 transition-colors border border-transparent hover:border-stone-200"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>محادثة جديدة</span>
+            </button>
+          )}
         </div>
       </header>
 
       {/* MAIN CONTENT AREA */}
       <main 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto scroll-smooth w-full relative bg-slate-50/30"
+        className="flex-1 overflow-y-auto scroll-smooth w-full relative bg-[#FCFDFD]" // Off-white with a tiny tint
       >
-        {/* INTERACTIVE ANIMATED BACKGROUND BLOBS */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.4, 0.6, 0.4],
-              x: [0, 30, 0],
-              y: [0, 40, 0]
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-emerald-200/40 blur-[100px]"
-          />
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-              x: [0, -40, 0],
-              y: [0, -30, 0]
-            }}
-            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            className="absolute -bottom-[10%] -left-[10%] w-[70%] h-[70%] rounded-full bg-teal-100/50 blur-[120px]"
-          />
-        </div>
-
-        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-10 pb-32 min-h-full flex flex-col relative z-10">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 pt-8 pb-32 min-h-full flex flex-col relative z-10">
           
           {isChatEmpty ? (
-            /* EMPTY STATE: INTERACTIVE KNOWLEDGE ORBIT */
-            <div className="flex flex-col items-center w-full mt-4 sm:mt-10">
+            /* HERO & WELCOME STATE */
+            <div className="flex flex-col items-center w-full mt-4 sm:mt-8">
               
-              {/* ORBIT COMPONENT */}
-              <div className="relative w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] mb-12 flex items-center justify-center">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-3 tracking-tight">
+                  ماذا تريد أن تعرف عن <span className="text-emerald-700">نوى التمر؟</span>
+                </h2>
+                <p className="text-slate-500 text-sm sm:text-base font-medium max-w-lg mx-auto leading-relaxed">
+                  اسأل عن الدفعات، الخصائص، الاستخدامات، التجارب أو الأدلة العلمية.
+                </p>
+              </div>
+
+              {/* SCIENTIFIC CIRCULAR FLOW (The Orbit) */}
+              <div className="relative w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] mb-12 flex items-center justify-center mx-auto">
                 
-                {/* Track */}
-                <div className="absolute inset-8 sm:inset-12 border border-slate-100 rounded-full" />
+                {/* SVG Track with Arrows */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="-150 -150 300 300">
+                  <circle cx="0" cy="0" r="110" fill="none" stroke="#f5f5f4" strokeWidth="1.5" />
+                  
+                  {/* Subtle directional arrows on the track (midpoints between 5 nodes) */}
+                  {[-54, 18, 90, 162, 234].map((angle, i) => {
+                    // Convert angle to radians for SVG coords
+                    const rad = (angle * Math.PI) / 180;
+                    const r = 110;
+                    const x = r * Math.cos(rad);
+                    const y = r * Math.sin(rad);
+                    
+                    return (
+                      <g key={i} transform={`translate(${x}, ${y}) rotate(${angle + 90})`} opacity="0.3">
+                        <path d="M-4,4 L0,0 L4,4" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </g>
+                    );
+                  })}
+                </svg>
                 
-                {/* Orbiting Particle */}
+                {/* Flow Indicator Particle */}
                 {!prefersReducedMotion && (
                   <motion.div 
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-8 sm:inset-12 rounded-full pointer-events-none"
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   >
-                    <div className="absolute top-[-3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                    <div className="w-[220px] h-[220px] rounded-full border border-transparent relative">
+                       <div className="absolute top-[-2px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                    </div>
                   </motion.div>
                 )}
 
                 {/* Central Hub */}
-                <div className="relative z-10 flex flex-col items-center justify-center bg-white rounded-full w-28 h-28 sm:w-32 sm:h-32 border border-slate-100 shadow-sm">
-                  <Bot className="w-8 h-8 text-emerald-600 mb-2" strokeWidth={1.5} />
-                  <span className="text-[11px] font-bold text-slate-700">مساعد نواة</span>
-                  <span className="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-emerald-500"></span>
-                    متصل الآن
-                  </span>
+                <div className="relative z-10 flex flex-col items-center justify-center bg-white rounded-full w-24 h-24 sm:w-28 sm:h-28 border border-stone-100 shadow-sm">
+                  <Bot className="w-7 h-7 text-emerald-700 mb-1.5" strokeWidth={1.5} />
+                  <span className="text-[10px] font-bold text-slate-800">مساعد نواة</span>
+                  <span className="text-[8px] text-emerald-600/70 font-medium tracking-widest mt-0.5">AI CORE</span>
                 </div>
 
-                {/* Orbit Nodes */}
-                {TOPICS.map((topic, index) => {
-                  const angle = (index * 90) - 90; 
-                  const isActive = activeTopicId === topic.id;
+                {/* Interactive Nodes */}
+                {SCIENTIFIC_FLOW.map((node, index) => {
+                  const angle = (index * 72) - 90; // 5 nodes = 360/5 = 72 deg apart
+                  const isActive = activeNodeId === node.id;
                   
                   return (
                     <div 
-                      key={topic.id}
-                      className="absolute inset-0 pointer-events-none"
+                      key={node.id}
+                      className="absolute inset-0 pointer-events-none flex items-center justify-center"
                       style={{ transform: `rotate(${angle}deg)` }}
                     >
-                      <div className="absolute top-8 sm:top-12 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+                      <div 
+                        className="absolute pointer-events-auto"
+                        style={{ transform: `translateY(-110px)` }} // Radius = 110px
+                      >
                         <button 
-                          onClick={() => setActiveTopicId(topic.id)}
-                          onMouseEnter={() => setActiveTopicId(topic.id)}
-                          className="group relative flex flex-col items-center justify-center transition-transform duration-300 focus:outline-none"
+                          onClick={() => setActiveNodeId(node.id)}
+                          onMouseEnter={() => setActiveNodeId(node.id)}
+                          className="group relative flex flex-col items-center justify-center focus:outline-none"
                           style={{ transform: `rotate(${-angle}deg)` }}
-                          aria-label={topic.label}
+                          aria-label={node.label}
                         >
-                          {/* Node Icon */}
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          {/* Node Icon Circle */}
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                             isActive 
-                              ? 'bg-emerald-50 border border-emerald-200 text-emerald-600 shadow-sm scale-110' 
-                              : 'bg-white border border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600 shadow-sm'
+                              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 scale-110' 
+                              : 'bg-white border border-stone-200 text-slate-500 hover:border-emerald-200 hover:text-emerald-600 shadow-sm hover:scale-105'
                           }`}>
-                            <topic.icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+                            <node.icon className="w-4 h-4" strokeWidth={1.5} />
                           </div>
                           
-                          {/* Node Label (positioned absolutely to always be readable) */}
+                          {/* Node Label (positioned smartly) */}
                           <div className={`absolute whitespace-nowrap transition-all duration-300 ${
-                            isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1 pointer-events-none'
+                            isActive ? 'opacity-100' : 'opacity-0 sm:group-hover:opacity-100 pointer-events-none'
                           } ${
-                            angle === 90 ? 'top-full mt-2' : 
-                            angle === -90 ? 'bottom-full mb-2' :
-                            angle === 0 ? 'top-full mt-2' : 'top-full mt-2'
+                            angle > -45 && angle < 45 ? 'right-full mr-3 top-1/2 -translate-y-1/2' : // Right side
+                            angle >= 45 && angle <= 135 ? 'bottom-full mb-3 left-1/2 -translate-x-1/2' : // Bottom
+                            angle > 135 || angle < -135 ? 'left-full ml-3 top-1/2 -translate-y-1/2' : // Left side
+                            'top-full mt-3 left-1/2 -translate-x-1/2' // Top
                           }`}>
-                            <span className="text-[11px] font-bold text-slate-700 bg-white/90 backdrop-blur px-2 py-0.5 rounded-md border border-slate-100 shadow-sm">
-                              {topic.label}
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-md border shadow-sm ${
+                              isActive ? 'bg-slate-900 text-white border-slate-800' : 'bg-white text-slate-700 border-stone-200'
+                            }`}>
+                              {node.label}
                             </span>
                           </div>
                         </button>
@@ -359,55 +397,67 @@ export default function AssistantPage() {
                 })}
               </div>
 
-              {/* Dynamic Suggested Questions */}
-              <div className="w-full max-w-lg mx-auto">
+              {/* Dynamic Context Card (For the active node) */}
+              <div className="w-full max-w-md mx-auto mb-10">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={activeTopicId}
+                    key={activeNodeId}
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
                     transition={{ duration: 0.15 }}
-                    className="flex flex-col gap-2"
+                    className="flex flex-col items-center text-center p-5 bg-white border border-stone-100 rounded-2xl shadow-sm"
                   >
-                    {activeTopic.questions.map((q, idx) => (
-                      <button 
-                        key={idx}
-                        onClick={() => handleSend(q)}
-                        className="group flex items-center justify-between text-right p-3.5 sm:p-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-transparent focus:outline-none focus:border-slate-300"
-                      >
-                        <span className="text-sm text-slate-700 font-medium transition-colors group-hover:text-slate-900">{q}</span>
-                        <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" strokeWidth={1.5} />
-                      </button>
-                    ))}
+                    <span className="text-xs font-bold tracking-wider text-emerald-700 mb-1 uppercase opacity-80">{activeNode.label}</span>
+                    <p className="text-sm text-slate-600 font-medium mb-4">أستطيع مساعدتك في {activeNode.desc}.</p>
+                    <button 
+                      onClick={() => handleSend(activeNode.prompt)}
+                      className="flex items-center gap-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-emerald-700 px-4 py-2 rounded-lg transition-colors"
+                    >
+                      <span>اسأل المساعد</span>
+                      <ArrowRight className="w-3 h-3 rtl:-scale-x-100" />
+                    </button>
                   </motion.div>
                 </AnimatePresence>
+              </div>
+
+              {/* QUICK ACTIONS ROW */}
+              <div className="w-full max-w-2xl mx-auto flex flex-wrap justify-center gap-2 sm:gap-3 px-4">
+                {QUICK_ACTIONS.map((action, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSend(action.prompt)}
+                    className="text-xs font-medium text-slate-600 bg-stone-50 hover:bg-stone-100 border border-stone-200 px-4 py-2 rounded-full transition-colors focus:outline-none focus:border-emerald-300"
+                  >
+                    {action.label}
+                  </button>
+                ))}
               </div>
 
             </div>
           ) : (
             /* ACTIVE CHAT LIST */
-            <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto pt-4">
+            <div className="flex flex-col gap-6 w-full max-w-3xl mx-auto pt-2">
               {messages.map((m) => (
                 <div
                   key={m.id}
                   className={`flex items-start gap-4 ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 border ${
                     m.sender === 'user' 
-                      ? 'bg-slate-50 border-slate-200 text-slate-500' 
-                      : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                      ? 'bg-stone-50 border-stone-200 text-slate-500' 
+                      : 'bg-emerald-50/50 border-emerald-100/50 text-emerald-700 shadow-sm'
                   }`}>
-                    {m.sender === 'user' ? <User className="w-4 h-4" strokeWidth={1.5} /> : <Bot className="w-4 h-4" strokeWidth={1.5} />}
+                    {m.sender === 'user' ? <User className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} /> : <Bot className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />}
                   </div>
 
-                  <div className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%]`}>
-                    <div className={`px-5 py-3.5 text-sm leading-relaxed rounded-2xl ${
+                  <div className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%] sm:max-w-[80%]`}>
+                    <div className={`px-4 sm:px-5 py-3 sm:py-4 text-sm leading-relaxed ${
                       m.sender === 'user'
-                        ? 'bg-slate-100 text-slate-900 rounded-tr-sm'
+                        ? 'bg-white border border-stone-100 text-slate-800 rounded-2xl shadow-sm'
                         : 'bg-transparent text-slate-800'
                     }`}>
-                      <div className="prose prose-sm max-w-none text-inherit">
+                      <div className="w-full break-words">
                         {renderFormattedText(m.text)}
                       </div>
                     </div>
@@ -417,34 +467,30 @@ export default function AssistantPage() {
 
               {loading && (
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                    <Bot className="w-4 h-4" strokeWidth={1.5} />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50/50 border border-emerald-100/50 text-emerald-700 shadow-sm flex items-center justify-center shrink-0">
+                    <Bot className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-3.5">
+                  <div className="flex items-center gap-2 px-3 py-4">
                     <span className="flex gap-1">
-                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-emerald-600/40 rounded-full" />
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-emerald-600/40 rounded-full" />
+                      <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-emerald-600/40 rounded-full" />
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">جاري إعداد الإجابة...</span>
+                    <span className="text-xs text-slate-400 font-medium ml-2">يقوم المساعد العلمي بتحليل المعطيات...</span>
                   </div>
                 </div>
               )}
 
               {errorMsg && (
-                <div className="flex items-center justify-between gap-3 bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-xl text-xs">
-                  <div className="flex items-center gap-2 font-medium">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{errorMsg}</span>
-                  </div>
+                <div className="flex items-center justify-between gap-3 bg-red-50 border border-red-100 text-red-700 p-4 rounded-xl text-xs mx-12">
+                  <span className="font-medium">{errorMsg}</span>
                   <button
                     onClick={() => {
                       const lastUser = [...messages].reverse().find(m => m.sender === 'user');
                       if (lastUser) handleSend(lastUser.text);
                     }}
-                    className="text-rose-700 font-bold px-2 py-1 rounded hover:bg-rose-100 transition-colors flex items-center gap-1"
+                    className="text-red-700 font-bold px-2 py-1 rounded hover:bg-red-100 transition-colors"
                   >
-                    <RefreshCw className="w-3 h-3" />
                     إعادة المحاولة
                   </button>
                 </div>
@@ -455,32 +501,32 @@ export default function AssistantPage() {
       </main>
 
       {/* MESSAGE INPUT COMPOSER */}
-      <footer className="w-full bg-white border-t border-slate-100 shrink-0 z-20">
+      <footer className="w-full bg-white border-t border-stone-100 shrink-0 z-20">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-4">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-            className="flex items-end gap-3 bg-white border border-slate-200 focus-within:border-emerald-500 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.1)] rounded-2xl p-2 transition-all"
+            className="flex items-end gap-3 bg-stone-50 border border-stone-200 focus-within:bg-white focus-within:border-emerald-500 focus-within:shadow-[0_0_0_3px_rgba(16,185,129,0.1)] rounded-xl p-2 transition-all"
           >
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={loading}
-              placeholder="اكتب سؤالك حول منظومة نواة..."
+              placeholder="اكتب سؤالك عن بيانات نوى التمر..."
               className="flex-1 bg-transparent border-none outline-none text-slate-900 px-3 py-2.5 text-sm resize-none max-h-32 min-h-[44px] placeholder:text-slate-400 disabled:opacity-50"
               rows={1}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-300 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
+              className="bg-slate-900 hover:bg-emerald-700 disabled:bg-stone-200 disabled:text-stone-400 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors focus:outline-none"
             >
               <Send className="w-4 h-4 rtl:-translate-x-0.5" strokeWidth={2} />
             </button>
           </form>
           <div className="flex justify-center mt-3">
-            <p className="text-[10px] text-slate-400 font-medium">
-              يستخدم مساعد نواة تقنيات الذكاء الاصطناعي وقد يحتاج للتحقق من بعض المعلومات الدقيقة.
+            <p className="text-[9px] text-slate-400 font-medium tracking-wide">
+              NAWAH AI ASSISTANT — SCIENTIFIC INTELLIGENCE FOR DATE PALM PITS
             </p>
           </div>
         </div>
