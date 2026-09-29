@@ -85,7 +85,7 @@ export default function AssistantPage() {
     {
       id: "welcome-1",
       sender: 'assistant',
-      text: 'مرحباً بك! أنا «مساعد نواة الذكي» المستشار المباشر لمنظومة (نواة | NAWAH) لتتبع وإعادة تدوير نوى التمر وتطبيقات الاقتصاد الدائري بالمملكة العربية السعودية.\n\nكيف يمكنني إرشادك اليوم في تسجيل الدفعات، مسارات الاستفادة الصناعية (الفحم، الزيوت، القهوة)، أو استعراض الخريطة الذكية وسجل الأثر؟',
+      text: 'مرحباً بك! أنا مساعد نواة الذكي، المستشار المباشر لمنظومة (نواة | NAWAH) لتتبع وإعادة تدوير نوى التمر وتطبيقات الاقتصاد الدائري بالمملكة العربية السعودية.\n\nكيف يمكنني إرشادك اليوم في تسجيل الدفعات، مسارات الاستفادة الصناعية (الفحم، الزيوت، القهوة)، أو استعراض الخريطة الذكية وسجل الأثر؟',
       timestamp: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -178,47 +178,55 @@ export default function AssistantPage() {
   const isChatEmpty = messages.length === 1 && messages[0].id.includes("welcome");
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col bg-slate-50 relative overflow-hidden font-sans" dir="rtl">
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50/50 py-10 px-4 sm:px-6 flex flex-col items-center" dir="rtl">
       
-      {/* SLEEK HEADER */}
-      <header className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200 shrink-0 z-30">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 shadow-sm border border-emerald-200">
-            <Bot size={18} />
+      {/* BEAUTIFUL FLOATING CARD LAYOUT */}
+      <div className="w-full max-w-5xl bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden flex flex-col h-[750px] max-h-[85vh]">
+        
+        {/* HEADER INSIDE THE CARD */}
+        <header className="flex items-center justify-between px-6 sm:px-8 py-5 bg-white border-b border-slate-100 shrink-0 z-30">
+          <div className="flex items-center gap-4">
+            <div className="relative w-12 h-12">
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-2xl border border-dashed border-emerald-300 opacity-50"
+              />
+              <div className="absolute inset-1 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex items-center justify-center font-black shadow-md">
+                <Bot className="w-6 h-6" />
+              </div>
+            </div>
+            <div>
+              <h1 className="font-black text-slate-900 text-lg">مساعد نواة الذكي</h1>
+              <p className="text-[11px] text-emerald-600 flex items-center gap-1.5 font-bold mt-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                متصل ومتاح
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-bold text-slate-800 text-sm">مساعد نواة الذكي</h1>
-            <p className="text-[10px] text-emerald-600 flex items-center gap-1 font-bold mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              متصل ومتاح
-            </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleClearChat}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-rose-600 px-4 py-2.5 rounded-xl hover:bg-rose-50 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">محادثة جديدة</span>
+            </button>
+            <Link
+              href="/pit-management/dashboard"
+              className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-4 py-2.5 rounded-xl border border-emerald-200 transition-colors group"
+            >
+              <span>لوحة التحكم</span>
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            </Link>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleClearChat}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-rose-600 px-3 py-2 rounded-xl hover:bg-rose-50 transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">محادثة جديدة</span>
-          </button>
-          <Link
-            href="/pit-management/dashboard"
-            className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3 py-2 rounded-xl border border-emerald-200 transition-colors group"
-          >
-            <span>لوحة التحكم</span>
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </header>
+        </header>
 
-      {/* MAIN SCROLLABLE AREA */}
-      <main 
-        ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto scroll-smooth relative z-10 w-full"
-      >
-        <div className="max-w-3xl mx-auto w-full px-4 pt-10 pb-40 flex flex-col min-h-full">
-          
+        {/* MAIN SCROLLABLE AREA INSIDE THE CARD */}
+        <main 
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto scroll-smooth bg-slate-50/30 p-6 sm:p-10 relative z-10"
+        >
           <AnimatePresence mode="wait">
             {isChatEmpty ? (
               <motion.div 
@@ -227,18 +235,18 @@ export default function AssistantPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
-                className="flex flex-col items-center text-center mt-4 sm:mt-12 w-full"
+                className="flex flex-col items-center text-center pt-8 pb-12 w-full max-w-2xl mx-auto"
               >
-                {/* INTERACTIVE ANIMATED RING (Light Theme) */}
+                {/* LARGE INTERACTIVE ANIMATED RING (Light Theme) */}
                 <div className="relative flex items-center justify-center w-28 h-28 mb-8">
                   <motion.div 
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-[-10px] rounded-full border-2 border-emerald-300 border-dashed opacity-70"
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-[-10px] rounded-full border-2 border-emerald-300 border-dashed opacity-60"
                   />
                   <motion.div 
                     animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                     className="absolute inset-0 rounded-full bg-emerald-100 blur-xl opacity-60"
                   />
                   <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white flex items-center justify-center shadow-2xl shadow-emerald-700/30">
@@ -246,10 +254,10 @@ export default function AssistantPage() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">
+                <h2 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">
                   كيف يمكنني مساعدتك اليوم؟
                 </h2>
-                <p className="text-slate-500 max-w-md mx-auto mb-12 text-sm leading-relaxed font-medium">
+                <p className="text-slate-500 mb-10 text-sm leading-relaxed font-medium">
                   أنا المستشار المباشر لمنظومة نواة. اسألني عن تسجيل الدفعات، مسارات الاستفادة الصناعية، الخريطة الذكية، أو سجل الأثر البيئي.
                 </p>
 
@@ -278,7 +286,6 @@ export default function AssistantPage() {
                         <div className="z-10 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-emerald-600 shrink-0">
                           <ArrowUpRight className="w-5 h-5 rtl:-scale-x-100" />
                         </div>
-                        <div className="absolute inset-0 bg-emerald-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </motion.button>
                     );
                   })}
@@ -289,7 +296,7 @@ export default function AssistantPage() {
                 key="chat-list"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-col gap-6 w-full"
+                className="flex flex-col gap-6 w-full max-w-3xl mx-auto"
               >
                 {messages.map((m) => (
                   <motion.div
@@ -365,15 +372,13 @@ export default function AssistantPage() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-      </main>
+        </main>
 
-      {/* FLOATING INPUT AT BOTTOM */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-50 via-slate-50/95 to-transparent pt-12 pb-6 px-4 z-20 pointer-events-none">
-        <div className="max-w-3xl mx-auto w-full pointer-events-auto">
+        {/* INPUT FORM AT BOTTOM OF CARD */}
+        <div className="p-6 bg-white border-t border-slate-100 shrink-0 z-20">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-            className="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl p-2 shadow-2xl shadow-slate-300/50 focus-within:border-emerald-400 focus-within:ring-4 ring-emerald-500/10 transition-all"
+            className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl p-2 focus-within:bg-white focus-within:border-emerald-400 focus-within:ring-4 ring-emerald-500/10 transition-all max-w-3xl mx-auto w-full"
           >
             <input
               type="text"
@@ -381,15 +386,16 @@ export default function AssistantPage() {
               onChange={(e) => setInput(e.target.value)}
               disabled={loading}
               placeholder="اسأل مساعد نواة عن الخريطة الذكية، مسارات الاستفادة، أو سجل الأثر..."
-              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-4 py-3 text-sm sm:text-base font-medium placeholder:text-slate-400 disabled:opacity-50"
+              className="flex-1 bg-transparent border-none outline-none text-slate-900 px-4 py-2 text-sm font-medium placeholder:text-slate-400 disabled:opacity-50"
             />
 
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="group bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-400 text-white w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-md shadow-emerald-600/20 disabled:shadow-none overflow-hidden relative"
+              className="group bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shrink-0 transition-all shadow-md shadow-emerald-600/20 disabled:shadow-none overflow-hidden relative"
             >
-              <Send className="w-5 h-5 rtl:rotate-180 z-10 relative group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+              <span className="hidden sm:inline text-sm z-10 relative">إرسال</span>
+              <Send className="w-4 h-4 rtl:rotate-180 z-10 relative group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
               <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
             </button>
           </form>
@@ -397,8 +403,8 @@ export default function AssistantPage() {
             مساعد نواة الذكي • قد يقدم الذكاء الاصطناعي معلومات غير دقيقة أحياناً
           </p>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }
