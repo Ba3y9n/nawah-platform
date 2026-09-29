@@ -384,7 +384,7 @@ export default function AssistantPage() {
                         : 'bg-transparent text-slate-800'
                     }`}>
                       <div className="prose prose-sm max-w-none text-inherit">
-                        {renderFormattedText(m.text, m.sender === 'user')}
+                        {renderFormattedText(m.text)}
                       </div>
                     </div>
                   </div>
