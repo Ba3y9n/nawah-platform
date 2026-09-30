@@ -1,5 +1,7 @@
 "use client";
 
+import { LayoutDashboard, Layers, Scan, Flame, TestTube, Leaf } from "lucide-react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PlusCircle } from "lucide-react";
@@ -13,16 +15,16 @@ export default function PitManagementLayout({
   const pathname = usePathname();
 
   const journeySteps = [
-    { step: "01", href: "/pit-management/dashboard", label: "نظرة عامة", status: "مباشر" },
-    { step: "02", href: "/pit-management/batches", label: "دفعات النوى", status: "السجل" },
-    { step: "03", href: "/pit-management/scanner", label: "التحليل", status: "بصري" },
-    { step: "04", href: "/pit-management/pathways", label: "الاستخدامات", status: "مسارات" },
-    { step: "05", href: "/pit-management/experiments", label: "التجارب", status: "اختبارات" },
-    { step: "06", href: "/pit-management/impact", label: "الأثر", status: "مؤشرات" }
+    { step: "01", href: "/pit-management/dashboard", label: "نظرة عامة", status: "مباشر", icon: LayoutDashboard },
+    { step: "02", href: "/pit-management/batches", label: "دفعات النوى", status: "السجل", icon: Layers },
+    { step: "03", href: "/pit-management/scanner", label: "التحليل", status: "بصري", icon: Scan },
+    { step: "04", href: "/pit-management/pathways", label: "الاستخدامات", status: "مسارات", icon: Flame },
+    { step: "05", href: "/pit-management/experiments", label: "التجارب", status: "اختبارات", icon: TestTube },
+    { step: "06", href: "/pit-management/impact", label: "الأثر", status: "مؤشرات", icon: Leaf },
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-emerald-100 selection:text-emerald-950" dir="rtl">
+    <div className="min-h-screen bg-[#F0F4F8] text-slate-900 font-sans selection:bg-emerald-100 selection:text-emerald-950" dir="rtl">
       
       {/* MOBILE TOP JOURNEY BAR */}
       <div className="lg:hidden sticky top-16 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-3">
@@ -33,12 +35,13 @@ export default function PitManagementLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
                   isActive
-                    ? "bg-[#F0FDF4] text-[#064E3B] border-[#86EFAC]"
+                    ? "bg-[#E6F4EA] text-[#064E3B] border-[#86EFAC]"
                     : "bg-white text-slate-500 border-slate-100 hover:bg-slate-50"
                 }`}
               >
+                <item.icon className="w-4 h-4" />
                 <span className={`text-[10px] ${isActive ? "text-[#059669] font-black" : "text-slate-400"}`}>{item.step}</span>
                 <span>{item.label}</span>
               </Link>
@@ -92,7 +95,7 @@ export default function PitManagementLayout({
                       href={item.href}
                       className={`group flex items-center justify-between p-4 rounded-full transition-all duration-300 ${
                         isActive
-                          ? "bg-[#F0FDF4] border border-[#86EFAC] text-[#0F172A]"
+                          ? "bg-[#E6F4EA] border border-[#86EFAC] text-[#0F172A]"
                           : "bg-transparent border border-transparent hover:bg-slate-50 text-[#475569]"
                       }`}
                     >

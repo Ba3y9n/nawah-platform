@@ -5,9 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { 
   Menu, X, Layers, MapPin, BookOpen, 
-  Bot, User, Info, LogIn, UserPlus, ChevronDown, LogOut
+  Bot, User, Info, LogIn, UserPlus, ChevronDown, LogOut,
+  LayoutDashboard, Scan, Flame, TestTubes, Leaf, Plus, ArrowLeft, Sparkles
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
@@ -69,12 +70,12 @@ export default function Navbar() {
   const isPitManagementActive = pathname.startsWith('/pit-management');
 
   const pitSubMenu = [
-    { href: "/pit-management/dashboard", label: "نظرة عامة", desc: "المؤشرات الحية" },
-    { href: "/pit-management/batches", label: "دفعات النوى", desc: "سجل الدفعات" },
-    { href: "/pit-management/scanner", label: "التحليل", desc: "الرؤية الحاسوبية" },
-    { href: "/pit-management/pathways", label: "الاستخدامات", desc: "مسارات الاستفادة" },
-    { href: "/pit-management/experiments", label: "التجارب", desc: "سجل التجارب" },
-    { href: "/pit-management/impact", label: "الأثر", desc: "بصمة الكربون" },
+    { href: "/pit-management/dashboard", label: "نظرة عامة", desc: "المؤشرات الحية والكميات", icon: LayoutDashboard },
+    { href: "/pit-management/batches", label: "دفعات النوى", desc: "سجل الدفعات وأكواد التتبع", icon: Layers },
+    { href: "/pit-management/scanner", label: "الفاحص الذكي", desc: "فحص جودة وتجانس النوى بالذكاء الاصطناعي", icon: Scan },
+    { href: "/pit-management/pathways", label: "مسارات الاستفادة", desc: "الفحم المنشط والزيوت وبدائل القهوة", icon: Flame },
+    { href: "/pit-management/experiments", label: "سجل التجارب", desc: "توثيق الأبحاث والنتائج المعملية", icon: TestTubes },
+    { href: "/pit-management/impact", label: "قياس الأثر البيئي", desc: "حساب خفض انبعاثات الكربون CO2", icon: Leaf },
   ];
 
   const mainLinks = [
