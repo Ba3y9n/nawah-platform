@@ -33,6 +33,15 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
             0% { transform: scale(0.8); opacity: 0.8; }
             100% { transform: scale(2.5); opacity: 0; }
           }
+          .leaflet-control-attribution {
+            font-size: 9px !important;
+            background: rgba(255,255,255,0.7) !important;
+            color: #94a3b8 !important;
+            border-top-left-radius: 4px;
+          }
+          .leaflet-control-attribution a {
+            color: #64748b !important;
+          }
         `;
         document.head.appendChild(style);
       }
@@ -41,23 +50,41 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
         const map = L.map(mapRef.current as HTMLElement, {
           center: [25.0, 44.5],
           zoom: 6,
-          zoomControl: false,
+          zoomControl: false, // We use custom zoom controls outside
           dragging: true,
           touchZoom: true,
           doubleClickZoom: true,
           scrollWheelZoom: true,
         });
 
-        // Clean Tech Light Basemap
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-          attribution: '&copy; CARTO',
-          maxZoom: 19
+        // Use OpenStreetMap to avoid API Key watermarks
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19,
+          className: 'map-tiles'
         }).addTo(map);
 
         leafletMapRef.current = map;
       }
 
       const map = leafletMapRef.current;
+
+      // Handle custom control events from window
+      const handleZoomIn = () => map.zoomIn();
+      const handleZoomOut = () => map.zoomOut();
+      const handleReset = () => map.flyTo([25.0, 44.5], 6, { duration: 1 });
+      const handleLocate = () => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            map.flyTo([pos.coords.latitude, pos.coords.longitude], 12, { duration: 1.5 });
+          });
+        }
+      };
+
+      window.addEventListener('map-zoom-in', handleZoomIn);
+      window.addEventListener('map-zoom-out', handleZoomOut);
+      window.addEventListener('map-reset', handleReset);
+      window.addEventListener('map-locate', handleLocate);
 
       // Clear layers
       map.eachLayer((layer: any) => {
@@ -91,6 +118,7 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
                 box-shadow: 0 0 15px ${shadowColor};
                 transition: all 0.3s ease;
                 z-index: 2;
+                cursor: pointer;
               "></div>
             </div>
           `;
@@ -113,17 +141,13 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
         }
       });
 
-      // Draw dashed connecting lines to represent "Tracking / Digital Bridge"
-      if (coordinates.length > 1) {
-        L.polyline(coordinates, {
-          color: '#34d399',
-          weight: 1.5,
-          opacity: 0.4,
-          dashArray: '5, 10',
-          lineCap: 'round',
-          lineJoin: 'round'
-        }).addTo(map);
-      }
+      // Cleanup event listeners
+      return () => {
+        window.removeEventListener('map-zoom-in', handleZoomIn);
+        window.removeEventListener('map-zoom-out', handleZoomOut);
+        window.removeEventListener('map-reset', handleReset);
+        window.removeEventListener('map-locate', handleLocate);
+      };
     };
 
     loadLeaflet();
@@ -132,7 +156,7 @@ export default function Map({ sources, onSelectSource, selectedSourceId }: MapPr
   return (
     <div 
       ref={mapRef} 
-      className="w-full h-full min-h-[500px] lg:min-h-[640px] rounded-[2rem] z-10 overflow-hidden shadow-inner touch-pan-x touch-pan-y" 
+      className="w-full h-full z-0 overflow-hidden touch-pan-x touch-pan-y" 
     />
   );
 }
