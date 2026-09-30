@@ -1,145 +1,158 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { BookOpen, ExternalLink, Search, Filter, AlertCircle, ShieldCheck } from "lucide-react";
-import { EVIDENCE_SOURCES, REUSE_PATHWAYS } from "@/lib/store";
-import { EvidenceSource } from "@/lib/types";
+import { useState } from "react";
+import { BookOpen, ExternalLink, Search, ShieldCheck, Database, Building, FileText } from "lucide-react";
 
-function EvidenceContent() {
-  const searchParams = useSearchParams();
-  const pathwayId = searchParams.get("pathway_id") || "";
+const REAL_EVIDENCE_SOURCES = [
+  {
+    id: "source-1",
+    title: "Date Seeds: A Promising Source of Oil with Functional Properties",
+    type: "دراسة علمية محكّمة",
+    topic: "استخلاص زيت نواة التمر وخصائصه الوظيفية",
+    desc: "تستعرض الدراسة نواة التمر كمصدر محتمل للزيت، وتناقش طرق استخلاصه، بما في ذلك الاستخلاص بالمذيبات وطريقة Soxhlet، إلى جانب الخصائص المرتبطة بزيت نواة التمر.",
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7353509/",
+    buttonText: "عرض الدراسة",
+    icon: FileText
+  },
+  {
+    id: "source-2",
+    title: "المركز الوطني للنخيل والتمور",
+    type: "مصدر حكومي سعودي",
+    topic: "إحصاءات قطاع النخيل والتمور في المملكة",
+    desc: "مصدر رسمي للبيانات والإحصاءات المتعلقة بقطاع النخيل والتمور في المملكة العربية السعودية، ويشمل معلومات عن الإنتاج والأصناف والحيازات الزراعية وقيمة إنتاج التمور.",
+    url: "https://ncpd.gov.sa/ar",
+    buttonText: "زيارة المصدر الرسمي",
+    icon: Building
+  },
+  {
+    id: "source-3",
+    title: "الهيئة العامة للغذاء والدواء — التمر",
+    type: "مصدر حكومي سعودي",
+    topic: "الخصائص الغذائية ومكونات التمر",
+    desc: "مصدر توعوي رسمي يوضح المكونات الغذائية للتمر، بما في ذلك السكريات والألياف والبروتين والمعادن والفيتامينات، إضافة إلى معلومات متعلقة بحفظ التمور وسلامتها الغذائية.",
+    url: "https://www.sfda.gov.sa/ar/awarenessarticle/التمر",
+    buttonText: "عرض المصدر",
+    icon: ShieldCheck
+  },
+  {
+    id: "source-4",
+    title: "Physicochemical and Structural Characteristics of Date Seed and Starch Composite Powder as Prepared by Heating at Different Temperatures",
+    type: "دراسة علمية محكّمة",
+    topic: "الخصائص الفيزيائية والكيميائية والتركيبية لنواة التمر",
+    desc: "دراسة علمية تبحث في الخصائص الفيزيائية والكيميائية والتركيبية لنواة التمر ومساحيقها المركبة، وتوفر أساسًا معرفيًا لفهم خصائص المورد قبل دراسة مسارات الاستفادة التطبيقية منه.",
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12298933/",
+    buttonText: "عرض الدراسة",
+    icon: FileText
+  }
+];
 
+export default function EvidencePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPathwayId, setSelectedPathwayId] = useState(pathwayId);
+  const [filterType, setFilterType] = useState("جميع المصادر");
 
-  useEffect(() => {
-    if (pathwayId) {
-      setSelectedPathwayId(pathwayId);
-    }
-  }, [pathwayId]);
-
-  const filteredSources = EVIDENCE_SOURCES.filter(ev => {
+  const filteredSources = REAL_EVIDENCE_SOURCES.filter(ev => {
     const matchesSearch = searchTerm === "" || 
       ev.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      ev.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ev.summary.toLowerCase().includes(searchTerm.toLowerCase());
+      ev.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ev.desc.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesPathway = !selectedPathwayId || ev.reuse_pathway_id === selectedPathwayId;
+    const matchesType = filterType === "جميع المصادر" || 
+      (filterType === "الدراسات العلمية" && ev.type === "دراسة علمية محكّمة") ||
+      (filterType === "المصادر الحكومية" && ev.type === "مصدر حكومي سعودي") ||
+      (filterType === "البيانات والإحصاءات" && ev.topic.includes("إحصاءات"));
 
-    return matchesSearch && matchesPathway;
+    return matchesSearch && matchesType;
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-6 py-10 space-y-8 font-sans text-slate-800" dir="rtl">
       
       {/* TITLE BANNER */}
-      <div className="bg-white border border-emerald-100/60 p-6 sm:p-8 rounded-3xl shadow-xl shadow-emerald-900/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white border border-stone-200 p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-1">
-            <BookOpen className="w-4 h-4 text-emerald-600" />
-            <span>قاعدة الأدلة والأبحاث العلمية الموثقة</span>
-          </div>
-          <h2 className="text-xl md:text-2xl font-black text-slate-900">المصادر والأبحاث الرسمية لحوكمة نوى التمر</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            أبحاث وتقارير حكومية حقيقية لجامعات ومؤسسات سعودية ودولية موثقة دون ادعاءات أو مصادر وهمية
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">الأدلة والمصادر العلمية</h1>
+          <p className="text-sm text-slate-500 max-w-2xl leading-relaxed font-medium">
+            قاعدة معرفية موثقة تجمع الدراسات العلمية والمصادر الحكومية ذات الصلة بالتمر ونوى التمر وتطبيقاتهما المحتملة.
           </p>
         </div>
-
-        <div className="flex items-center gap-2 bg-emerald-50 text-emerald-900 px-3.5 py-2 rounded-2xl border border-emerald-200 text-xs font-bold">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span>أبحاث محكّمة ومصادر موثقة</span>
+        <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-4 py-2.5 rounded-lg border border-emerald-100 text-sm font-bold shrink-0">
+          <BookOpen className="w-5 h-5 text-emerald-600" strokeWidth={1.5} />
+          <span>مصادر موثقة</span>
         </div>
       </div>
 
       {/* FILTERS & SEARCH */}
-      <div className="bg-white border border-emerald-100/60 rounded-2xl p-4 shadow-md flex flex-col sm:flex-row items-center gap-4">
+      <div className="bg-white border border-stone-200 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
         <div className="relative flex-1 w-full">
           <input
             type="text"
-            placeholder="البحث في الأبحاث والدراسات العلمية..."
+            placeholder="البحث في الأدلة والمصادر العلمية..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-9 pl-4 py-2 text-xs focus:outline-none focus:border-emerald-500"
+            className="w-full bg-stone-50 border border-stone-200 rounded-lg pr-10 pl-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-slate-900 font-medium"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 right-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 right-4" strokeWidth={2} />
         </div>
 
         <select
-          value={selectedPathwayId}
-          onChange={(e) => setSelectedPathwayId(e.target.value)}
-          className="w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-emerald-500"
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="w-full sm:w-auto bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-sm text-slate-700 focus:outline-none focus:border-emerald-500 font-bold transition-all"
         >
-          <option value="">جميع المسارات العلمية</option>
-          {REUSE_PATHWAYS.map(p => (
-            <option key={p.id} value={p.id}>{p.name}</option>
-          ))}
+          <option value="جميع المصادر">جميع المصادر</option>
+          <option value="الدراسات العلمية">الدراسات العلمية</option>
+          <option value="المصادر الحكومية">المصادر الحكومية</option>
+          <option value="البيانات والإحصاءات">البيانات والإحصاءات</option>
         </select>
       </div>
 
       {/* EVIDENCE LIST OR EMPTY STATE */}
       {filteredSources.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-4 shadow-sm">
-          <AlertCircle className="w-10 h-10 text-slate-400 mx-auto" />
-          <h3 className="text-base font-bold text-slate-800">لا يوجد دليل موثق مرتبط بهذا المسار أو البحث حالياً</h3>
-          <p className="text-xs text-slate-500 max-w-md mx-auto">
-            نعمل على توثيق الأوراق العلمية والبراءات وتحديث قاعدة البيانات باستمرار فور اعتماد الأبحاث.
+        <div className="bg-white border border-stone-200 rounded-xl p-16 text-center space-y-4 shadow-sm">
+          <Database className="w-12 h-12 text-slate-300 mx-auto" strokeWidth={1.5} />
+          <h3 className="text-base font-bold text-slate-900">لا توجد مصادر مطابقة لبحثك</h3>
+          <p className="text-sm text-slate-500 max-w-md mx-auto">
+            حاول استخدام كلمات مفتاحية مختلفة أو تغيير الفلتر لعرض المزيد من النتائج الموثقة.
           </p>
-          <button
-            onClick={() => { setSelectedPathwayId(""); setSearchTerm(""); }}
-            className="inline-block bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl text-xs transition-colors"
-          >
-            إلغاء التصفية وعرض كل المصادر
-          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredSources.map((ev) => (
-            <div key={ev.id} className="bg-white border border-emerald-100/60 rounded-3xl p-6 shadow-xl shadow-emerald-900/5 space-y-3 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-900 border border-emerald-200 font-bold">
-                    {ev.source_type} ({ev.year})
-                  </span>
-                  <span className="text-[10px] text-emerald-800 font-bold bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">{ev.evidence_level}</span>
+            <div key={ev.id} className="bg-white border border-stone-200 rounded-xl p-6 flex flex-col h-full hover:border-emerald-500 hover:shadow-md transition-all">
+              
+              <div className="flex items-center gap-3 border-b border-stone-100 pb-4 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center shrink-0 border border-stone-200 text-slate-600">
+                  <ev.icon size={20} strokeWidth={1.5} />
                 </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-slate-400">{ev.type}</span>
+                  <span className="text-sm font-bold text-emerald-800">{ev.topic}</span>
+                </div>
+              </div>
 
-                <h3 className="text-sm font-bold text-slate-900 leading-snug">{ev.title}</h3>
-                <p className="text-xs text-slate-500 font-bold">الجهة / الباحث: {ev.organization}</p>
-                
-                <p className="text-xs text-slate-700 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-200/60 leading-relaxed font-medium">
-                  {ev.summary}
+              <div className="flex-1 flex flex-col gap-3">
+                <h3 className="text-sm font-bold text-slate-900 leading-relaxed" dir="auto">{ev.title}</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  {ev.desc}
                 </p>
               </div>
 
-              {ev.url && (
+              <div className="pt-5 mt-4 border-t border-stone-100">
                 <a
                   href={ev.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-bold hover:underline pt-2 border-t border-slate-100"
+                  className="inline-flex items-center gap-2 text-xs text-white font-bold bg-slate-900 hover:bg-slate-800 px-5 py-2.5 rounded-lg transition-colors"
                 >
-                  <span>رابط المصدر والدراسة المحكّمة</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>{ev.buttonText}</span>
+                  <ExternalLink size={14} strokeWidth={2} className="rtl:-scale-x-100" />
                 </a>
-              )}
+              </div>
             </div>
           ))}
         </div>
       )}
 
     </div>
-  );
-}
-
-export default function EvidencePage() {
-  return (
-    <Suspense fallback={
-      <div className="text-center py-16 text-slate-500 text-xs animate-pulse">
-        جاري تحميل مكتبة الأدلة العلمية...
-      </div>
-    }>
-      <EvidenceContent />
-    </Suspense>
   );
 }
