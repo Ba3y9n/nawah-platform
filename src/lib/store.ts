@@ -472,11 +472,40 @@ export const createBatch = async (input: {
 
   console.log('[NAWAH STORE BATCH INSERT PAYLOAD]', payload);
 
-  // 1. INSERT into Supabase database
-  const { data: insertData, error: insertError } = await supabase
-    .from('batches')
-    .insert([payload])
-    .select();
+  // 1. INSERT into Supabase database with resilient unique batch_number generation
+  let insertData: any = null;
+  let insertError: any = null;
+  const year = new Date().getFullYear();
+  const maxRetries = 6;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const candidateBatchNumber = `NW-${year}-${randomSuffix}`;
+
+    const insertPayload = {
+      ...payload,
+      batch_number: candidateBatchNumber
+    };
+
+    const { data, error } = await supabase
+      .from('batches')
+      .insert([insertPayload])
+      .select();
+
+    if (!error && data && data.length > 0) {
+      insertData = data;
+      insertError = null;
+      break;
+    }
+
+    insertError = error;
+    if (error && (error.code === '23505' || error.message?.includes('batches_batch_number_key') || error.message?.includes('batch_number'))) {
+      console.warn(`[NAWAH BATCH NUMBER RETRY] Collision on ${candidateBatchNumber}, retrying (attempt ${attempt + 1}/${maxRetries})...`);
+      continue;
+    }
+
+    break;
+  }
 
   if (insertError) {
     console.error("[NAWAH STORE BATCH INSERT ERROR]", insertError);
@@ -630,10 +659,39 @@ export const createExperiment = async (input: {
     status: input.status
   };
 
-  const { data: insertData, error: insertError } = await supabase
-    .from('experiments')
-    .insert([payload])
-    .select();
+  let insertData: any = null;
+  let insertError: any = null;
+  const year = new Date().getFullYear();
+  const maxRetries = 6;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const candidateExpNumber = `EXP-${year}-${randomSuffix}`;
+
+    const insertPayload = {
+      ...payload,
+      experiment_number: candidateExpNumber
+    };
+
+    const { data, error } = await supabase
+      .from('experiments')
+      .insert([insertPayload])
+      .select();
+
+    if (!error && data && data.length > 0) {
+      insertData = data;
+      insertError = null;
+      break;
+    }
+
+    insertError = error;
+    if (error && (error.code === '23505' || error.message?.includes('experiments_experiment_number_key') || error.message?.includes('experiment_number'))) {
+      console.warn(`[NAWAH EXP NUMBER RETRY] Collision on ${candidateExpNumber}, retrying (attempt ${attempt + 1}/${maxRetries})...`);
+      continue;
+    }
+
+    break;
+  }
 
   if (insertError) {
     console.error("Supabase experiment INSERT failed:", insertError);

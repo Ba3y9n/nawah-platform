@@ -214,7 +214,7 @@ BEGIN
     NEW.batch_number := new_batch_num;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS trigger_set_batch_number ON public.batches;
 CREATE TRIGGER trigger_set_batch_number
@@ -240,7 +240,7 @@ BEGIN
     NEW.experiment_number := new_exp_num;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS trigger_set_experiment_number ON public.experiments;
 CREATE TRIGGER trigger_set_experiment_number
