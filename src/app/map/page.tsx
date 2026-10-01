@@ -176,7 +176,7 @@ export default function SmartMapPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6 font-sans min-h-[calc(100vh-80px)] overflow-hidden" dir="rtl">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6 font-sans min-h-[calc(100vh-80px)]" dir="rtl">
       
       {/* 1. HERO HEADER */}
       <div className="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6 shrink-0">
@@ -524,21 +524,21 @@ export default function SmartMapPage() {
         </aside>
 
         {/* LEFT MAP (70%) */}
-        <main className="w-full lg:w-[68%] bg-white border border-stone-200 rounded-2xl shadow-sm relative overflow-hidden flex flex-col h-full">
+        <main className="w-full lg:w-[68%] min-h-[550px] bg-white border border-stone-200 rounded-2xl shadow-sm relative overflow-hidden flex flex-col flex-1">
           
           {/* FLOATING MAP CONTROLS OVERLAY */}
           <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 bg-white/95 backdrop-blur-md p-1.5 rounded-xl border border-stone-200 shadow-lg">
             <button 
               onClick={mapControls.zoomIn}
               title="تكبير الخريطة"
-              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors font-bold text-lg"
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors font-bold text-lg cursor-pointer"
             >
               +
             </button>
             <button 
               onClick={mapControls.zoomOut}
               title="تصغير الخريطة"
-              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors font-bold text-lg"
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors font-bold text-lg cursor-pointer"
             >
               -
             </button>
@@ -546,7 +546,7 @@ export default function SmartMapPage() {
             <button 
               onClick={mapControls.locate}
               title="تحديد موقعي"
-              className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+              className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer ${
                 userLocation ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100' : 'text-slate-700 hover:bg-stone-100'
               }`}
             >
@@ -555,7 +555,7 @@ export default function SmartMapPage() {
             <button 
               onClick={mapControls.reset}
               title="إعادة ضبط نطاق الخريطة"
-              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
             >
               <RotateCcw size={14} />
             </button>
@@ -602,7 +602,7 @@ export default function SmartMapPage() {
           </Link>
 
           {/* LEAFLET MAP INNER */}
-          <div className="w-full h-full relative z-0">
+          <div className="w-full h-full min-h-[550px] relative z-0 flex-1">
             <MapComponent 
               sources={filteredSources}
               selectedSourceId={selectedSource?.id}
