@@ -25,10 +25,22 @@ export interface City {
   name_en: string;
 }
 
+export type SourceEntityType = 
+  | 'government' 
+  | 'research_center' 
+  | 'laboratory' 
+  | 'recycling_processing' 
+  | 'factory' 
+  | 'collection_center' 
+  | 'farm' 
+  | 'market' 
+  | 'industrial_buyer';
+
 export interface VerifiedSource {
   id: string;
   name: string;
-  source_type: 'factory' | 'farm' | 'collection_center' | 'market';
+  source_type: SourceEntityType;
+  type_label?: string;
   region_id: string;
   city_id: string;
   region_name?: string;
@@ -40,6 +52,8 @@ export interface VerifiedSource {
   verification_status: 'verified' | 'needs_verification';
   data_source: string;
   last_verified_at: string;
+  specialty?: string;
+  description?: string;
 }
 
 export interface Batch {
