@@ -416,8 +416,8 @@ export const createBatch = async (input: {
   quantity: number;
   date_type: string;
   date_collected: string;
-  cleaning_status: 'مغسولة' | 'مجففة' | 'خام';
-  drying_status: 'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية';
+  cleaning_status: 'مغسولة' | 'غير مغسولة' | 'مجففة ومفروزة' | string;
+  drying_status: 'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية' | string;
   moisture?: number;
   storage_method: string;
   notes?: string;
@@ -452,6 +452,26 @@ export const createBatch = async (input: {
     console.warn('Profile auto-creation notice:', profileUpsertError.message);
   }
 
+  // Normalize cleaning_status to satisfy Postgres check constraint (batches_cleaning_status_check)
+  let normalizedCleaningStatus: 'مغسولة' | 'غير مغسولة' | 'مجففة ومفروزة' = 'مغسولة';
+  if (input.cleaning_status === 'غير مغسولة' || input.cleaning_status === 'خام') {
+    normalizedCleaningStatus = 'غير مغسولة';
+  } else if (input.cleaning_status === 'مجففة ومفروزة' || input.cleaning_status === 'مجففة') {
+    normalizedCleaningStatus = 'مجففة ومفروزة';
+  } else {
+    normalizedCleaningStatus = 'مغسولة';
+  }
+
+  // Normalize drying_status to satisfy Postgres check constraint (batches_drying_status_check)
+  let normalizedDryingStatus: 'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية' = 'مجففة شمسياً';
+  if (input.drying_status === 'مجففة برنفر' || (input.drying_status as string)?.includes('أفران') || (input.drying_status as string)?.includes('فرن')) {
+    normalizedDryingStatus = 'مجففة برنفر';
+  } else if (input.drying_status === 'رطوبة عالية' || (input.drying_status as string)?.includes('رطوبة')) {
+    normalizedDryingStatus = 'رطوبة عالية';
+  } else {
+    normalizedDryingStatus = 'مجففة شمسياً';
+  }
+
   const payload = {
     user_id: user.id,
     source_id: (input.source_id && input.source_id.startsWith('src-')) ? null : (input.source_id || null),
@@ -461,8 +481,8 @@ export const createBatch = async (input: {
     quantity: Number(input.quantity),
     date_type: input.date_type,
     date_collected: input.date_collected || new Date().toISOString().split('T')[0],
-    cleaning_status: input.cleaning_status,
-    drying_status: input.drying_status,
+    cleaning_status: normalizedCleaningStatus,
+    drying_status: normalizedDryingStatus,
     moisture: input.moisture ? Number(input.moisture) : null,
     storage_method: input.storage_method || 'أكياس تهوية محكومة',
     status: 'مسجلة',

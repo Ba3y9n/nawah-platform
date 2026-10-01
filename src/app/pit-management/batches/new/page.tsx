@@ -26,7 +26,7 @@ export default function NewBatchPage() {
   const [quantity, setQuantity] = useState<number | "">(100);
   const [dateType, setDateType] = useState("خلاص");
   const [dateCollected, setDateCollected] = useState(new Date().toISOString().split('T')[0]);
-  const [cleaningStatus, setCleaningStatus] = useState<'مغسولة' | 'مجففة' | 'خام'>("مغسولة");
+  const [cleaningStatus, setCleaningStatus] = useState<'مغسولة' | 'غير مغسولة' | 'مجففة ومفروزة'>("مغسولة");
   const [dryingStatus, setDryingStatus] = useState<'مجففة شمسياً' | 'مجففة برنفر' | 'رطوبة عالية'>("مجففة شمسياً");
   const [moisture, setMoisture] = useState<number | "">(12);
   const [storageMethod, setStorageMethod] = useState("أكياس خيش تهوية محكومة");
@@ -382,8 +382,8 @@ export default function NewBatchPage() {
                 className="w-full bg-slate-50 border border-emerald-200 rounded-2xl px-3.5 py-2.5 text-xs text-emerald-950 focus:outline-none focus:border-amber-400 disabled:opacity-50"
               >
                 <option value="مغسولة">مغسولة</option>
-                <option value="مجففة">مجففة</option>
-                <option value="خام">خام</option>
+                <option value="غير مغسولة">غير مغسولة (خام)</option>
+                <option value="مجففة ومفروزة">مجففة ومفروزة</option>
               </select>
             </div>
 
